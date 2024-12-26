@@ -95,12 +95,15 @@
 }
 
 .progress-bar {
-  @apply mb-12 px-4;
+  @apply mb-8 md:mb-12 px-2 md:px-4;
 }
 
 .progress-bar .step-indicator {
-  @apply flex flex-col items-center relative min-w-[120px];
-  width: calc(100% / 6);
+  @apply flex flex-col items-center relative;
+  width: calc(100% / 3);
+  @screen md {
+    width: calc(100% / 6);
+  }
 }
 
 .progress-bar .step-number {
@@ -108,7 +111,7 @@
 }
 
 .progress-bar .step-label {
-  @apply mt-3 text-xs text-gray-600 text-center font-medium max-w-[90%] mx-auto transition-all duration-300;
+  @apply mt-2 text-[10px] md:text-xs text-gray-600 text-center font-medium max-w-[90%] mx-auto transition-all duration-300;
 }
 
 .progress-bar .step-indicator.completed .step-number {

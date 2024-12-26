@@ -1,12 +1,15 @@
 import React from 'react';
 import { FormStep } from './types';
 import { Check, Pen, FileText, Layout, BookText, User, FileCheck } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProgressBarProps {
   currentStep: FormStep;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
+  const isMobile = useIsMobile();
+  
   const steps = [
     { number: 1, label: 'ציונים נוכחיים', icon: FileText },
     { number: 2, label: 'ממד הלשון', icon: Pen },
@@ -18,30 +21,35 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
 
   return (
     <div className="progress-bar">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-y-4">
         {steps.map((step) => {
           const Icon = step.icon;
+          const isCompleted = currentStep > step.number;
+          const isCurrent = currentStep === step.number;
+          
           return (
             <div
               key={step.number}
               className={`step-indicator ${
-                currentStep > step.number
+                isCompleted
                   ? 'completed'
-                  : currentStep === step.number
+                  : isCurrent
                   ? 'current'
                   : ''
               }`}
             >
               <div className="step-number">
-                {currentStep > step.number ? (
+                {isCompleted ? (
                   <Check className="h-4 w-4" strokeWidth={3} />
                 ) : (
                   <Icon className="h-4 w-4" />
                 )}
               </div>
-              <div className="step-label">{step.label}</div>
+              {(!isMobile || isCurrent) && (
+                <div className="step-label">{step.label}</div>
+              )}
             </div>
-          )
+          );
         })}
       </div>
     </div>
