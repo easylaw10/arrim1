@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { FormData, FormStep, initialFormData } from './types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { useAppealSubmission } from './hooks/useAppealSubmission';
 import Cookies from 'js-cookie';
 
 const FORM_DATA_COOKIE = 'appeal_form_data';
 const CURRENT_STEP_COOKIE = 'appeal_form_step';
-const COMPLETED_APPEAL_COOKIE = 'completed_appeal';
 
 export const useFormState = () => {
   const [formData, setFormData] = useState<FormData>(() => {
@@ -27,6 +27,7 @@ export const useFormState = () => {
   });
 
   const { toast } = useToast();
+  const { saveToDatabase, hasCompletedAppeal, getCompletedAppeal } = useAppealSubmission();
 
   useEffect(() => {
     Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 });
@@ -123,62 +124,7 @@ export const useFormState = () => {
     return true;
   };
 
-  const saveToDatabase = async () => {
-    try {
-      // Check if the email has already submitted an appeal
-      const { data: existingVerification } = await supabase
-        .from('email_verifications')
-        .select('*')
-        .eq('email', formData.email)
-        .eq('appeal_submitted', true)
-        .single();
-
-      if (existingVerification) {
-        toast({
-          title: "שגיאה",
-          description: "כבר הגשת ערר בעבר",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error: appealError } = await supabase.from('exam_appeals').insert({
-        full_name: formData.fullName,
-        phone: formData.phone,
-        email: formData.email,
-        language_score: formData.languageScore,
-        organization_score: formData.organizationScore,
-        content_score: formData.contentScore,
-        final_score: formData.finalScore,
-      });
-
-      if (appealError) throw appealError;
-
-      // Mark the email as having submitted an appeal
-      await supabase
-        .from('email_verifications')
-        .update({ appeal_submitted: true })
-        .eq('email', formData.email)
-        .eq('verified', true);
-
-      // Save the completed appeal in cookies
-      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 });
-
-      toast({
-        title: "נשמר בהצלחה",
-        description: "פרטי הערר נשמרו במערכת",
-      });
-    } catch (error) {
-      console.error('Error saving appeal:', error);
-      toast({
-        title: "שגיאה",
-        description: "אירעה שגיאה בשמירת הערר",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const nextStep = () => {
+  const nextStep = async () => {
     if (!validatePersonalDetails()) {
       return;
     }
@@ -192,11 +138,11 @@ export const useFormState = () => {
     }
 
     if (currentStep < 6) {
-      setCurrentStep((prev) => (prev + 1) as FormStep);
-      
       if (currentStep === 5) {
-        saveToDatabase();
+        const success = await saveToDatabase(formData);
+        if (!success) return;
       }
+      setCurrentStep((prev) => (prev + 1) as FormStep);
     }
   };
 
@@ -204,15 +150,6 @@ export const useFormState = () => {
     if (currentStep > 1) {
       setCurrentStep((prev) => (prev - 1) as FormStep);
     }
-  };
-
-  const hasCompletedAppeal = () => {
-    return !!Cookies.get(COMPLETED_APPEAL_COOKIE);
-  };
-
-  const getCompletedAppeal = () => {
-    const savedAppeal = Cookies.get(COMPLETED_APPEAL_COOKIE);
-    return savedAppeal ? JSON.parse(savedAppeal) : null;
   };
 
   return {
