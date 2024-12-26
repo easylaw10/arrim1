@@ -20,27 +20,24 @@ export const useAppealsList = (itemsPerPage: number = 10) => {
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(itemsPerPage);
-  const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
 
   const loadAppeals = async () => {
     try {
       setIsLoading(true);
       
-      let query = supabase
+      // First, get the total count
+      const { count, error: countError } = await supabase
         .from('exam_appeals')
-        .select('*');
+        .select('*', { count: 'exact', head: true });
 
-      if (searchQuery) {
-        query = query.or(`full_name.ilike.%${searchQuery}%,phone.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
-      }
+      if (countError) throw countError;
+      setTotalCount(count || 0);
 
-      // Get total count of filtered results
-      const { count: filteredCount } = await query.count();
-      setTotalCount(filteredCount || 0);
-
-      // Then fetch the paginated data with the same filters
-      const { data, error } = await query
+      // Then fetch the paginated data
+      const { data, error } = await supabase
+        .from('exam_appeals')
+        .select('*')
         .order('created_at', { ascending: false })
         .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
@@ -112,7 +109,7 @@ export const useAppealsList = (itemsPerPage: number = 10) => {
 
   useEffect(() => {
     loadAppeals();
-  }, [currentPage, pageSize, searchQuery]); // Added searchQuery as dependency
+  }, [currentPage, pageSize]); // Reload when page or page size changes
 
   return { 
     appeals, 
@@ -123,8 +120,6 @@ export const useAppealsList = (itemsPerPage: number = 10) => {
     currentPage,
     setCurrentPage,
     setPageSize,
-    itemsPerPage: pageSize,
-    searchQuery,
-    setSearchQuery
+    itemsPerPage: pageSize
   };
 };

@@ -19,12 +19,11 @@ export const AppealsList = () => {
     currentPage,
     setCurrentPage,
     setPageSize,
-    searchQuery,
-    setSearchQuery,
   } = useAppealsList(parseInt(itemsPerPage));
 
   const [editingAppeal, setEditingAppeal] = useState<Appeal | null>(null);
   const [editForm, setEditForm] = useState<Partial<Appeal>>({});
+  const [searchQuery, setSearchQuery] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
@@ -60,6 +59,18 @@ export const AppealsList = () => {
   };
 
   const filteredAppeals = appeals.filter((appeal) => {
+    const searchLower = searchQuery.toLowerCase();
+    const matchesSearch =
+      appeal.full_name.toLowerCase().includes(searchLower) ||
+      appeal.phone.toLowerCase().includes(searchLower) ||
+      appeal.email.toLowerCase().includes(searchLower) ||
+      appeal.language_score.toString().includes(searchQuery) ||
+      appeal.organization_score.toString().includes(searchQuery) ||
+      appeal.content_score.toString().includes(searchQuery) ||
+      appeal.final_score.toString().includes(searchQuery);
+
+    if (!matchesSearch) return false;
+
     if (startDate && endDate) {
       const appealDate = new Date(appeal.created_at);
       return isWithinInterval(appealDate, {
@@ -67,6 +78,7 @@ export const AppealsList = () => {
         end: endOfDay(endDate),
       });
     }
+
     return true;
   });
 
