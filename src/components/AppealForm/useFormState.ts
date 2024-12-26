@@ -29,7 +29,7 @@ export const useFormState = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 });
+    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 }); // שמירה ל-7 ימים
   }, [formData]);
 
   useEffect(() => {
@@ -116,16 +116,6 @@ export const useFormState = () => {
 
   const saveToDatabase = async () => {
     try {
-      // Check if appeal already exists in cookies
-      if (hasCompletedAppeal()) {
-        toast({
-          title: "שגיאה",
-          description: "כבר יצרת ערר. לא ניתן ליצור ערר נוסף.",
-          variant: "destructive",
-        });
-        return;
-      }
-
       const { error } = await supabase.from('exam_appeals').insert({
         full_name: formData.fullName,
         phone: formData.phone,
@@ -138,12 +128,8 @@ export const useFormState = () => {
 
       if (error) throw error;
 
-      // Save the completed appeal in cookies with a 30-day expiration
-      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 });
-      
-      // Clear the form data and current step cookies
-      Cookies.remove(FORM_DATA_COOKIE);
-      Cookies.remove(CURRENT_STEP_COOKIE);
+      // שמירת הערר המושלם בקוקיז
+      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 }); // שמירה ל-30 יום
 
       toast({
         title: "נשמר בהצלחה",
@@ -160,16 +146,6 @@ export const useFormState = () => {
   };
 
   const nextStep = () => {
-    // Check if appeal already exists
-    if (hasCompletedAppeal()) {
-      toast({
-        title: "שגיאה",
-        description: "כבר יצרת ערר. לא ניתן ליצור ערר נוסף.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!validatePersonalDetails()) {
       return;
     }
