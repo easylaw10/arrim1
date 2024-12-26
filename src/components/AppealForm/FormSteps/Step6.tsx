@@ -3,7 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { AlertTriangle, Copy, FileText } from "lucide-react";
+import { AlertTriangle, Copy, FileText, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -97,15 +97,45 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
         </p>
         
         {isGenerating ? (
-          <div className="flex flex-col items-center justify-center p-8 space-y-4">
+          <div className="flex flex-col items-center justify-center p-8 space-y-6">
             <div className="relative">
-              <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 bg-primary/20 rounded-full animate-ping"></div>
+              {/* Magic wand container */}
+              <div className="absolute -right-12 top-1/2 -translate-y-1/2 transform rotate-45">
+                <div className="relative">
+                  {/* Wand handle */}
+                  <div className="h-16 w-3 bg-gradient-to-b from-amber-700 to-amber-900 rounded-full" />
+                  {/* Wand tip */}
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-yellow-300 rounded-full animate-pulse shadow-lg shadow-yellow-200" />
+                  {/* Magic sparkles */}
+                  <div className="absolute -top-3 left-1/2">
+                    <Sparkles className="h-6 w-6 text-yellow-400 animate-bounce" />
+                  </div>
+                </div>
+              </div>
+              {/* Magic circle */}
+              <div className="w-24 h-24 border-4 border-primary border-t-transparent rounded-full animate-spin">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-12 h-12 bg-primary/20 rounded-full animate-ping" />
+                </div>
+              </div>
+              {/* Magic particles */}
+              <div className="absolute inset-0">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping"
+                    style={{
+                      top: `${Math.random() * 100}%`,
+                      left: `${Math.random() * 100}%`,
+                      animationDelay: `${i * 0.2}s`,
+                      animationDuration: '1.5s'
+                    }}
+                  />
+                ))}
               </div>
             </div>
             <div className="text-primary animate-pulse font-medium">
-              מייצר את הערר...
+              מייצר את הערר בעזרת קסם...
             </div>
             <div className="flex space-x-2 rtl:space-x-reverse">
               <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
