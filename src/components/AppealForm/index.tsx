@@ -8,7 +8,7 @@ import { Step4 } from './FormSteps/Step4';
 import { Step5 } from './FormSteps/Step5';
 import { Step6 } from './FormSteps/Step6';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ExternalLink } from 'lucide-react';
 import { Footer } from '@/components/Footer';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { FileText } from "lucide-react";
@@ -38,6 +38,15 @@ export const AppealForm = () => {
             </AlertDescription>
           </Alert>
           <Step6 formData={completedAppeal} updateFormData={() => {}} />
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={() => window.open('https://easylaw.io', '_blank')}
+              className="gap-2 hover:scale-105 transition-transform"
+            >
+              <ExternalLink className="h-4 w-4" />
+              עבור לאתר EasyLaw
+            </Button>
+          </div>
         </div>
       );
     }
@@ -69,7 +78,7 @@ export const AppealForm = () => {
             {renderStep()}
             {!completedAppeal && (
               <div className="form-navigation">
-                {currentStep > 1 && (
+                {currentStep > 1 && currentStep < 6 && (
                   <Button
                     type="button"
                     variant="outline"
