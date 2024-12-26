@@ -1,40 +1,26 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAppealsList, Appeal } from "../useAppealsList";
-import { SearchInput } from "./SearchInput";
+import { useAppealsList } from "../useAppealsList";
 import { AppealsTable } from "./AppealsTable";
-import { DateRangeFilter } from "./DateRangeFilter";
 import { ExportButton } from "./ExportButton";
 import { startOfDay, endOfDay, isWithinInterval } from "date-fns";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { TableFilters } from "./TableFilters";
+import { TablePagination } from "./TablePagination";
+import { Appeal } from "../useAppealsList";
 
 export const AppealsList = () => {
   const [itemsPerPage, setItemsPerPage] = useState("10");
-  const { 
-    appeals, 
-    isLoading, 
-    deleteAppeal, 
+  const {
+    appeals,
+    isLoading,
+    deleteAppeal,
     updateAppeal,
     totalCount,
     currentPage,
     setCurrentPage,
     setPageSize,
   } = useAppealsList(parseInt(itemsPerPage));
-  
+
   const [editingAppeal, setEditingAppeal] = useState<Appeal | null>(null);
   const [editForm, setEditForm] = useState<Partial<Appeal>>({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -119,32 +105,15 @@ export const AppealsList = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="flex flex-wrap gap-4 items-center justify-between">
-            <SearchInput value={searchQuery} onChange={setSearchQuery} />
-            <div className="flex items-center gap-2">
-              <span className="text-sm">תוצאות בעמוד:</span>
-              <Select
-                value={itemsPerPage}
-                onValueChange={(value) => {
-                  setItemsPerPage(value);
-                  setPageSize(parseInt(value));
-                  setCurrentPage(1);
-                }}
-              >
-                <SelectTrigger className="w-[100px]">
-                  <SelectValue placeholder="בחר כמות" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[10, 25, 50, 100, 200].map((size) => (
-                    <SelectItem key={size} value={size.toString()}>
-                      {size}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DateRangeFilter onDateRangeChange={handleDateRangeChange} />
+          <TableFilters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+            setPageSize={setPageSize}
+            setCurrentPage={setCurrentPage}
+            onDateRangeChange={handleDateRangeChange}
+          />
           <AppealsTable
             appeals={filteredAppeals}
             onEdit={handleEdit}
@@ -154,58 +123,14 @@ export const AppealsList = () => {
             setEditForm={setEditForm}
             handleUpdate={handleUpdate}
           />
-          
-          {totalCount > parseInt(itemsPerPage) && (
-            <div className="mt-4">
-              <Pagination dir="rtl">
-                <PaginationContent className="flex-row-reverse">
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                      className="cursor-pointer"
-                      aria-disabled={currentPage === 1}
-                    >
-                      הבא
-                    </PaginationNext>
-                  </PaginationItem>
-                  
-                  {Array.from({ length: totalPages }, (_, i) => i + 1)
-                    .filter(page => 
-                      page === 1 || 
-                      page === totalPages || 
-                      (page >= currentPage - 1 && page <= currentPage + 1)
-                    )
-                    .map((page, index, array) => (
-                      <PaginationItem key={page}>
-                        {index > 0 && array[index - 1] !== page - 1 && (
-                          <PaginationItem>...</PaginationItem>
-                        )}
-                        <PaginationLink
-                          className="cursor-pointer"
-                          isActive={page === currentPage}
-                          onClick={() => setCurrentPage(page)}
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                  
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                      className="cursor-pointer"
-                      aria-disabled={currentPage === totalPages}
-                    >
-                      הקודם
-                    </PaginationPrevious>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-              <div className="text-sm text-gray-500 text-center mt-2">
-                מציג {(currentPage - 1) * parseInt(itemsPerPage) + 1} עד {Math.min(currentPage * parseInt(itemsPerPage), totalCount)} מתוך {totalCount} עררים
-              </div>
-            </div>
-          )}
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+            itemsPerPage={parseInt(itemsPerPage)}
+            totalCount={totalCount}
+            filteredCount={filteredAppeals.length}
+          />
         </div>
       </CardContent>
     </Card>
