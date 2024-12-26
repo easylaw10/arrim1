@@ -13,11 +13,7 @@ export const useAppealsList = () => {
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (error) {
-          console.error('Error loading appeals:', error);
-          throw error;
-        }
-        
+        if (error) throw error;
         setAppeals(data || []);
       } catch (error) {
         console.error('Error loading appeals:', error);
