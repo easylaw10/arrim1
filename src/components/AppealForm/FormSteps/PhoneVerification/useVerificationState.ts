@@ -37,14 +37,12 @@ export const useVerificationState = () => {
         let errorMessage = "אירעה שגיאה בשליחת קוד האימות";
         
         try {
-          if (error.message) {
-            // First, parse the error message which contains the response
+          if (typeof error.message === 'string') {
             const errorResponse = JSON.parse(error.message);
-            // Then, parse the body which contains the actual error
             if (errorResponse.body) {
-              const { error: bodyError } = JSON.parse(errorResponse.body);
-              if (bodyError) {
-                errorMessage = bodyError;
+              const bodyError = JSON.parse(errorResponse.body);
+              if (bodyError.error) {
+                errorMessage = bodyError.error;
               }
             }
           }
