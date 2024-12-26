@@ -31,13 +31,13 @@ export const TablePagination = ({
       <Pagination dir="rtl">
         <PaginationContent className="flex-row-reverse">
           <PaginationItem>
-            <PaginationNext
+            <PaginationPrevious
               onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
               className="cursor-pointer"
               aria-disabled={currentPage === 1}
             >
-              הבא
-            </PaginationNext>
+              הקודם
+            </PaginationPrevious>
           </PaginationItem>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -63,13 +63,13 @@ export const TablePagination = ({
             ))}
 
           <PaginationItem>
-            <PaginationPrevious
+            <PaginationNext
               onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
               className="cursor-pointer"
               aria-disabled={currentPage === totalPages}
             >
-              הקודם
-            </PaginationPrevious>
+              הבא
+            </PaginationNext>
           </PaginationItem>
         </PaginationContent>
       </Pagination>
