@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FormData, FormStep } from './types';
-
-const STORAGE_KEY = 'appeal-form-draft';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 const initialFormData: FormData = {
   currentLanguageScore: 0,
@@ -37,25 +37,48 @@ const initialFormData: FormData = {
 export const useFormState = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
-
-  useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
-      setFormData(JSON.parse(savedData));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-  }, [formData]);
+  const { toast } = useToast();
 
   const updateFormData = (updates: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
   };
 
+  const saveToDatabase = async () => {
+    try {
+      const { error } = await supabase.from('exam_appeals').insert({
+        full_name: formData.fullName,
+        phone: formData.phone,
+        email: formData.email,
+        language_score: formData.currentLanguageScore,
+        organization_score: formData.currentOrganizationScore,
+        content_score: formData.currentContentScore,
+        final_score: formData.finalExamScore,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "נשמר בהצלחה",
+        description: "פרטי הערר נשמרו במערכת",
+      });
+    } catch (error) {
+      console.error('Error saving appeal:', error);
+      toast({
+        title: "שגיאה",
+        description: "אירעה שגיאה בשמירת הערר",
+        variant: "destructive",
+      });
+    }
+  };
+
   const nextStep = () => {
     if (currentStep < 6) {
       setCurrentStep((prev) => (prev + 1) as FormStep);
+      
+      // Save to database when completing personal details step
+      if (currentStep === 5) {
+        saveToDatabase();
+      }
     }
   };
 
