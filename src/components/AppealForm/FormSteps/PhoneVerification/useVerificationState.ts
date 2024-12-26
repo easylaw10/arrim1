@@ -36,15 +36,19 @@ export const useVerificationState = () => {
       if (error) {
         let errorMessage = "אירעה שגיאה בשליחת קוד האימות";
         
-        if (error.message) {
-          try {
-            const response = JSON.parse(error.message);
-            if (response.error) {
-              errorMessage = response.error;
+        try {
+          // Parse the error body if it exists
+          if (error.message) {
+            const errorBody = JSON.parse(error.message);
+            if (errorBody.body) {
+              const parsedBody = JSON.parse(errorBody.body);
+              if (parsedBody.error) {
+                errorMessage = parsedBody.error;
+              }
             }
-          } catch (e) {
-            console.error('Failed to parse error message:', error.message);
           }
+        } catch (e) {
+          console.error('Failed to parse error message:', error);
         }
 
         toast({
