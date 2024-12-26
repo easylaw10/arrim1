@@ -7,13 +7,15 @@ export const useAppealSubmission = () => {
 
   const saveToDatabase = async (formData: FormData) => {
     try {
-      const { data: existingVerification } = await supabase
+      const { data: existingVerification, error: verificationError } = await supabase
         .from('verification_codes')
         .select('*')
         .eq('contact', formData.phone)
         .eq('verified', true)
         .eq('appeal_submitted', true)
-        .single();
+        .maybeSingle();
+
+      if (verificationError) throw verificationError;
 
       if (existingVerification) {
         toast({
