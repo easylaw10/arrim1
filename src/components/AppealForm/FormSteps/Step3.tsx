@@ -62,7 +62,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
           className="form-input min-h-[100px]"
           value={formData.languageExamples}
           onChange={(e) => updateFormData({ languageExamples: e.target.value })}
-          placeholder="נא לציין דוגמאות ספציפיות מהמטלה"
+          placeholder="יש לציין דוגמאות ספציפיות מהמטלה שלך הממחישות את השימוש בשפה משפטית נכונה, למשל: שימוש נכון במונח 'התובע/הנתבע', שמירה על עקביות בשימוש במונחים לאורך כל המטלה, או דוגמאות לניסוח משפטי תקין"
         />
       </div>
     </div>

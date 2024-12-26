@@ -72,7 +72,7 @@ export const Step4: React.FC<Step4Props> = ({ formData, updateFormData }) => {
           className="form-input min-h-[100px]"
           value={formData.organizationExamples}
           onChange={(e) => updateFormData({ organizationExamples: e.target.value })}
-          placeholder="נא לציין דוגמאות לארגון טוב מהמטלה"
+          placeholder="יש לציין דוגמאות ספציפיות מהמטלה המראות סדר וארגון טוב, למשל: כיצד הצגת את המבוא, איך סידרת את העובדות בצורה ברורה, איך בנית את הטיעון המשפטי בצורה הגיונית, או איך סיכמת את הטענות בצורה ברורה"
         />
       </div>
     </div>

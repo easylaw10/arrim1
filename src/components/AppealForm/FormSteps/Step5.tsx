@@ -72,7 +72,7 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
           className="form-input min-h-[100px]"
           value={formData.contentExamples}
           onChange={(e) => updateFormData({ contentExamples: e.target.value })}
-          placeholder="נא לציין דוגמאות ספציפיות מהמטלה"
+          placeholder="יש לציין דוגמאות ספציפיות מהמטלה המראות שימוש נכון בתוכן, למשל: איזה סעיפי חוק ציטטת, אילו פסקי דין הבאת כתמיכה לטענותיך, אילו עובדות חשובות הדגשת, או כיצד קישרת בין העובדות לטענות המשפטיות"
         />
       </div>
     </div>
