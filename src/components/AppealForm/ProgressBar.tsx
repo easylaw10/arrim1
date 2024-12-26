@@ -54,7 +54,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
 
   return (
     <div className="progress-bar">
-      <div className="flex justify-between items-center flex-wrap gap-y-4">
+      <div className="flex justify-between items-center flex-nowrap min-w-full overflow-x-auto px-2">
         {steps.map((step) => {
           const Icon = step.icon;
           const status = getMainStepStatus(step);
@@ -62,7 +62,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
           return (
             <div 
               key={step.number} 
-              className={`step-indicator ${status}`}
+              className={`step-indicator flex-shrink-0 ${status}`}
             >
               <div className="step-number">
                 {status === 'completed' ? (
@@ -72,7 +72,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
                 )}
               </div>
               {(!isMobile || status === 'current') && (
-                <div className="step-label">{step.label}</div>
+                <div className="step-label whitespace-nowrap">{step.label}</div>
               )}
               
               {/* Render sub-steps indicators if they exist and are current */}
