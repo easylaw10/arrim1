@@ -9,53 +9,36 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { appeal } = await req.json();
-    console.log('Received appeal data:', appeal);
+    const { formData } = await req.json();
 
-    const prompt = `תפקידך הוא לנסח ערר על מטלת כתיבה בבחינת לשכת עורכי הדין.
+    const prompt = `
+    אנא כתוב ערר מפורט על מטלת הכתיבה בבחינת לשכת עורכי הדין בהתבסס על המידע הבא:
 
-מידע על הנבחן:
-שם: ${appeal.fullName}
-ת.ז.: ${appeal.idNumber}
+    ציונים נוכחיים:
+    - ממד הלשון: ${formData.languageScore}/4
+    - ממד הארגון: ${formData.organizationScore}/4
+    - ממד התוכן: ${formData.contentScore}/12
+    - ציון סופי: ${formData.finalScore}
 
-ציונים נוכחיים:
-- ממד הלשון: ${appeal.currentLanguageScore}
-- ממד הארגון: ${appeal.currentOrganizationScore}
-- ממד התוכן: ${appeal.currentContentScore}
-- ציון סופי: ${appeal.finalExamScore}
+    טענות בממד הלשון:
+    ${formData.languageExamples || 'לא צוינו דוגמאות ספציפיות'}
 
-פירוט ממד הלשון:
-${Object.entries(appeal.languageElements)
-  .filter(([_, value]) => value)
-  .map(([key]) => `- ${key}`)
-  .join('\n')}
-דוגמאות ספציפיות: ${appeal.languageExamples}
+    טענות בממד הארגון:
+    ${formData.organizationExamples || 'לא צוינו דוגמאות ספציפיות'}
 
-פירוט ממד הארגון:
-${Object.entries(appeal.organizationElements)
-  .filter(([_, value]) => value)
-  .map(([key]) => `- ${key}`)
-  .join('\n')}
-דוגמאות ספציפיות: ${appeal.organizationExamples}
+    טענות בממד התוכן:
+    ${formData.contentExamples || 'לא צוינו דוגמאות ספציפיות'}
 
-פירוט ממד התוכן:
-${Object.entries(appeal.contentElements)
-  .filter(([_, value]) => value)
-  .map(([key]) => `- ${key}`)
-  .join('\n')}
-דוגמאות ספציפיות: ${appeal.contentExamples}
+    הערות נוספות:
+    ${formData.additionalNotes || 'אין הערות נוספות'}
 
-הערות נוספות: ${appeal.additionalNotes}
-
-אנא נסח ערר מקצועי בעברית המתבסס על נתונים אלו.`;
-
-    console.log('Sending prompt to OpenAI:', prompt);
+    יש לכתוב את הערר בצורה מקצועית, מנומקת ומשכנעת.
+    `;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -66,9 +49,9 @@ ${Object.entries(appeal.contentElements)
       body: JSON.stringify({
         model: 'gpt-4o',
         messages: [
-          { 
-            role: 'system', 
-            content: 'אתה עורך דין מנוסה המתמחה בכתיבת עררים על מטלות כתיבה בבחינת לשכת עורכי הדין. עליך לנסח ערר מקצועי, מנומק ומשכנע.'
+          {
+            role: 'system',
+            content: 'אתה עורך דין מנוסה המתמחה בכתיבת עררים על מטלות כתיבה בבחינת לשכת עורכי הדין. תפקידך לנסח ערר מקצועי, מנומק ומשכנע.'
           },
           { role: 'user', content: prompt }
         ],
@@ -76,8 +59,6 @@ ${Object.entries(appeal.contentElements)
     });
 
     const data = await response.json();
-    console.log('Received response from OpenAI');
-
     return new Response(JSON.stringify({ 
       generatedAppeal: data.choices[0].message.content 
     }), {
