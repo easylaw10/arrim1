@@ -62,7 +62,6 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
     setIsLoading(true);
     try {
-      // בדיקה אם המספר כבר אומת בעבר
       const existingVerification = await checkPreviousVerification(formData.phone);
       
       if (existingVerification) {
@@ -108,18 +107,14 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
     setIsLoading(true);
     try {
-      // בדיקה נוספת לפני האימות
-      const existingVerification = await checkPreviousVerification(formData.phone);
-      
-      if (existingVerification) {
-        toast({
-          title: "שגיאה",
-          description: "מספר טלפון זה כבר אומת בעבר. לא ניתן לאמת מספר טלפון פעמיים.",
-          variant: "destructive",
-        });
-        return;
-      }
+      // First, unverify any existing verified records for this phone number
+      await supabase
+        .from('verification_codes')
+        .update({ verified: false })
+        .eq('contact', formData.phone)
+        .eq('verified', true);
 
+      // Now verify the new code
       const { data, error } = await supabase
         .from('verification_codes')
         .select('*')
@@ -133,10 +128,12 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         throw new Error("קוד האימות שגוי או שפג תוקפו");
       }
 
-      await supabase
+      const { error: updateError } = await supabase
         .from('verification_codes')
         .update({ verified: true })
         .eq('id', data.id);
+
+      if (updateError) throw updateError;
 
       updateFormData({ phoneVerified: true });
       toast({
