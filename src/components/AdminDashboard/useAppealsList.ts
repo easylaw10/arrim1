@@ -57,6 +57,11 @@ export const useAppealsList = (itemsPerPage: number = 10) => {
 
   const deleteAppeal = async (id: string) => {
     try {
+      toast({
+        title: "מוחק...",
+        description: "מוחק את הערר מהמערכת",
+      });
+
       const { error } = await supabase
         .from('exam_appeals')
         .delete()
@@ -66,15 +71,16 @@ export const useAppealsList = (itemsPerPage: number = 10) => {
 
       setAppeals(prev => prev.filter(appeal => appeal.id !== id));
       setTotalCount(prev => prev - 1);
+      
       toast({
         title: "נמחק בהצלחה",
-        description: "הערר נמחק מהמערכת",
+        description: "הערר נמחק לצמיתות מהמערכת",
       });
     } catch (error) {
       console.error('Error deleting appeal:', error);
       toast({
-        title: "שגיאה",
-        description: "אירעה שגיאה במחיקת הערר",
+        title: "שגיאה במחיקה",
+        description: "אירעה שגיאה במחיקת הערר. אנא נסה שוב.",
         variant: "destructive",
       });
     }

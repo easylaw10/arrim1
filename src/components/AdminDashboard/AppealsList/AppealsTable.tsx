@@ -10,6 +10,17 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { Appeal } from "../useAppealsList";
 import { EditAppealDialog } from "./EditAppealDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AppealsTableProps {
   appeals: Appeal[];
@@ -69,13 +80,30 @@ export const AppealsTable = ({
                   onEdit={onEdit}
                   onUpdate={handleUpdate}
                 />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => onDelete(appeal.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>האם אתה בטוח שברצונך למחוק?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        פעולה זו תמחק לצמיתות את הערר של {appeal.full_name}. לא ניתן לבטל פעולה זו.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="flex-row-reverse gap-2">
+                      <AlertDialogCancel>ביטול</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => onDelete(appeal.id)}
+                        className="bg-red-500 hover:bg-red-600"
+                      >
+                        מחק
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </TableCell>
           </TableRow>
