@@ -2,30 +2,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Template } from "./useTemplates";
 
 interface TemplateFormProps {
-  editForm: {
-    name?: string;
-    content?: string;
-    task_type?: number;
-  };
-  setEditForm: (form: any) => void;
+  editForm: Template;
+  setEditForm: (form: Template) => void;
   onSave: () => void;
-  disabledTaskTypes?: number[];
 }
 
 export const TemplateForm = ({
   editForm,
   setEditForm,
   onSave,
-  disabledTaskTypes = [],
 }: TemplateFormProps) => {
   return (
     <>
@@ -33,9 +21,9 @@ export const TemplateForm = ({
         <div className="space-y-2">
           <label>שם התבנית</label>
           <Input
-            value={editForm.name || ""}
+            value={editForm.name}
             onChange={(e) =>
-              setEditForm((prev: any) => ({
+              setEditForm((prev) => ({
                 ...prev,
                 name: e.target.value,
               }))
@@ -44,42 +32,20 @@ export const TemplateForm = ({
         </div>
         <div className="space-y-2">
           <label>סוג מטלה</label>
-          <Select
-            value={editForm.task_type ? String(editForm.task_type) : undefined}
-            onValueChange={(value) =>
-              setEditForm((prev: any) => ({
-                ...prev,
-                task_type: parseInt(value),
-              }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="בחר סוג מטלה" />
-            </SelectTrigger>
-            <SelectContent>
-              {[1, 2].map((type) => (
-                <SelectItem
-                  key={type}
-                  value={String(type)}
-                  disabled={disabledTaskTypes.includes(type)}
-                >
-                  מטלה {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Input value={`מטלה ${editForm.task_type}`} disabled />
         </div>
         <div className="space-y-2">
           <label>תוכן התבנית</label>
           <Textarea
-            value={editForm.content || ""}
+            value={editForm.content}
             onChange={(e) =>
-              setEditForm((prev: any) => ({
+              setEditForm((prev) => ({
                 ...prev,
                 content: e.target.value,
               }))
             }
-            className="min-h-[200px]"
+            className="min-h-[200px] font-mono text-sm"
+            dir="ltr"
           />
         </div>
       </div>

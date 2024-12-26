@@ -13,7 +13,13 @@ export type Template = {
 export const useTemplates = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
-  const [editForm, setEditForm] = useState<Partial<Template>>({});
+  const [editForm, setEditForm] = useState<Template>({
+    id: "",
+    name: "",
+    content: "",
+    task_type: 1,
+    updated_at: new Date().toISOString(),
+  });
   const { toast } = useToast();
 
   const fetchTemplates = async () => {
@@ -36,55 +42,28 @@ export const useTemplates = () => {
 
   const handleEdit = (template: Template) => {
     setEditingTemplate(template);
-    setEditForm({
-      name: template.name,
-      content: template.content,
-      task_type: template.task_type,
-    });
-  };
-
-  const handleCreate = () => {
-    setEditingTemplate(null);
-    setEditForm({
-      name: "",
-      content: "",
-      task_type: 1,
-    });
+    setEditForm(template);
   };
 
   const handleSave = async () => {
     try {
-      if (editingTemplate) {
-        const { error } = await supabase
-          .from("gpt_instructions")
-          .update({
-            name: editForm.name,
-            content: editForm.content,
-            task_type: editForm.task_type,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", editingTemplate.id);
+      if (!editingTemplate) return;
 
-        if (error) throw error;
-
-        toast({
-          title: "נשמר בהצלחה",
-          description: "התבנית עודכנה בהצלחה",
-        });
-      } else {
-        const { error } = await supabase.from("gpt_instructions").insert({
+      const { error } = await supabase
+        .from("gpt_instructions")
+        .update({
           name: editForm.name,
           content: editForm.content,
-          task_type: editForm.task_type,
-        });
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", editingTemplate.id);
 
-        if (error) throw error;
+      if (error) throw error;
 
-        toast({
-          title: "נשמר בהצלחה",
-          description: "התבנית נוצרה בהצלחה",
-        });
-      }
+      toast({
+        title: "נשמר בהצלחה",
+        description: "התבנית עודכנה בהצלחה",
+      });
 
       fetchTemplates();
       setEditingTemplate(null);
@@ -98,33 +77,6 @@ export const useTemplates = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("האם אתה בטוח שברצונך למחוק תבנית זו?")) {
-      try {
-        const { error } = await supabase
-          .from("gpt_instructions")
-          .delete()
-          .eq("id", id);
-
-        if (error) throw error;
-
-        toast({
-          title: "נמחק בהצלחה",
-          description: "התבנית נמחקה בהצלחה",
-        });
-
-        fetchTemplates();
-      } catch (error) {
-        console.error("Error deleting template:", error);
-        toast({
-          title: "שגיאה",
-          description: "אירעה שגיאה במחיקת התבנית",
-          variant: "destructive",
-        });
-      }
-    }
-  };
-
   useEffect(() => {
     fetchTemplates();
   }, []);
@@ -135,8 +87,6 @@ export const useTemplates = () => {
     editForm,
     setEditForm,
     handleEdit,
-    handleCreate,
     handleSave,
-    handleDelete,
   };
 };
