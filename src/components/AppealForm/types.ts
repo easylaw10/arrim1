@@ -1,44 +1,65 @@
-export type FormData = {
-  task: 1 | 2;
-  // Step 1 - Current Scores
-  currentLanguageScore: number;
-  currentOrganizationScore: number;
-  currentContentScore: number;
-  finalExamScore: number;
-
-  // Step 2 - Language Dimension
-  languageElements: {
-    legalTerms: boolean;
-    termConsistency: boolean;
-    grammarSyntax: boolean;
-  };
-  languageExamples: string;
-
-  // Step 3 - Organization Dimension
-  organizationElements: {
-    introduction: boolean;
-    factPresentation: boolean;
-    legalAnalysis: boolean;
-    conclusion: boolean;
-  };
-  organizationExamples: string;
-
-  // Step 4 - Content Dimension
-  contentElements: {
-    allParties: boolean;
-    legislation: boolean;
-    caselaw: boolean;
-    relevantFacts: boolean;
-  };
-  contentExamples: string;
-
-  // Step 5 - Personal Details
+export interface FormData {
+  taskType: number;
   fullName: string;
-  phone: string;
   email: string;
+  phone: string;
+  languageScore: number;
+  organizationScore: number;
+  contentScore: number;
+  finalScore: number;
+  languageElements?: {
+    legalTerms?: boolean;
+    termConsistency?: boolean;
+    grammarSyntax?: boolean;
+  };
+  organizationElements?: {
+    introduction?: boolean;
+    factPresentation?: boolean;
+    legalAnalysis?: boolean;
+    conclusion?: boolean;
+  };
+  contentElements?: {
+    allParties?: boolean;
+    legislation?: boolean;
+    caselaw?: boolean;
+    relevantFacts?: boolean;
+  };
+  languageExamples?: string;
+  organizationExamples?: string;
+  contentExamples?: string;
+  additionalNotes?: string;
+  appealText?: string;
+}
 
-  // Step 6 - Additional Notes
-  additionalNotes: string;
+export const initialFormData: FormData = {
+  taskType: 0,
+  fullName: "",
+  email: "",
+  phone: "",
+  languageScore: 0,
+  organizationScore: 0,
+  contentScore: 0,
+  finalScore: 0,
+  languageElements: {
+    legalTerms: false,
+    termConsistency: false,
+    grammarSyntax: false,
+  },
+  organizationElements: {
+    introduction: false,
+    factPresentation: false,
+    legalAnalysis: false,
+    conclusion: false,
+  },
+  contentElements: {
+    allParties: false,
+    legislation: false,
+    caselaw: false,
+    relevantFacts: false,
+  },
+  languageExamples: "",
+  organizationExamples: "",
+  contentExamples: "",
+  additionalNotes: "",
+  appealText: "",
 };
-
-export type FormStep = 1 | 2 | 3 | 4 | 5 | 6;
