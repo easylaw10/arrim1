@@ -35,8 +35,8 @@ export const AppealForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="form-container animate-fade-in flex-grow">
-        <div>
+      <div className="form-container py-4 sm:py-6 lg:py-8 animate-fade-in flex-grow">
+        <div className="w-full">
           <ProgressBar currentStep={currentStep} />
           <div className="form-section">
             {renderStep()}
