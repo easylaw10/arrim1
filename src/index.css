@@ -43,6 +43,21 @@
   }
 }
 
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .form-container {
   @apply max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg;
 }
