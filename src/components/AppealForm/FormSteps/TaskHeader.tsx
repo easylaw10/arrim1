@@ -11,13 +11,15 @@ interface TaskHeaderProps {
 export const TaskHeader: React.FC<TaskHeaderProps> = ({ title, formData }) => {
   return (
     <div className="mb-8 space-y-4">
-      <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
+      <h2 className="form-title">
         {title}
       </h2>
       {formData.taskName && (
         <div className="bg-slate-50 p-4 rounded-lg border space-y-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-medium text-slate-700">{formData.taskName}</h3>
+            <h3 className="text-lg font-medium text-slate-700">
+              {formData.taskName}
+            </h3>
           </div>
           {formData.rubricLink && (
             <Button
