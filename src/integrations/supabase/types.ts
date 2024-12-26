@@ -52,6 +52,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          task_type: number
           updated_at: string
         }
         Insert: {
@@ -60,6 +61,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          task_type: number
           updated_at?: string
         }
         Update: {
@@ -68,6 +70,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          task_type?: number
           updated_at?: string
         }
         Relationships: []

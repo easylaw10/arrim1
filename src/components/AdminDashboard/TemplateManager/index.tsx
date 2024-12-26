@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { TemplateForm } from "./TemplateForm";
+import { TemplateItem } from "./TemplateItem";
 
 export const TemplateManager = () => {
   const [templates, setTemplates] = useState<any[]>([]);
@@ -48,6 +47,7 @@ export const TemplateManager = () => {
     setEditForm({
       name: template.name,
       content: template.content,
+      task_type: template.task_type,
     });
   };
 
@@ -56,6 +56,7 @@ export const TemplateManager = () => {
     setEditForm({
       name: "",
       content: "",
+      task_type: 1,
     });
   };
 
@@ -67,6 +68,7 @@ export const TemplateManager = () => {
           .update({
             name: editForm.name,
             content: editForm.content,
+            task_type: editForm.task_type,
             updated_at: new Date().toISOString(),
           })
           .eq("id", editingTemplate.id);
@@ -81,6 +83,7 @@ export const TemplateManager = () => {
         const { error } = await supabase.from("gpt_instructions").insert({
           name: editForm.name,
           content: editForm.content,
+          task_type: editForm.task_type,
         });
 
         if (error) throw error;
@@ -147,118 +150,26 @@ export const TemplateManager = () => {
                 {editingTemplate ? "עריכת תבנית" : "תבנית חדשה"}
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <label>שם התבנית</label>
-                <Input
-                  value={editForm.name || ""}
-                  onChange={(e) =>
-                    setEditForm((prev: any) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <label>תוכן התבנית</label>
-                <Textarea
-                  value={editForm.content || ""}
-                  onChange={(e) =>
-                    setEditForm((prev: any) => ({
-                      ...prev,
-                      content: e.target.value,
-                    }))
-                  }
-                  className="min-h-[200px]"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2">
-              <DialogClose asChild>
-                <Button variant="outline">ביטול</Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button onClick={handleSave}>שמור</Button>
-              </DialogClose>
-            </div>
+            <TemplateForm
+              editForm={editForm}
+              setEditForm={setEditForm}
+              onSave={handleSave}
+            />
           </DialogContent>
         </Dialog>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {templates.map((template) => (
-            <div
+            <TemplateItem
               key={template.id}
-              className="flex items-center justify-between border-b pb-4"
-            >
-              <div>
-                <h3 className="font-medium">{template.name}</h3>
-                <p className="text-sm text-gray-500">
-                  עודכן: {new Date(template.updated_at).toLocaleDateString("he-IL")}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleEdit(template)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>עריכת תבנית</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <label>שם התבנית</label>
-                        <Input
-                          value={editForm.name || ""}
-                          onChange={(e) =>
-                            setEditForm((prev: any) => ({
-                              ...prev,
-                              name: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label>תוכן התבנית</label>
-                        <Textarea
-                          value={editForm.content || ""}
-                          onChange={(e) =>
-                            setEditForm((prev: any) => ({
-                              ...prev,
-                              content: e.target.value,
-                            }))
-                          }
-                          className="min-h-[200px]"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <DialogClose asChild>
-                        <Button variant="outline">ביטול</Button>
-                      </DialogClose>
-                      <DialogClose asChild>
-                        <Button onClick={handleSave}>שמור</Button>
-                      </DialogClose>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleDelete(template.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+              template={template}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              editForm={editForm}
+              setEditForm={setEditForm}
+              handleSave={handleSave}
+            />
           ))}
         </div>
       </CardContent>
