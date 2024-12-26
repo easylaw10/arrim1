@@ -11,16 +11,31 @@ interface Step2Props {
   updateFormData: (updates: Partial<FormData>) => void;
 }
 
+const validatePhone = (phone: string): boolean => {
+  // Israeli phone number validation
+  const phoneRegex = /^05\d{8}$/;
+  return phoneRegex.test(phone);
+};
+
 export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const { toast } = useToast();
 
   const sendVerificationCode = async () => {
-    if (!formData.email) {
+    if (!formData.phone) {
       toast({
         title: "שגיאה",
-        description: "נא להזין כתובת אימייל",
+        description: "נא להזין מספר טלפון",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validatePhone(formData.phone)) {
+      toast({
+        title: "שגיאה",
+        description: "מספר הטלפון אינו תקין. יש להזין מספר טלפון ישראלי תקין",
         variant: "destructive",
       });
       return;
@@ -29,14 +44,14 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-verification', {
-        body: { email: formData.email },
+        body: { phone: formData.phone },
       });
 
       if (error) throw error;
 
       toast({
         title: "נשלח בהצלחה",
-        description: "קוד אימות נשלח לכתובת האימייל שלך",
+        description: "קוד אימות נשלח למספר הטלפון שלך",
       });
       setShowVerification(true);
     } catch (error: any) {
@@ -63,9 +78,9 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
-        .from('email_verifications')
+        .from('verification_codes')
         .select('*')
-        .eq('email', formData.email)
+        .eq('contact', formData.phone)
         .eq('verification_code', formData.verificationCode)
         .eq('verified', false)
         .gt('expires_at', new Date().toISOString())
@@ -77,14 +92,14 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
 
       // Mark the verification as verified
       await supabase
-        .from('email_verifications')
+        .from('verification_codes')
         .update({ verified: true })
         .eq('id', data.id);
 
       updateFormData({ emailVerified: true });
       toast({
         title: "אומת בהצלחה",
-        description: "כתובת האימייל אומתה בהצלחה",
+        description: "מספר הטלפון אומת בהצלחה",
       });
     } catch (error: any) {
       toast({
@@ -113,13 +128,14 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="email" className="form-label">אימייל</label>
+        <label htmlFor="phone" className="form-label">טלפון נייד</label>
         <div className="flex gap-2">
           <Input
-            id="email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => updateFormData({ email: e.target.value })}
+            id="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => updateFormData({ phone: e.target.value })}
+            placeholder="05XXXXXXXX"
             disabled={formData.emailVerified}
             required
           />
@@ -145,7 +161,7 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
               type="text"
               value={formData.verificationCode || ''}
               onChange={(e) => updateFormData({ verificationCode: e.target.value })}
-              placeholder="הזן את הקוד שנשלח לאימייל שלך"
+              placeholder="הזן את הקוד שנשלח לטלפון שלך"
               required
             />
             <Button 
@@ -161,12 +177,12 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
       )}
 
       <div className="form-group">
-        <label htmlFor="phone" className="form-label">טלפון</label>
+        <label htmlFor="email" className="form-label">אימייל</label>
         <Input
-          id="phone"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => updateFormData({ phone: e.target.value })}
+          id="email"
+          type="email"
+          value={formData.email}
+          onChange={(e) => updateFormData({ email: e.target.value })}
           required
         />
       </div>

@@ -3,6 +3,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const SMS4FREE_API_KEY = Deno.env.get("SMS4FREE_API_KEY");
+const SMS4FREE_USER = Deno.env.get("SMS4FREE_USER");
+const SMS4FREE_PASSWORD = Deno.env.get("SMS4FREE_PASSWORD");
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,6 +16,34 @@ const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
 const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+const sendSMS = async (phone: string, message: string) => {
+  console.log("Sending SMS to:", phone, "Message:", message);
+  
+  const response = await fetch("https://api.sms4free.co.il/ApiSMS/v2/SendSMS", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      key: SMS4FREE_API_KEY,
+      user: SMS4FREE_USER,
+      pass: SMS4FREE_PASSWORD,
+      sender: SMS4FREE_USER, // Using the registered phone as sender
+      recipient: phone,
+      msg: message,
+    }),
+  });
+
+  const data = await response.json();
+  console.log("SMS API Response:", data);
+
+  if (data.status <= 0) {
+    throw new Error(`SMS sending failed: ${data.message}`);
+  }
+
+  return data;
 };
 
 const handler = async (req: Request): Promise<Response> => {
@@ -76,8 +107,8 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to store verification code");
     }
 
-    // For now, just log the code since we don't have an SMS service yet
-    console.log("Verification code for testing:", verificationCode);
+    // Send SMS with verification code
+    await sendSMS(phone, `קוד האימות שלך הוא: ${verificationCode}`);
 
     return new Response(
       JSON.stringify({ message: "Verification code sent successfully" }),
