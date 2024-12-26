@@ -71,24 +71,25 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
           להלן נוסח הערר שנוצר באמצעות בינה מלאכותית. ניתן לערוך את הטקסט לפי הצורך.
         </p>
         
-        <Alert variant="destructive" className="bg-yellow-50 border-yellow-200">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription className="text-yellow-800">
-            שימו לב: בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
-          </AlertDescription>
-        </Alert>
-        
         {isGenerating ? (
           <div className="flex items-center justify-center p-8">
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         ) : (
-          <Textarea
-            value={template}
-            onChange={handleTextChange}
-            className="min-h-[400px] font-mono text-sm"
-            dir="rtl"
-          />
+          <>
+            <Textarea
+              value={template}
+              onChange={handleTextChange}
+              className="min-h-[400px] font-mono text-sm"
+              dir="rtl"
+            />
+            <div className="text-sm text-gray-500 flex items-center gap-2 mt-2">
+              <AlertTriangle className="h-4 w-4 text-yellow-600" />
+              <span>
+                שימו לב: בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
+              </span>
+            </div>
+          </>
         )}
       </div>
 
