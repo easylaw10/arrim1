@@ -17,15 +17,21 @@ const generateVerificationCode = () => {
 };
 
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
     const { email } = await req.json();
+    console.log("Processing verification request for email:", email);
 
     // Check if there's already a verified email with an appeal
-    const { data: existingAppeal } = await supabase
+    const { data: existingAppeal, error: appealError } = await supabase
       .from('email_verifications')
       .select('*')
       .eq('email', email)
@@ -33,7 +39,12 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('appeal_submitted', true)
       .single();
 
+    if (appealError) {
+      console.log("Error checking existing appeal:", appealError);
+    }
+
     if (existingAppeal) {
+      console.log("Found existing appeal for email:", email);
       return new Response(
         JSON.stringify({ error: "כבר הגשת ערר בעבר" }),
         { 
@@ -44,17 +55,29 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const verificationCode = generateVerificationCode();
+    console.log("Generated verification code for email:", email);
 
-    // Store the verification code
-    await supabase
+    // Store the verification code with expiration
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes expiration
+
+    const { error: insertError } = await supabase
       .from('email_verifications')
       .insert({
         email,
         verification_code: verificationCode,
+        expires_at: expiresAt.toISOString(),
+        verified: false,
+        appeal_submitted: false,
       });
 
+    if (insertError) {
+      console.error("Error inserting verification code:", insertError);
+      throw new Error("Failed to store verification code");
+    }
+
     // Send verification email using Resend
-    const res = await fetch("https://api.resend.com/emails", {
+    const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,20 +88,27 @@ const handler = async (req: Request): Promise<Response> => {
         to: [email],
         subject: "קוד אימות לערר",
         html: `
-          <div dir="rtl">
-            <h2>קוד האימות שלך</h2>
+          <div dir="rtl" style="font-family: Arial, sans-serif;">
+            <h2 style="color: #2563eb;">קוד האימות שלך</h2>
             <p>שלום,</p>
-            <p>קוד האימות שלך הוא: <strong>${verificationCode}</strong></p>
+            <p>קוד האימות שלך הוא: <strong style="font-size: 1.2em; color: #2563eb;">${verificationCode}</strong></p>
             <p>הקוד תקף ל-15 דקות.</p>
             <p>אם לא ביקשת קוד אימות, אנא התעלם מהודעה זו.</p>
+            <hr style="margin: 20px 0;" />
+            <p style="color: #6b7280; font-size: 0.9em;">הודעה זו נשלחה באופן אוטומטי, נא לא להשיב.</p>
           </div>
         `,
       }),
     });
 
-    if (!res.ok) {
-      throw new Error("Failed to send verification email");
+    if (!emailResponse.ok) {
+      const errorData = await emailResponse.text();
+      console.error("Resend API error:", errorData);
+      throw new Error(`Failed to send email: ${errorData}`);
     }
+
+    const emailResult = await emailResponse.json();
+    console.log("Email sent successfully:", emailResult);
 
     return new Response(
       JSON.stringify({ message: "Verification code sent successfully" }),
@@ -88,9 +118,12 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in send-verification function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error instanceof Error ? error.message : "An unknown error occurred",
+        details: error
+      }),
       { 
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
