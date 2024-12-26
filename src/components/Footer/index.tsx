@@ -6,7 +6,7 @@ export const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
-            <span>© {new Date().getFullYear()} EasyLaw</span>
+            <span>EasyLaw</span>
             <span>·</span>
             <Link 
               to="https://hi.easylaw.io/grade-policy/" 
