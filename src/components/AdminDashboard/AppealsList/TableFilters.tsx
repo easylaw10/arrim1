@@ -1,5 +1,6 @@
 import { SearchInput } from "./SearchInput";
 import { DateRangeFilter } from "./DateRangeFilter";
+import { ScoreRangeFilter } from "./ScoreRangeFilter";
 import {
   Select,
   SelectContent,
@@ -16,6 +17,8 @@ interface TableFiltersProps {
   setPageSize: (size: number) => void;
   setCurrentPage: (page: number) => void;
   onDateRangeChange: (start: Date | null, end: Date | null) => void;
+  scoreRange: [number, number];
+  onScoreRangeChange: (range: [number, number]) => void;
 }
 
 export const TableFilters = ({
@@ -26,6 +29,8 @@ export const TableFilters = ({
   setPageSize,
   setCurrentPage,
   onDateRangeChange,
+  scoreRange,
+  onScoreRangeChange,
 }: TableFiltersProps) => {
   return (
     <div className="space-y-4">
@@ -54,7 +59,14 @@ export const TableFilters = ({
           </Select>
         </div>
       </div>
-      <DateRangeFilter onDateRangeChange={onDateRangeChange} />
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <DateRangeFilter onDateRangeChange={onDateRangeChange} />
+        </div>
+        <div className="flex-1">
+          <ScoreRangeFilter value={scoreRange} onChange={onScoreRangeChange} />
+        </div>
+      </div>
     </div>
   );
 };

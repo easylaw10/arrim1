@@ -26,6 +26,7 @@ export const AppealsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
 
   const handleEdit = (appeal: Appeal) => {
     setEditingAppeal(appeal);
@@ -73,10 +74,17 @@ export const AppealsList = () => {
 
     if (startDate && endDate) {
       const appealDate = new Date(appeal.created_at);
-      return isWithinInterval(appealDate, {
+      if (!isWithinInterval(appealDate, {
         start: startOfDay(startDate),
         end: endOfDay(endDate),
-      });
+      })) {
+        return false;
+      }
+    }
+
+    // Add score range filter
+    if (appeal.final_score < scoreRange[0] || appeal.final_score > scoreRange[1]) {
+      return false;
     }
 
     return true;
@@ -113,6 +121,8 @@ export const AppealsList = () => {
             setPageSize={setPageSize}
             setCurrentPage={setCurrentPage}
             onDateRangeChange={handleDateRangeChange}
+            scoreRange={scoreRange}
+            onScoreRangeChange={setScoreRange}
           />
           <AppealsTable
             appeals={filteredAppeals}
