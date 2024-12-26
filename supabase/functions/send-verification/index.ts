@@ -40,10 +40,6 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('appeal_submitted', true)
       .single();
 
-    if (appealError) {
-      console.log("Error checking existing appeal:", appealError);
-    }
-
     if (existingAppeal) {
       console.log("Found existing appeal for email:", email);
       return new Response(
@@ -56,12 +52,20 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const verificationCode = generateVerificationCode();
-    console.log("Generated verification code for email:", email);
+    console.log("Generated verification code:", verificationCode);
 
     // Store the verification code with expiration
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes expiration
 
+    // Delete any existing verification codes for this email
+    await supabase
+      .from('email_verifications')
+      .delete()
+      .eq('email', email)
+      .eq('verified', false);
+
+    // Insert new verification code
     const { error: insertError } = await supabase
       .from('email_verifications')
       .insert({
@@ -85,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "EasyLaw <onboarding@resend.dev>", // Using Resend's default domain
+        from: "EasyLaw <onboarding@resend.dev>",
         to: [email],
         subject: "קוד אימות לערר",
         html: `
@@ -122,11 +126,10 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("Error in send-verification function:", error);
     return new Response(
       JSON.stringify({ 
-        error: error instanceof Error ? error.message : "An unknown error occurred",
-        details: error
+        error: error instanceof Error ? error.message : "An unknown error occurred"
       }),
       { 
-        status: 500,
+        status: 400, // Changed from 500 to 400 for better error handling
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );
