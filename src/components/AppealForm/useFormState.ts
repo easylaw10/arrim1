@@ -57,6 +57,21 @@ export const useFormState = () => {
     return true;
   };
 
+  const validateFinalScore = () => {
+    if (currentStep === 1) {
+      const score = formData.finalScore;
+      if (!score || score < 25 || score > 80) {
+        toast({
+          title: "שגיאה",
+          description: "ציון סופי לא תקין",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+    return true;
+  };
+
   const saveToDatabase = async () => {
     try {
       const { error } = await supabase.from('exam_appeals').insert({
@@ -87,6 +102,10 @@ export const useFormState = () => {
 
   const nextStep = () => {
     if (!validatePersonalDetails()) {
+      return;
+    }
+
+    if (!validateFinalScore()) {
       return;
     }
 
