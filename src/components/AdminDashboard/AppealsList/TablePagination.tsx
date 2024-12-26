@@ -73,13 +73,8 @@ export const TablePagination = ({
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-      <div className="text-sm text-gray-500 text-center mt-4 space-y-1">
-        <div>
-          מציג {(currentPage - 1) * itemsPerPage + 1} עד{" "}
-          {Math.min(currentPage * itemsPerPage, filteredCount)} מתוך{" "}
-          {filteredCount} תוצאות מסוננות
-        </div>
-        <div>סה"כ {totalCount} רשומות במערכת</div>
+      <div className="text-sm text-gray-500 text-center mt-4">
+        מציג {filteredCount} רשומות מתוך {totalCount} רשומות במערכת
       </div>
     </div>
   );
