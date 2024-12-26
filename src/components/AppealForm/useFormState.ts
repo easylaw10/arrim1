@@ -1,18 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FormData, FormStep, initialFormData } from './types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import Cookies from 'js-cookie';
+
+const FORM_DATA_COOKIE = 'appeal_form_data';
+const CURRENT_STEP_COOKIE = 'appeal_form_step';
+const COMPLETED_APPEAL_COOKIE = 'completed_appeal';
 
 export const useFormState = () => {
-  const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [currentStep, setCurrentStep] = useState<FormStep>(1);
+  const [formData, setFormData] = useState<FormData>(() => {
+    const savedData = Cookies.get(FORM_DATA_COOKIE);
+    if (savedData) {
+      try {
+        return JSON.parse(savedData);
+      } catch (e) {
+        return initialFormData;
+      }
+    }
+    return initialFormData;
+  });
+
+  const [currentStep, setCurrentStep] = useState<FormStep>(() => {
+    const savedStep = Cookies.get(CURRENT_STEP_COOKIE);
+    return savedStep ? Number(savedStep) as FormStep : 1;
+  });
+
   const { toast } = useToast();
+
+  useEffect(() => {
+    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 }); // שמירה ל-7 ימים
+  }, [formData]);
+
+  useEffect(() => {
+    Cookies.set(CURRENT_STEP_COOKIE, String(currentStep), { expires: 7 });
+  }, [currentStep]);
 
   const updateFormData = async (updates: Partial<FormData>) => {
     setFormData(prev => {
       const newData = { ...prev, ...updates };
       
-      // If taskType is being updated, fetch the template details
       if (updates.taskType !== undefined && updates.taskType !== prev.taskType) {
         fetchTemplateDetails(updates.taskType);
       }
@@ -101,6 +128,9 @@ export const useFormState = () => {
 
       if (error) throw error;
 
+      // שמירת הערר המושלם בקוקיז
+      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 }); // שמירה ל-30 יום
+
       toast({
         title: "נשמר בהצלחה",
         description: "פרטי הערר נשמרו במערכת",
@@ -131,7 +161,6 @@ export const useFormState = () => {
     if (currentStep < 6) {
       setCurrentStep((prev) => (prev + 1) as FormStep);
       
-      // Save to database when completing personal details step
       if (currentStep === 5) {
         saveToDatabase();
       }
@@ -144,11 +173,22 @@ export const useFormState = () => {
     }
   };
 
+  const hasCompletedAppeal = () => {
+    return !!Cookies.get(COMPLETED_APPEAL_COOKIE);
+  };
+
+  const getCompletedAppeal = () => {
+    const savedAppeal = Cookies.get(COMPLETED_APPEAL_COOKIE);
+    return savedAppeal ? JSON.parse(savedAppeal) : null;
+  };
+
   return {
     formData,
     updateFormData,
     currentStep,
     nextStep,
     previousStep,
+    hasCompletedAppeal,
+    getCompletedAppeal,
   };
 };

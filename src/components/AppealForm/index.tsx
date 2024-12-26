@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormState } from './useFormState';
 import { ProgressBar } from './ProgressBar';
 import { Step1 } from './FormSteps/Step1';
@@ -10,11 +10,38 @@ import { Step6 } from './FormSteps/Step6';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { Footer } from '@/components/Footer';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { FileText } from "lucide-react";
 
 export const AppealForm = () => {
-  const { formData, updateFormData, currentStep, nextStep, previousStep } = useFormState();
+  const { 
+    formData, 
+    updateFormData, 
+    currentStep, 
+    nextStep, 
+    previousStep,
+    hasCompletedAppeal,
+    getCompletedAppeal
+  } = useFormState();
+
+  const completedAppeal = hasCompletedAppeal() ? getCompletedAppeal() : null;
 
   const renderStep = () => {
+    if (completedAppeal) {
+      return (
+        <div className="space-y-6">
+          <Alert>
+            <FileText className="h-4 w-4" />
+            <AlertTitle>הערר שלך הוגש בהצלחה</AlertTitle>
+            <AlertDescription>
+              להלן פרטי הערר שהגשת. שים לב שלא ניתן לערוך את הערר לאחר הגשתו.
+            </AlertDescription>
+          </Alert>
+          <Step6 formData={completedAppeal} updateFormData={() => {}} />
+        </div>
+      );
+    }
+
     switch (currentStep) {
       case 1:
         return <Step1 formData={formData} updateFormData={updateFormData} />;
@@ -37,32 +64,34 @@ export const AppealForm = () => {
     <div className="min-h-screen flex flex-col">
       <div className="form-container py-4 sm:py-6 lg:py-8 animate-fade-in flex-grow">
         <div className="w-full">
-          <ProgressBar currentStep={currentStep} />
+          {!completedAppeal && <ProgressBar currentStep={currentStep} />}
           <div className="form-section">
             {renderStep()}
-            <div className="form-navigation">
-              {currentStep > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={previousStep}
-                  className="gap-2 hover:scale-105 transition-transform"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                  הקודם
-                </Button>
-              )}
-              {currentStep < 6 && (
-                <Button
-                  type="button"
-                  onClick={nextStep}
-                  className="gap-2 hover:scale-105 transition-transform"
-                >
-                  הבא
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
+            {!completedAppeal && (
+              <div className="form-navigation">
+                {currentStep > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={previousStep}
+                    className="gap-2 hover:scale-105 transition-transform"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                    הקודם
+                  </Button>
+                )}
+                {currentStep < 6 && (
+                  <Button
+                    type="button"
+                    onClick={nextStep}
+                    className="gap-2 hover:scale-105 transition-transform"
+                  >
+                    הבא
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
