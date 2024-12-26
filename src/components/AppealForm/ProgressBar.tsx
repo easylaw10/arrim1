@@ -6,12 +6,12 @@ interface ProgressBarProps {
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
-  const progress = ((currentStep - 1) / 6) * 100;
+  const progress = ((currentStep - 1) / 5) * 100;
 
   return (
     <div className="mb-8">
       <div className="flex justify-between mb-2 text-sm">
-        <span className="text-primary font-medium">שלב {currentStep} מתוך 7</span>
+        <span className="text-primary font-medium">שלב {currentStep} מתוך 6</span>
         <span className="text-gray-500">{Math.round(progress)}%</span>
       </div>
       <div className="progress-bar">

@@ -7,7 +7,6 @@ import { Step3 } from './FormSteps/Step3';
 import { Step4 } from './FormSteps/Step4';
 import { Step5 } from './FormSteps/Step5';
 import { Step6 } from './FormSteps/Step6';
-import { Step7 } from './FormSteps/Step7';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -39,8 +38,6 @@ export const AppealForm = () => {
         return <Step5 formData={formData} updateFormData={updateFormData} />;
       case 6:
         return <Step6 formData={formData} updateFormData={updateFormData} />;
-      case 7:
-        return <Step7 formData={formData} updateFormData={updateFormData} />;
       default:
         return null;
     }
@@ -61,7 +58,7 @@ export const AppealForm = () => {
               הקודם
             </Button>
           )}
-          {currentStep < 7 ? (
+          {currentStep < 6 ? (
             <Button
               type="button"
               onClick={nextStep}
