@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -7,11 +8,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAppealsList } from "./useAppealsList";
 
 export const AdminDashboard = () => {
   const { appeals, isLoading } = useAppealsList();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [scoreFilter, setScoreFilter] = useState("");
+
+  const filteredAppeals = appeals.filter((appeal) => {
+    const matchesSearch =
+      appeal.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appeal.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesScore = scoreFilter
+      ? appeal.final_score === parseInt(scoreFilter)
+      : true;
+
+    return matchesSearch && matchesScore;
+  });
 
   if (isLoading) {
     return (
@@ -24,11 +46,38 @@ export const AdminDashboard = () => {
     );
   }
 
+  const uniqueScores = [...new Set(appeals.map((appeal) => appeal.final_score))].sort((a, b) => a - b);
+
   return (
     <div className="container mx-auto py-8 space-y-8">
       <Card>
         <CardHeader>
           <CardTitle>רשימת עררים</CardTitle>
+          <div className="flex gap-4 mt-4">
+            <div className="flex-1">
+              <Input
+                placeholder="חיפוש לפי שם או אימייל..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="max-w-sm"
+              />
+            </div>
+            <div className="w-48">
+              <Select value={scoreFilter} onValueChange={setScoreFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="סינון לפי ציון סופי" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">הכל</SelectItem>
+                  {uniqueScores.map((score) => (
+                    <SelectItem key={score} value={score.toString()}>
+                      {score}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -45,7 +94,7 @@ export const AdminDashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {appeals.map((appeal) => (
+              {filteredAppeals.map((appeal) => (
                 <TableRow key={appeal.id}>
                   <TableCell className="text-right">
                     {new Date(appeal.created_at).toLocaleDateString('he-IL')}
