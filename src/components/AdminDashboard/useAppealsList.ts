@@ -14,12 +14,12 @@ export type Appeal = {
   final_score: number;
 };
 
-export const useAppealsList = () => {
+export const useAppealsList = (itemsPerPage: number = 10) => {
   const [appeals, setAppeals] = useState<Appeal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [pageSize, setPageSize] = useState(itemsPerPage);
   const { toast } = useToast();
 
   const loadAppeals = async () => {
@@ -39,7 +39,7 @@ export const useAppealsList = () => {
         .from('exam_appeals')
         .select('*')
         .order('created_at', { ascending: false })
-        .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
+        .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
       if (error) throw error;
       setAppeals(data || []);
@@ -109,7 +109,7 @@ export const useAppealsList = () => {
 
   useEffect(() => {
     loadAppeals();
-  }, [currentPage]); // Reload when page changes
+  }, [currentPage, pageSize]); // Reload when page or page size changes
 
   return { 
     appeals, 
@@ -119,6 +119,7 @@ export const useAppealsList = () => {
     totalCount,
     currentPage,
     setCurrentPage,
-    itemsPerPage
+    setPageSize,
+    itemsPerPage: pageSize
   };
 };
