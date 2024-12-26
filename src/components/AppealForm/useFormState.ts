@@ -6,11 +6,10 @@ const STORAGE_KEY = 'appeal-form-draft';
 const initialFormData: FormData = {
   fullName: '',
   idNumber: '',
-  examDate: '',
-  examSeason: 'winter',
   currentLanguageScore: 0,
   currentOrganizationScore: 0,
   currentContentScore: 0,
+  finalExamScore: 0,
   languageElements: {
     legalTerms: false,
     termConsistency: false,
@@ -57,7 +56,7 @@ export const useFormState = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < 7) {
+    if (currentStep < 6) {
       setCurrentStep((prev) => (prev + 1) as FormStep);
     }
   };

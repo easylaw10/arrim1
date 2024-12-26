@@ -1,16 +1,13 @@
 export interface FormData {
-  // Step 1 - Basic Details
+  // Step 1 - Personal Details & Scores
   fullName: string;
   idNumber: string;
-  examDate: string;
-  examSeason: "summer" | "winter";
-
-  // Step 2 - Current Scores
   currentLanguageScore: number;
   currentOrganizationScore: number;
   currentContentScore: number;
+  finalExamScore: number;
 
-  // Step 3 - Language Dimension
+  // Step 2 - Language Dimension
   languageElements: {
     legalTerms: boolean;
     termConsistency: boolean;
@@ -18,7 +15,7 @@ export interface FormData {
   };
   languageExamples: string;
 
-  // Step 4 - Organization Dimension
+  // Step 3 - Organization Dimension
   organizationElements: {
     introduction: boolean;
     factPresentation: boolean;
@@ -27,7 +24,7 @@ export interface FormData {
   };
   organizationExamples: string;
 
-  // Step 5 - Content Dimension
+  // Step 4 - Content Dimension
   contentElements: {
     allParties: boolean;
     legislation: boolean;
@@ -36,13 +33,13 @@ export interface FormData {
   };
   contentExamples: string;
 
-  // Step 6 - Requested Scores
+  // Step 5 - Requested Scores
   requestedLanguageScore: number;
   requestedOrganizationScore: number;
   requestedContentScore: number;
 
-  // Step 7 - Personal Notes
+  // Step 6 - Personal Notes
   additionalNotes: string;
 }
 
-export type FormStep = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type FormStep = 1 | 2 | 3 | 4 | 5 | 6;
