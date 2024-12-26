@@ -26,31 +26,40 @@ export const AppealForm = () => {
 
   const completedAppeal = hasCompletedAppeal() ? getCompletedAppeal() : null;
 
-  const renderStep = () => {
-    if (completedAppeal) {
-      return (
-        <div className="space-y-6">
-          <Alert>
-            <FileText className="h-4 w-4" />
-            <AlertTitle>הערר שלך כבר הוגש בהצלחה</AlertTitle>
-            <AlertDescription>
-              לא ניתן להגיש ערר נוסף. להלן פרטי הערר שהגשת.
-            </AlertDescription>
-          </Alert>
-          <Step6 formData={completedAppeal} updateFormData={() => {}} />
-          <div className="flex justify-center mt-6">
-            <Button
-              onClick={() => window.open('https://easylaw.io', '_blank')}
-              className="gap-2 hover:scale-105 transition-transform"
-            >
-              <ExternalLink className="h-4 w-4" />
-              עבור לאתר EasyLaw
-            </Button>
+  if (completedAppeal) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <div className="form-container py-4 sm:py-6 lg:py-8 animate-fade-in flex-grow">
+          <div className="w-full">
+            <div className="form-section">
+              <div className="space-y-6">
+                <Alert>
+                  <FileText className="h-4 w-4" />
+                  <AlertTitle>לא ניתן ליצור ערר נוסף</AlertTitle>
+                  <AlertDescription>
+                    כבר הגשת ערר למערכת. לא ניתן להגיש יותר מערר אחד.
+                  </AlertDescription>
+                </Alert>
+                <Step6 formData={completedAppeal} updateFormData={() => {}} />
+                <div className="flex justify-center mt-6">
+                  <Button
+                    onClick={() => window.open('https://easylaw.io', '_blank')}
+                    className="gap-2 hover:scale-105 transition-transform"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    עבור לאתר EasyLaw
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      );
-    }
+        <Footer />
+      </div>
+    );
+  }
 
+  const renderStep = () => {
     switch (currentStep) {
       case 1:
         return <Step1 formData={formData} updateFormData={updateFormData} />;
@@ -73,34 +82,32 @@ export const AppealForm = () => {
     <div className="min-h-screen flex flex-col">
       <div className="form-container py-4 sm:py-6 lg:py-8 animate-fade-in flex-grow">
         <div className="w-full">
-          {!completedAppeal && <ProgressBar currentStep={currentStep} />}
+          <ProgressBar currentStep={currentStep} />
           <div className="form-section">
             {renderStep()}
-            {!completedAppeal && (
-              <div className="form-navigation">
-                {currentStep > 1 && currentStep < 6 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={previousStep}
-                    className="gap-2 hover:scale-105 transition-transform"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                    הקודם
-                  </Button>
-                )}
-                {currentStep < 6 && (
-                  <Button
-                    type="button"
-                    onClick={nextStep}
-                    className="gap-2 hover:scale-105 transition-transform"
-                  >
-                    הבא
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            )}
+            <div className="form-navigation">
+              {currentStep > 1 && currentStep < 6 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={previousStep}
+                  className="gap-2 hover:scale-105 transition-transform"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                  הקודם
+                </Button>
+              )}
+              {currentStep < 6 && (
+                <Button
+                  type="button"
+                  onClick={nextStep}
+                  className="gap-2 hover:scale-105 transition-transform"
+                >
+                  הבא
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
