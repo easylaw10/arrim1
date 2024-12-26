@@ -26,14 +26,26 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
         </div>
 
         <div className="form-group">
-          <Label htmlFor="idNumber">מספר ת.ז.</Label>
+          <Label htmlFor="phone">טלפון</Label>
           <Input
-            type="text"
-            id="idNumber"
-            value={formData.idNumber}
-            onChange={(e) => updateFormData({ idNumber: e.target.value })}
+            type="tel"
+            id="phone"
+            value={formData.phone}
+            onChange={(e) => updateFormData({ phone: e.target.value })}
             required
-            maxLength={9}
+            dir="ltr"
+          />
+        </div>
+
+        <div className="form-group">
+          <Label htmlFor="email">דוא"ל</Label>
+          <Input
+            type="email"
+            id="email"
+            value={formData.email}
+            onChange={(e) => updateFormData({ email: e.target.value })}
+            required
+            dir="ltr"
           />
         </div>
       </div>

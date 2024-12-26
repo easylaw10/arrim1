@@ -1,7 +1,5 @@
 export interface FormData {
-  // Step 1 - Personal Details & Scores
-  fullName: string;
-  idNumber: string;
+  // Step 1 - Current Scores
   currentLanguageScore: number;
   currentOrganizationScore: number;
   currentContentScore: number;
@@ -33,12 +31,12 @@ export interface FormData {
   };
   contentExamples: string;
 
-  // Step 5 - Requested Scores
-  requestedLanguageScore: number;
-  requestedOrganizationScore: number;
-  requestedContentScore: number;
+  // Step 5 - Personal Details
+  fullName: string;
+  phone: string;
+  email: string;
 
-  // Step 6 - Personal Notes
+  // Step 6 - Additional Notes
   additionalNotes: string;
 }
 

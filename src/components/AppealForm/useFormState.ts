@@ -4,8 +4,6 @@ import { FormData, FormStep } from './types';
 const STORAGE_KEY = 'appeal-form-draft';
 
 const initialFormData: FormData = {
-  fullName: '',
-  idNumber: '',
   currentLanguageScore: 0,
   currentOrganizationScore: 0,
   currentContentScore: 0,
@@ -30,9 +28,9 @@ const initialFormData: FormData = {
     relevantFacts: false,
   },
   contentExamples: '',
-  requestedLanguageScore: 0,
-  requestedOrganizationScore: 0,
-  requestedContentScore: 0,
+  fullName: '',
+  phone: '',
+  email: '',
   additionalNotes: '',
 };
 
