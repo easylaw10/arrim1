@@ -56,14 +56,16 @@ export const AppealForm = () => {
       case 1:
         return <Step1 formData={formData} updateFormData={updateFormData} />;
       case 2:
-        return <Step3 formData={formData} updateFormData={updateFormData} />;
+        return (
+          <>
+            <Step3 formData={formData} updateFormData={updateFormData} />
+            <Step4 formData={formData} updateFormData={updateFormData} />
+            <Step5 formData={formData} updateFormData={updateFormData} />
+          </>
+        );
       case 3:
-        return <Step4 formData={formData} updateFormData={updateFormData} />;
-      case 4:
-        return <Step5 formData={formData} updateFormData={updateFormData} />;
-      case 5:
         return <Step2 formData={formData} updateFormData={updateFormData} />;
-      case 6:
+      case 4:
         return (
           <PhoneVerification 
             formData={formData} 
@@ -72,14 +74,14 @@ export const AppealForm = () => {
             onComplete={nextStep}
           />
         );
-      case 7:
+      case 5:
         return <Step6 formData={formData} updateFormData={updateFormData} />;
       default:
         return null;
     }
   };
 
-  const showNavigation = !hasCompletedAppeal() && currentStep < 7 && currentStep !== 6;
+  const showNavigation = !hasCompletedAppeal() && currentStep < 5 && currentStep !== 4;
   const showProgressBar = !hasCompletedAppeal();
 
   return (

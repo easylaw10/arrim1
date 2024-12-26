@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormStep } from './types';
-import { Check, Pen, FileText, Layout, BookText, User, FileCheck, Phone } from 'lucide-react';
+import { Check, Pen, FileText, User, FileCheck, Phone } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProgressBarProps {
@@ -12,14 +12,12 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   
   const steps = [
     { number: 1, label: 'ציונים נוכחיים', icon: FileText },
-    { number: 2, label: 'ממד הלשון', icon: Pen },
-    { number: 3, label: 'ממד הארגון', icon: Layout },
-    { number: 4, label: 'ממד התוכן', icon: BookText },
-    { number: 5, label: 'פרטים אישיים', icon: User, subSteps: [
-      { number: 5, label: 'פרטים אישיים', icon: User },
-      { number: 6, label: 'אימות טלפון', icon: Phone }
+    { number: 2, label: 'דגשים לערר', icon: Pen },
+    { number: 3, label: 'פרטים אישיים', icon: User, subSteps: [
+      { number: 3, label: 'פרטים אישיים', icon: User },
+      { number: 4, label: 'אימות טלפון', icon: Phone }
     ]},
-    { number: 7, label: 'יצירת הערר', icon: FileCheck }
+    { number: 5, label: 'יצירת הערר', icon: FileCheck }
   ];
 
   const getStepStatus = (stepNumber: number) => {
@@ -53,7 +51,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
                 )}
                 
                 {/* Render sub-steps visually */}
-                {currentStep >= 5 && currentStep <= 6 && (
+                {currentStep >= 3 && currentStep <= 4 && (
                   <div className="flex justify-center mt-2 space-x-2 space-x-reverse">
                     {step.subSteps.map((subStep) => (
                       <div 
