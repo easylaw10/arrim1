@@ -71,7 +71,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
                   <Icon className="h-3 w-3" />
                 )}
               </div>
-              {(!isMobile || status === 'current') && (
+              {(!isMobile || status === 'current' || status === 'completed') && (
                 <div className="step-label text-[10px]">{step.label}</div>
               )}
               
