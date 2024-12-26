@@ -38,8 +38,8 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
                 key={score}
                 value={score.toString()}
                 className={cn(
-                  "h-12 w-12 text-lg",
-                  formData.languageScore === score && "bg-primary text-primary-foreground"
+                  "h-12 w-12 text-lg hover:bg-primary/90 hover:text-primary-foreground transition-all duration-300 hover:scale-105",
+                  formData.languageScore === score && "bg-primary text-primary-foreground ring-2 ring-primary/20 scale-105"
                 )}
               >
                 {score}
@@ -63,8 +63,8 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
                 key={score}
                 value={score.toString()}
                 className={cn(
-                  "h-12 w-12 text-lg",
-                  formData.organizationScore === score && "bg-primary text-primary-foreground"
+                  "h-12 w-12 text-lg hover:bg-primary/90 hover:text-primary-foreground transition-all duration-300 hover:scale-105",
+                  formData.organizationScore === score && "bg-primary text-primary-foreground ring-2 ring-primary/20 scale-105"
                 )}
               >
                 {score}
@@ -88,8 +88,8 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
                 key={score}
                 value={score.toString()}
                 className={cn(
-                  "h-12 w-12 text-lg",
-                  formData.contentScore === score && "bg-primary text-primary-foreground"
+                  "h-12 w-12 text-lg hover:bg-primary/90 hover:text-primary-foreground transition-all duration-300 hover:scale-105",
+                  formData.contentScore === score && "bg-primary text-primary-foreground ring-2 ring-primary/20 scale-105"
                 )}
               >
                 {score}
@@ -110,7 +110,7 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
             min="0"
             max="100"
             required
-            className="text-2xl h-16 text-center font-bold"
+            className="text-2xl h-16 text-center font-bold bg-secondary/50 hover:bg-secondary transition-colors duration-300 focus:ring-4 focus:ring-primary/20"
             placeholder="הכנס ציון סופי"
           />
         </div>
