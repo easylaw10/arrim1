@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      email_verifications: {
+        Row: {
+          appeal_submitted: boolean
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          verification_code: string
+          verified: boolean
+        }
+        Insert: {
+          appeal_submitted?: boolean
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          verification_code: string
+          verified?: boolean
+        }
+        Update: {
+          appeal_submitted?: boolean
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          verification_code?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       exam_appeals: {
         Row: {
           content_score: number
