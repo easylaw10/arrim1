@@ -72,6 +72,21 @@ export const useFormState = () => {
     return true;
   };
 
+  const validateTotalScore = () => {
+    if (currentStep === 1) {
+      const totalScore = formData.languageScore + formData.organizationScore + formData.contentScore;
+      if (totalScore < 5) {
+        toast({
+          title: "שגיאה",
+          description: "סכום הציונים של שלושת הממדים חייב להיות לפחות 5",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+    return true;
+  };
+
   const saveToDatabase = async () => {
     try {
       const { error } = await supabase.from('exam_appeals').insert({
@@ -106,6 +121,10 @@ export const useFormState = () => {
     }
 
     if (!validateFinalScore()) {
+      return;
+    }
+
+    if (!validateTotalScore()) {
       return;
     }
 
