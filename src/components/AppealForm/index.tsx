@@ -9,7 +9,6 @@ import { Step5 } from './FormSteps/Step5';
 import { Step6 } from './FormSteps/Step6';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { Footer } from '@/components/Footer';
 
 export const AppealForm = () => {
   const { formData, updateFormData, currentStep, nextStep, previousStep } = useFormState();
@@ -34,39 +33,36 @@ export const AppealForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="form-container animate-fade-in flex-grow">
-        <div>
-          <ProgressBar currentStep={currentStep} />
-          <div className="form-section">
-            {renderStep()}
-            <div className="form-navigation">
-              {currentStep > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={previousStep}
-                  className="gap-2 hover:scale-105 transition-transform"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                  הקודם
-                </Button>
-              )}
-              {currentStep < 6 && (
-                <Button
-                  type="button"
-                  onClick={nextStep}
-                  className="gap-2 hover:scale-105 transition-transform"
-                >
-                  הבא
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
+    <div className="form-container animate-fade-in">
+      <div>
+        <ProgressBar currentStep={currentStep} />
+        <div className="form-section">
+          {renderStep()}
+          <div className="form-navigation">
+            {currentStep > 1 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={previousStep}
+                className="gap-2 hover:scale-105 transition-transform"
+              >
+                <ChevronRight className="h-4 w-4" />
+                הקודם
+              </Button>
+            )}
+            {currentStep < 6 && (
+              <Button
+                type="button"
+                onClick={nextStep}
+                className="gap-2 hover:scale-105 transition-transform"
+              >
+                הבא
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

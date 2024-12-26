@@ -31,7 +31,6 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
               checked={formData.contentElements?.allParties}
               onChange={(e) => updateContentElements('allParties', e.target.checked)}
               className="ml-2"
-              required
             />
             אזכור כל הצדדים
           </label>
@@ -42,7 +41,6 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
               checked={formData.contentElements?.legislation}
               onChange={(e) => updateContentElements('legislation', e.target.checked)}
               className="ml-2"
-              required
             />
             הפניה לחקיקה
           </label>
@@ -53,7 +51,6 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
               checked={formData.contentElements?.caselaw}
               onChange={(e) => updateContentElements('caselaw', e.target.checked)}
               className="ml-2"
-              required
             />
             הפניה לפסיקה
           </label>
@@ -64,7 +61,6 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
               checked={formData.contentElements?.relevantFacts}
               onChange={(e) => updateContentElements('relevantFacts', e.target.checked)}
               className="ml-2"
-              required
             />
             ציון כל העובדות הרלוונטיות
           </label>
@@ -72,7 +68,7 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="contentExamples" className="form-label">דוגמאות ספציפיות (אופציונלי)</label>
+        <label htmlFor="contentExamples" className="form-label">דוגמאות ספציפיות</label>
         <textarea
           id="contentExamples"
           className="form-input min-h-[100px]"
