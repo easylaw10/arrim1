@@ -3,7 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, AlertTriangle, Copy } from "lucide-react";
+import { Loader2, AlertTriangle, Copy, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -125,7 +125,7 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
         <AccordionItem value="instructions">
           <AccordionTrigger className="text-right">
             <div className="flex items-center gap-2">
-              <Info className="h-5 w-5" />
+              <FileText className="h-5 w-5" />
               הוראות להגשת הערר
             </div>
           </AccordionTrigger>
