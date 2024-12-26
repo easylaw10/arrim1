@@ -11,17 +11,17 @@ export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
   if (!formData.taskName) return null;
 
   return (
-    <div className="mb-8 space-y-4 bg-slate-50 p-6 rounded-lg border font-heebo">
+    <div className="mb-6 space-y-4 bg-slate-50 p-4 rounded-lg border">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <FileText className="h-6 w-6 text-slate-600" />
-          <h2 className="text-xl font-bold text-gray-900">{formData.taskName}</h2>
+        <div className="flex items-center gap-2">
+          <FileText className="h-5 w-5 text-slate-600" />
+          <h2 className="text-lg font-semibold">{formData.taskName}</h2>
         </div>
         {formData.rubricLink && (
           <Button
             variant="outline"
             size="sm"
-            className="gap-2 text-base"
+            className="gap-2"
             asChild
           >
             <a href={formData.rubricLink} target="_blank" rel="noopener noreferrer">
@@ -31,7 +31,7 @@ export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
           </Button>
         )}
       </div>
-      <div className="text-2xl font-bold text-primary">
+      <div className="text-lg font-medium text-slate-800">
         {title}
       </div>
     </div>
