@@ -6,19 +6,33 @@ interface ProgressBarProps {
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
-  const progress = ((currentStep - 1) / 5) * 100;
+  const steps = [
+    'ציונים נוכחיים',
+    'ממד הלשון',
+    'ממד הארגון',
+    'ממד התוכן',
+    'פרטים אישיים',
+    'יצירת הערר'
+  ];
 
   return (
-    <div className="mb-8">
-      <div className="flex justify-between mb-2 text-sm">
-        <span className="text-primary font-medium">שלב {currentStep} מתוך 6</span>
-        <span className="text-gray-500">{Math.round(progress)}%</span>
-      </div>
-      <div className="progress-bar">
-        <div 
-          className="progress-bar-fill"
-          style={{ width: `${progress}%` }}
-        />
+    <div className="progress-bar mb-8">
+      <div className="flex justify-between">
+        {steps.map((step, index) => (
+          <div
+            key={index}
+            className={`step-indicator ${
+              currentStep > index + 1
+                ? 'completed'
+                : currentStep === index + 1
+                ? 'current'
+                : ''
+            }`}
+          >
+            <div className="step-number">{index + 1}</div>
+            <div className="step-label">{step}</div>
+          </div>
+        ))}
       </div>
     </div>
   );
