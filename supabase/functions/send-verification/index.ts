@@ -20,10 +20,8 @@ const generateVerificationCode = () => {
 
 const sendSMS = async (phone: string, message: string) => {
   console.log("Starting SMS send process...");
-  console.log("Phone:", phone);
   
   if (!SMS4FREE_API_KEY || !SMS4FREE_USER || !SMS4FREE_PASSWORD) {
-    console.error("Missing SMS4FREE credentials");
     throw new Error("Missing SMS4FREE credentials");
   }
 
@@ -37,7 +35,6 @@ const sendSMS = async (phone: string, message: string) => {
   };
 
   console.log("Sending request to SMS4FREE API...");
-  console.log("Request payload:", { ...payload, pass: '[REDACTED]' });
 
   const response = await fetch("https://api.sms4free.co.il/ApiSMS/v2/SendSMS", {
     method: "POST",
@@ -51,11 +48,6 @@ const sendSMS = async (phone: string, message: string) => {
   console.log("SMS API Response:", data);
 
   if (!response.ok || data.status <= 0) {
-    console.error("SMS API Error:", {
-      status: response.status,
-      statusText: response.statusText,
-      data
-    });
     throw new Error(`SMS sending failed: ${data.message || 'Unknown error'}`);
   }
 
@@ -73,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { phone } = await req.json();
     console.log("Processing verification request for phone:", phone);
 
-    // Check if user already submitted an appeal
+    // Check for existing appeal first
     const { data: existingAppeal } = await supabase
       .from('exam_appeals')
       .select('*')
@@ -86,13 +78,16 @@ const handler = async (req: Request): Promise<Response> => {
         JSON.stringify({ error: "כבר הגשת ערר בעבר" }),
         { 
           status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
+          headers: { 
+            ...corsHeaders, 
+            "Content-Type": "application/json" 
+          }
         }
       );
     }
 
     const verificationCode = generateVerificationCode();
-    console.log("Generated verification code:", verificationCode);
+    console.log("Generated verification code for phone:", phone);
 
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 15);
@@ -118,33 +113,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (insertError) {
       console.error("Error inserting verification code:", insertError);
-      return new Response(
-        JSON.stringify({ error: "Failed to store verification code" }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
+      throw new Error("Failed to store verification code");
     }
 
     await sendSMS(phone, `קוד האימות שלך הוא: ${verificationCode}`);
 
     return new Response(
-      JSON.stringify({ message: "Verification code sent successfully" }),
+      JSON.stringify({ success: true }),
       { 
         status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+        headers: { 
+          ...corsHeaders, 
+          "Content-Type": "application/json" 
+        }
       }
     );
   } catch (error) {
     console.error("Error in send-verification function:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    
     return new Response(
-      JSON.stringify({ 
-        error: error instanceof Error ? error.message : "An unknown error occurred"
-      }),
+      JSON.stringify({ error: errorMessage }),
       { 
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+        headers: { 
+          ...corsHeaders, 
+          "Content-Type": "application/json" 
+        }
       }
     );
   }

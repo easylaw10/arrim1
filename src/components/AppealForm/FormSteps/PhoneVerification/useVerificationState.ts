@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 export const useVerificationState = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -36,14 +36,15 @@ export const useVerificationState = () => {
       if (error) {
         let errorMessage = "אירעה שגיאה בשליחת קוד האימות";
         
-        // Try to parse the error message from the response
-        try {
-          const errorBody = JSON.parse(error.message);
-          if (errorBody.error) {
-            errorMessage = errorBody.error;
+        if (error.message) {
+          try {
+            const response = JSON.parse(error.message);
+            if (response.error) {
+              errorMessage = response.error;
+            }
+          } catch (e) {
+            console.error('Failed to parse error message:', error.message);
           }
-        } catch {
-          console.error('Failed to parse error message:', error.message);
         }
 
         toast({
@@ -103,7 +104,12 @@ export const useVerificationState = () => {
         .single();
 
       if (error || !data) {
-        throw new Error("קוד האימות שגוי או שפג תוקפו");
+        toast({
+          title: "שגיאה",
+          description: "קוד האימות שגוי או שפג תוקפו",
+          variant: "destructive",
+        });
+        return false;
       }
 
       await supabase
@@ -117,6 +123,7 @@ export const useVerificationState = () => {
       });
       return true;
     } catch (error: any) {
+      console.error('Error verifying code:', error);
       toast({
         title: "שגיאה",
         description: error.message || "אירעה שגיאה באימות הקוד",
