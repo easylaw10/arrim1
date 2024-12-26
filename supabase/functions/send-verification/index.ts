@@ -21,15 +21,9 @@ const generateVerificationCode = () => {
 const sendSMS = async (phone: string, message: string) => {
   console.log("Starting SMS send process...");
   console.log("Phone:", phone);
-  console.log("SMS4FREE credentials - User:", SMS4FREE_USER);
-  console.log("API Key length:", SMS4FREE_API_KEY?.length);
   
   if (!SMS4FREE_API_KEY || !SMS4FREE_USER || !SMS4FREE_PASSWORD) {
-    console.error("Missing SMS4FREE credentials:", {
-      hasApiKey: !!SMS4FREE_API_KEY,
-      hasUser: !!SMS4FREE_USER,
-      hasPassword: !!SMS4FREE_PASSWORD
-    });
+    console.error("Missing SMS4FREE credentials");
     throw new Error("Missing SMS4FREE credentials");
   }
 
@@ -37,7 +31,7 @@ const sendSMS = async (phone: string, message: string) => {
     key: SMS4FREE_API_KEY,
     user: SMS4FREE_USER,
     pass: SMS4FREE_PASSWORD,
-    sender: "972586799087", // עדכון המספר הקבוע ממנו יישלחו ההודעות
+    sender: "972586799087",
     recipient: phone,
     msg: message,
   };
@@ -79,12 +73,11 @@ const handler = async (req: Request): Promise<Response> => {
     const { phone } = await req.json();
     console.log("Processing verification request for phone:", phone);
 
-    const { data: existingAppeal, error: appealError } = await supabase
-      .from('verification_codes')
+    // בדיקה האם כבר קיים ערר עם מספר הטלפון הזה
+    const { data: existingAppeal } = await supabase
+      .from('exam_appeals')
       .select('*')
-      .eq('contact', phone)
-      .eq('verified', true)
-      .eq('appeal_submitted', true)
+      .eq('phone', phone)
       .single();
 
     if (existingAppeal) {
@@ -104,12 +97,14 @@ const handler = async (req: Request): Promise<Response> => {
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 15);
 
+    // מחיקת קודי אימות קודמים שלא אומתו
     await supabase
       .from('verification_codes')
       .delete()
       .eq('contact', phone)
       .eq('verified', false);
 
+    // יצירת קוד אימות חדש
     const { error: insertError } = await supabase
       .from('verification_codes')
       .insert({
