@@ -87,7 +87,6 @@ export const AdminDashboard = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-right">שם מלא</TableHead>
-                <TableHead className="text-right">מספר זהות</TableHead>
                 <TableHead className="text-right">ציון שפה נוכחי</TableHead>
                 <TableHead className="text-right">ציון ארגון נוכחי</TableHead>
                 <TableHead className="text-right">ציון תוכן נוכחי</TableHead>
@@ -99,7 +98,6 @@ export const AdminDashboard = () => {
               {appeals.map((appeal, index) => (
                 <TableRow key={index}>
                   <TableCell className="text-right">{appeal.fullName}</TableCell>
-                  <TableCell className="text-right">{appeal.idNumber}</TableCell>
                   <TableCell className="text-right">
                     {appeal.currentLanguageScore}
                   </TableCell>
@@ -115,9 +113,9 @@ export const AdminDashboard = () => {
                   <TableCell>
                     <Button
                       onClick={() => generateAppeal(appeal)}
-                      disabled={isGenerating && selectedAppeal?.idNumber === appeal.idNumber}
+                      disabled={isGenerating && selectedAppeal === appeal}
                     >
-                      {isGenerating && selectedAppeal?.idNumber === appeal.idNumber
+                      {isGenerating && selectedAppeal === appeal
                         ? "מייצר ערר..."
                         : "צור ערר"}
                     </Button>
