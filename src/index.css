@@ -44,7 +44,7 @@
 }
 
 .form-container {
-  @apply max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-lg;
+  @apply max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg;
 }
 
 .form-step {
@@ -76,7 +76,7 @@
 }
 
 .progress-bar {
-  @apply mb-12 px-4;
+  @apply mb-12 px-4 py-6;
 }
 
 .progress-bar .step-indicator {
@@ -86,7 +86,7 @@
 
 .progress-bar .step-indicator::before {
   content: '';
-  @apply absolute top-4 right-[50%] w-full h-1 bg-gray-200;
+  @apply absolute top-4 right-[50%] w-full h-0.5 bg-gray-200;
 }
 
 .progress-bar .step-indicator:first-child::before {
@@ -94,11 +94,11 @@
 }
 
 .progress-bar .step-number {
-  @apply w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold relative z-10;
+  @apply w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold relative z-10 text-sm;
 }
 
 .progress-bar .step-label {
-  @apply mt-2 text-sm text-gray-600 text-center;
+  @apply mt-2 text-xs text-gray-600 text-center font-medium;
 }
 
 .progress-bar .step-indicator.completed .step-number {

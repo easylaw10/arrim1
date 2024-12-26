@@ -52,7 +52,7 @@ export const AppealForm = () => {
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <ProgressBar currentStep={currentStep} />
-        <div className="bg-gray-50 p-6 rounded-lg">
+        <div className="bg-gray-50 p-8 rounded-xl">
           {renderStep()}
         </div>
         <div className="form-navigation">

@@ -1,83 +1,26 @@
 import { FormData } from "@/components/AppealForm/types";
 
-export const generateAppeal = async (formData: FormData) => {
-  const prompt = `תפקידך הוא לנסח ערר על מטלת כתיבה בבחינת לשכת עורכי הדין.
-
-מידע על הנבחן:
-שם: ${formData.fullName}
-ת.ז.: ${formData.idNumber}
-
-ציונים נוכחיים:
-- ממד הלשון: ${formData.currentLanguageScore}
-- ממד הארגון: ${formData.currentOrganizationScore}
-- ממד התוכן: ${formData.currentContentScore}
-- ציון סופי: ${formData.finalExamScore}
-
-ציונים מבוקשים:
-- ממד הלשון: ${formData.requestedLanguageScore}
-- ממד הארגון: ${formData.requestedOrganizationScore}
-- ממד התוכן: ${formData.requestedContentScore}
-
-פירוט ממד הלשון:
-אלמנטים שנכללו במטלה:
-${formData.languageElements.legalTerms ? '- שימוש במונחים משפטיים' : ''}
-${formData.languageElements.termConsistency ? '- עקביות במונחים' : ''}
-${formData.languageElements.grammarSyntax ? '- תחביר ודקדוק תקינים' : ''}
-דוגמאות ספציפיות: ${formData.languageExamples}
-
-פירוט ממד הארגון:
-אלמנטים שנכללו במטלה:
-${formData.organizationElements.introduction ? '- מבוא' : ''}
-${formData.organizationElements.factPresentation ? '- הצגת עובדות' : ''}
-${formData.organizationElements.legalAnalysis ? '- ניתוח משפטי' : ''}
-${formData.organizationElements.conclusion ? '- סיכום' : ''}
-דוגמאות ספציפיות: ${formData.organizationExamples}
-
-פירוט ממד התוכן:
-אלמנטים שנכללו במטלה:
-${formData.contentElements.allParties ? '- אזכור כל הצדדים' : ''}
-${formData.contentElements.legislation ? '- הפניה לחקיקה' : ''}
-${formData.contentElements.caselaw ? '- הפניה לפסיקה' : ''}
-${formData.contentElements.relevantFacts ? '- ציון כל העובדות הרלוונטיות' : ''}
-דוגמאות ספציפיות: ${formData.contentExamples}
-
-הערות נוספות: ${formData.additionalNotes}
-
-אנא נסח ערר מקצועי המתבסס על נתונים אלו לפי ההנחיות הבאות:
-
-1. מבנה הערר:
-- כותרת המסמך
-- הקדמה קצרה המציינת את מטרת הערר
-- חלוקה לשלושה חלקים לפי ממדי הבדיקה (לשון, ארגון, תוכן)
-- סיכום וסעד מבוקש
-
-2. סגנון וטון:
-- שפה משפטית מקצועית
-- טון מכבד ומאופק
-- שימוש במונחים משפטיים מקובלים
-- מספור סעיפים לפי המקובל
-
-3. הנחיות ספציפיות:
-- יש להתבסס רק על העובדות שסופקו
-- יש להדגיש את הפער בין הציון שהתקבל לציון המבוקש
-- יש לשלב את הדוגמאות הספציפיות שסופקו בטקסט
-- יש להתייחס לכל נקודה שסומנה בתיבות הסימון
-
-4. נוסחאות קבועות לשילוב:
-- "לעניות דעתי" / "סבורני"
-- "כפי שיפורט להלן"
-- "על פי המחוון"
-- "לאור האמור לעיל"
-
-5. בכל ממד יש להתייחס ל:
-- הקריטריונים הרלוונטיים מהמחוון
-- הדוגמאות הספציפיות שסופקו
-- הנימוקים לתוספת הניקוד המבוקשת
-
-6. בסיכום:
-- סיכום תמציתי של הטענות המרכזיות
-- ציון ברור של הניקוד המבוקש
-- נימה אישית מאופקת (אם סופקה)`;
+export const generateAppealText = async (formData: FormData) => {
+  const prompt = `
+    נא לכתוב ערר על בחינת לשכת עורכי הדין עבור התלמיד/ה ${formData.fullName}.
+    
+    ציונים נוכחיים:
+    - ממד הלשון: ${formData.currentLanguageScore}
+    - ממד הארגון: ${formData.currentOrganizationScore}
+    - ממד התוכן: ${formData.currentContentScore}
+    
+    טענות בממד הלשון:
+    ${formData.languageExamples}
+    
+    טענות בממד הארגון:
+    ${formData.organizationExamples}
+    
+    טענות בממד התוכן:
+    ${formData.contentExamples}
+    
+    הערות נוספות:
+    ${formData.additionalNotes}
+  `;
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

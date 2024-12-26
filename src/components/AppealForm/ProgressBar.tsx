@@ -8,36 +8,36 @@ interface ProgressBarProps {
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   const steps = [
-    'ציונים נוכחיים',
-    'ממד הלשון',
-    'ממד הארגון',
-    'ממד התוכן',
-    'פרטים אישיים',
-    'יצירת הערר'
+    { number: 1, label: 'ציונים נוכחיים' },
+    { number: 2, label: 'ממד הלשון' },
+    { number: 3, label: 'ממד הארגון' },
+    { number: 4, label: 'ממד התוכן' },
+    { number: 5, label: 'פרטים אישיים' },
+    { number: 6, label: 'יצירת הערר' }
   ];
 
   return (
     <div className="progress-bar">
-      <div className="flex justify-between">
-        {steps.map((step, index) => (
+      <div className="flex justify-between items-center">
+        {steps.map((step) => (
           <div
-            key={index}
+            key={step.number}
             className={`step-indicator ${
-              currentStep > index + 1
+              currentStep > step.number
                 ? 'completed'
-                : currentStep === index + 1
+                : currentStep === step.number
                 ? 'current'
                 : ''
             }`}
           >
             <div className="step-number">
-              {currentStep > index + 1 ? (
-                <Check className="h-4 w-4" />
+              {currentStep > step.number ? (
+                <Check className="h-4 w-4" strokeWidth={3} />
               ) : (
-                index + 1
+                step.number
               )}
             </div>
-            <div className="step-label">{step}</div>
+            <div className="step-label">{step.label}</div>
           </div>
         ))}
       </div>
