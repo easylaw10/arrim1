@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormStep } from './types';
-import { Check, Pen, FileText, Layout, BookText, User, FileCheck, ArrowLeft } from 'lucide-react';
+import { Check, Pen, FileText, Layout, BookText, User, FileCheck, ChevronLeft } from 'lucide-react';
 
 interface ProgressBarProps {
   currentStep: FormStep;
@@ -43,9 +43,10 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
               </div>
               
               {index < steps.length - 1 && (
-                <ArrowLeft 
+                <ChevronLeft 
                   className={`step-arrow ${currentStep > step.number + 1 ? 'completed' : ''}`}
-                  size={20}
+                  size={24}
+                  strokeWidth={2.5}
                 />
               )}
             </React.Fragment>
