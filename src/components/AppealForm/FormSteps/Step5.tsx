@@ -2,7 +2,6 @@ import React from 'react';
 import { FormData } from '../types';
 import { TaskHeader } from './TaskHeader';
 import { BookText } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 
 interface Step5Props {
   formData: FormData;
@@ -10,27 +9,12 @@ interface Step5Props {
 }
 
 export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
-  const { toast } = useToast();
-
   const updateContentElements = (key: keyof FormData['contentElements'], value: boolean) => {
-    const updatedElements = {
-      ...formData.contentElements,
-      [key]: value,
-    };
-
-    // Check if at least one element is selected
-    const hasSelection = Object.values(updatedElements).some(val => val);
-    if (!hasSelection) {
-      toast({
-        title: "שגיאה",
-        description: "יש לבחור לפחות אלמנט אחד",
-        variant: "destructive",
-      });
-      return;
-    }
-
     updateFormData({
-      contentElements: updatedElements,
+      contentElements: {
+        ...formData.contentElements,
+        [key]: value,
+      },
     });
   };
 
