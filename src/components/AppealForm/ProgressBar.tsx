@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormStep } from './types';
-import { Check, Pen, FileText, Layout, BookText, User, FileCheck, ChevronLeft } from 'lucide-react';
+import { Check, Pen, FileText, Layout, BookText, User, FileCheck } from 'lucide-react';
 
 interface ProgressBarProps {
   currentStep: FormStep;
@@ -18,39 +18,30 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
 
   return (
     <div className="progress-bar">
-      <div className="progress-steps-container">
-        {steps.map((step, index) => {
+      <div className="flex justify-between items-center">
+        {steps.map((step) => {
           const Icon = step.icon;
           return (
-            <React.Fragment key={step.number}>
-              <div
-                className={`step-indicator ${
-                  currentStep > step.number
-                    ? 'completed'
-                    : currentStep === step.number
-                    ? 'current'
-                    : ''
-                }`}
-              >
-                <div className="step-number">
-                  {currentStep > step.number ? (
-                    <Check className="h-4 w-4" strokeWidth={3} />
-                  ) : (
-                    <Icon className="h-4 w-4" />
-                  )}
-                </div>
-                <div className="step-label">{step.label}</div>
+            <div
+              key={step.number}
+              className={`step-indicator ${
+                currentStep > step.number
+                  ? 'completed'
+                  : currentStep === step.number
+                  ? 'current'
+                  : ''
+              }`}
+            >
+              <div className="step-number">
+                {currentStep > step.number ? (
+                  <Check className="h-4 w-4" strokeWidth={3} />
+                ) : (
+                  <Icon className="h-4 w-4" />
+                )}
               </div>
-              
-              {index < steps.length - 1 && (
-                <ChevronLeft 
-                  className={`step-arrow ${currentStep > step.number + 1 ? 'completed' : ''}`}
-                  size={24}
-                  strokeWidth={2.5}
-                />
-              )}
-            </React.Fragment>
-          );
+              <div className="step-label">{step.label}</div>
+            </div>
+          )
         })}
       </div>
     </div>
