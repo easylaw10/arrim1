@@ -30,6 +30,18 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   const [showVerification, setShowVerification] = useState(false);
   const { toast } = useToast();
 
+  const checkExistingVerification = async (phone: string) => {
+    const { data: existingVerification } = await supabase
+      .from('verification_codes')
+      .select('*')
+      .eq('contact', phone)
+      .eq('verified', true)
+      .eq('appeal_submitted', true)
+      .maybeSingle();
+
+    return existingVerification;
+  };
+
   const sendVerificationCode = async () => {
     if (!formData.phone) {
       toast({
@@ -51,6 +63,18 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
     setIsLoading(true);
     try {
+      // בדיקה אם כבר קיים ערר למספר הטלפון הזה
+      const existingVerification = await checkExistingVerification(formData.phone);
+      
+      if (existingVerification) {
+        toast({
+          title: "שגיאה",
+          description: "מספר טלפון זה כבר אומת בעבר והוגש עבורו ערר. ניתן להגיש ערר אחד בלבד.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('send-verification', {
         body: { phone: formData.phone },
       });
@@ -85,6 +109,18 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
     setIsLoading(true);
     try {
+      // בדיקה נוספת לפני האימות
+      const existingVerification = await checkExistingVerification(formData.phone);
+      
+      if (existingVerification) {
+        toast({
+          title: "שגיאה",
+          description: "מספר טלפון זה כבר אומת בעבר והוגש עבורו ערר. ניתן להגיש ערר אחד בלבד.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { data, error } = await supabase
         .from('verification_codes')
         .select('*')
@@ -145,7 +181,6 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 קוד אימות נשלח למספר {formData.phone}. הקוד תקף ל-10 דקות.
               </AlertDescription>
             </Alert>
-            <label htmlFor="verificationCode" className="form-label">קוד אימות</label>
             <VerificationInput
               verificationCode={formData.verificationCode}
               isLoading={isLoading}
