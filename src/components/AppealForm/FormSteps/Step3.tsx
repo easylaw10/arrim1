@@ -2,6 +2,7 @@ import React from 'react';
 import { FormData } from '../types';
 import { TaskHeader } from './TaskHeader';
 import { Pen } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
 interface Step3Props {
   formData: FormData;
@@ -9,12 +10,27 @@ interface Step3Props {
 }
 
 export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
+  const { toast } = useToast();
+
   const updateLanguageElements = (key: keyof FormData['languageElements'], value: boolean) => {
+    const updatedElements = {
+      ...formData.languageElements,
+      [key]: value,
+    };
+
+    // Check if at least one element is selected
+    const hasSelection = Object.values(updatedElements).some(val => val);
+    if (!hasSelection) {
+      toast({
+        title: "שגיאה",
+        description: "יש לבחור לפחות אלמנט אחד",
+        variant: "destructive",
+      });
+      return;
+    }
+
     updateFormData({
-      languageElements: {
-        ...formData.languageElements,
-        [key]: value,
-      },
+      languageElements: updatedElements,
     });
   };
 
