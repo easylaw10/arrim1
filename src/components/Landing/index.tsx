@@ -1,14 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Lock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Landing = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [taskNames, setTaskNames] = useState<{[key: number]: string}>({});
+
+  useEffect(() => {
+    const fetchTaskNames = async () => {
+      const { data, error } = await supabase
+        .from("gpt_instructions")
+        .select("task_type, task_name")
+        .order("task_type");
+
+      if (!error && data) {
+        const names = data.reduce((acc, curr) => ({
+          ...acc,
+          [curr.task_type]: curr.task_name || `מטלה ${curr.task_type}`
+        }), {});
+        setTaskNames(names);
+      }
+    };
+
+    fetchTaskNames();
+  }, []);
 
   const handleStartAppeal = (taskNumber: number) => {
     if (!termsAccepted) {
@@ -30,11 +51,11 @@ export const Landing = () => {
             />
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent font-heebo">
             מחולל עררים למטלת הכתיבה
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-heebo">
             מערכת חכמה ליצירה והגשת עררים על ציוני מטלת כתיבה, 
             המשלבת בינה מלאכותית לניתוח וכתיבת העררים
           </p>
@@ -47,7 +68,7 @@ export const Landing = () => {
                 onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
                 className="border-2 border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
               />
-              <label htmlFor="terms" className="text-sm text-gray-600">
+              <label htmlFor="terms" className="text-sm text-gray-600 font-heebo">
                 אני מאשר/ת את{" "}
                 <a 
                   href="https://hi.easylaw.io/grade-policy/" 
@@ -60,21 +81,17 @@ export const Landing = () => {
               </label>
             </div>
 
-            <div className="flex justify-center gap-4">
-              <Button
-                size="lg"
-                onClick={() => handleStartAppeal(1)}
-                className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                מטלה 1
-              </Button>
-              <Button
-                size="lg"
-                onClick={() => handleStartAppeal(2)}
-                className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                מטלה 2
-              </Button>
+            <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-8">
+              {[1, 2].map((taskNum) => (
+                <Button
+                  key={taskNum}
+                  size="lg"
+                  onClick={() => handleStartAppeal(taskNum)}
+                  className="text-xl px-12 py-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 bg-primary hover:bg-primary/90 transform hover:-translate-y-1 font-heebo min-w-[200px]"
+                >
+                  {taskNames[taskNum] || `מטלה ${taskNum}`}
+                </Button>
+              ))}
             </div>
           </div>
 
@@ -106,19 +123,18 @@ export const Landing = () => {
               </div>
             </div>
           </div>
+
+          {!isMobile && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="fixed bottom-4 right-4 p-2 bg-white/60 backdrop-blur-sm rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:bg-white group opacity-50 hover:opacity-100"
+              title="כניסת מנהל"
+            >
+              <Lock className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-300" />
+            </button>
+          )}
         </div>
       </div>
-      
-      {/* Admin Login Button - Only show on desktop */}
-      {!isMobile && (
-        <button
-          onClick={() => navigate("/admin")}
-          className="fixed bottom-4 right-4 p-2 bg-white/60 backdrop-blur-sm rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:bg-white group opacity-50 hover:opacity-100"
-          title="כניסת מנהל"
-        >
-          <Lock className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-300" />
-        </button>
-      )}
     </div>
   );
 };
