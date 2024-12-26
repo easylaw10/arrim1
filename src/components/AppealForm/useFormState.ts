@@ -101,7 +101,7 @@ export const useFormState = () => {
       return;
     }
 
-    if (currentStep < 6) {
+    if (currentStep < 7) {
       if (currentStep === 5) {
         const success = await saveToDatabase(formData);
         if (!success) return;
