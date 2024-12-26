@@ -30,13 +30,12 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
   const [showVerification, setShowVerification] = useState(false);
   const { toast } = useToast();
 
-  const checkExistingVerification = async (phone: string) => {
+  const checkPreviousVerification = async (phone: string) => {
     const { data: existingVerification } = await supabase
       .from('verification_codes')
       .select('*')
       .eq('contact', phone)
       .eq('verified', true)
-      .eq('appeal_submitted', true)
       .maybeSingle();
 
     return existingVerification;
@@ -63,13 +62,13 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
     setIsLoading(true);
     try {
-      // בדיקה אם כבר קיים ערר למספר הטלפון הזה
-      const existingVerification = await checkExistingVerification(formData.phone);
+      // בדיקה אם המספר כבר אומת בעבר
+      const existingVerification = await checkPreviousVerification(formData.phone);
       
       if (existingVerification) {
         toast({
           title: "שגיאה",
-          description: "מספר טלפון זה כבר אומת בעבר והוגש עבורו ערר. ניתן להגיש ערר אחד בלבד.",
+          description: "מספר טלפון זה כבר אומת בעבר. לא ניתן לאמת מספר טלפון פעמיים.",
           variant: "destructive",
         });
         return;
@@ -110,12 +109,12 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     setIsLoading(true);
     try {
       // בדיקה נוספת לפני האימות
-      const existingVerification = await checkExistingVerification(formData.phone);
+      const existingVerification = await checkPreviousVerification(formData.phone);
       
       if (existingVerification) {
         toast({
           title: "שגיאה",
-          description: "מספר טלפון זה כבר אומת בעבר והוגש עבורו ערר. ניתן להגיש ערר אחד בלבד.",
+          description: "מספר טלפון זה כבר אומת בעבר. לא ניתן לאמת מספר טלפון פעמיים.",
           variant: "destructive",
         });
         return;
