@@ -6,7 +6,7 @@ import { Template } from "./useTemplates";
 
 interface TemplateFormProps {
   editForm: Template;
-  setEditForm: (form: Template) => void;
+  setEditForm: React.Dispatch<React.SetStateAction<Template>>;
   onSave: () => void;
 }
 
