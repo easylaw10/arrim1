@@ -1,11 +1,11 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const SMS4FREE_API_KEY = Deno.env.get("SMS4FREE_API_KEY");
-const SMS4FREE_USER = Deno.env.get("SMS4FREE_USER");
-const SMS4FREE_PASSWORD = Deno.env.get("SMS4FREE_PASSWORD");
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+const SMS4FREE_API_KEY = Deno.env.get('SMS4FREE_API_KEY');
+const SMS4FREE_USER = Deno.env.get('SMS4FREE_USER');
+const SMS4FREE_PASSWORD = Deno.env.get('SMS4FREE_PASSWORD');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -79,31 +79,13 @@ const handler = async (req: Request): Promise<Response> => {
     const { phone } = await req.json();
     console.log("Processing verification request for phone:", phone);
 
-    const { data: existingAppeal, error: appealError } = await supabase
-      .from('verification_codes')
-      .select('*')
-      .eq('contact', phone)
-      .eq('verified', true)
-      .eq('appeal_submitted', true)
-      .single();
-
-    if (existingAppeal) {
-      console.log("Found existing appeal for phone:", phone);
-      return new Response(
-        JSON.stringify({ error: "כבר הגשת ערר בעבר" }),
-        { 
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
-    }
-
     const verificationCode = generateVerificationCode();
     console.log("Generated verification code:", verificationCode);
 
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 15);
 
+    // מחיקת קודי אימות ישנים שלא אומתו
     await supabase
       .from('verification_codes')
       .delete()
@@ -131,7 +113,6 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ message: "Verification code sent successfully" }),
       { 
-        status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );
