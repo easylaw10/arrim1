@@ -19,40 +19,58 @@ const generateVerificationCode = () => {
 };
 
 const sendSMS = async (phone: string, message: string) => {
-  console.log("Sending SMS to:", phone, "Message:", message);
-  console.log("Using SMS4FREE credentials - User:", SMS4FREE_USER);
+  console.log("Starting SMS send process...");
+  console.log("Phone:", phone);
+  console.log("SMS4FREE credentials - User:", SMS4FREE_USER);
+  console.log("API Key length:", SMS4FREE_API_KEY?.length);
   
   if (!SMS4FREE_API_KEY || !SMS4FREE_USER || !SMS4FREE_PASSWORD) {
+    console.error("Missing SMS4FREE credentials:", {
+      hasApiKey: !!SMS4FREE_API_KEY,
+      hasUser: !!SMS4FREE_USER,
+      hasPassword: !!SMS4FREE_PASSWORD
+    });
     throw new Error("Missing SMS4FREE credentials");
   }
+
+  const payload = {
+    key: SMS4FREE_API_KEY,
+    user: SMS4FREE_USER,
+    pass: SMS4FREE_PASSWORD,
+    sender: SMS4FREE_USER,
+    recipient: phone,
+    msg: message,
+  };
+
+  console.log("Sending request to SMS4FREE API...");
+  console.log("Request payload:", { ...payload, pass: '[REDACTED]' });
 
   const response = await fetch("https://api.sms4free.co.il/ApiSMS/v2/SendSMS", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      key: SMS4FREE_API_KEY,
-      user: SMS4FREE_USER,
-      pass: SMS4FREE_PASSWORD,
-      sender: SMS4FREE_USER, // Using the registered phone as sender
-      recipient: phone,
-      msg: message,
-    }),
+    body: JSON.stringify(payload),
   });
 
   const data = await response.json();
   console.log("SMS API Response:", data);
 
-  if (data.status <= 0) {
-    throw new Error(`SMS sending failed: ${data.message}`);
+  if (!response.ok || data.status <= 0) {
+    console.error("SMS API Error:", {
+      status: response.status,
+      statusText: response.statusText,
+      data
+    });
+    throw new Error(`SMS sending failed: ${data.message || 'Unknown error'}`);
   }
 
   return data;
 };
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
+  console.log("Handler started - Method:", req.method);
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -61,7 +79,6 @@ const handler = async (req: Request): Promise<Response> => {
     const { phone } = await req.json();
     console.log("Processing verification request for phone:", phone);
 
-    // Check if there's already a verified phone with an appeal
     const { data: existingAppeal, error: appealError } = await supabase
       .from('verification_codes')
       .select('*')
@@ -84,18 +101,15 @@ const handler = async (req: Request): Promise<Response> => {
     const verificationCode = generateVerificationCode();
     console.log("Generated verification code:", verificationCode);
 
-    // Store the verification code with expiration
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes expiration
+    expiresAt.setMinutes(expiresAt.getMinutes() + 15);
 
-    // Delete any existing verification codes for this phone
     await supabase
       .from('verification_codes')
       .delete()
       .eq('contact', phone)
       .eq('verified', false);
 
-    // Insert new verification code
     const { error: insertError } = await supabase
       .from('verification_codes')
       .insert({
@@ -112,7 +126,6 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to store verification code");
     }
 
-    // Send SMS with verification code
     await sendSMS(phone, `קוד האימות שלך הוא: ${verificationCode}`);
 
     return new Response(
