@@ -95,7 +95,7 @@
 }
 
 .progress-bar {
-  @apply mb-12 px-4 overflow-x-auto;
+  @apply mb-12 px-4;
 }
 
 .progress-bar .step-indicator {
