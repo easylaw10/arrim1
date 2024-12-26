@@ -96,7 +96,7 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
         .update({ verified: true })
         .eq('id', data.id);
 
-      updateFormData({ emailVerified: true });
+      updateFormData({ phoneVerified: true });
       toast({
         title: "אומת בהצלחה",
         description: "מספר הטלפון אומת בהצלחה",
@@ -136,10 +136,10 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
             value={formData.phone}
             onChange={(e) => updateFormData({ phone: e.target.value })}
             placeholder="05XXXXXXXX"
-            disabled={formData.emailVerified}
+            disabled={formData.phoneVerified}
             required
           />
-          {!formData.emailVerified && (
+          {!formData.phoneVerified && (
             <Button 
               onClick={sendVerificationCode}
               disabled={isLoading}
@@ -152,7 +152,7 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
         </div>
       </div>
 
-      {showVerification && !formData.emailVerified && (
+      {showVerification && !formData.phoneVerified && (
         <div className="form-group">
           <label htmlFor="verificationCode" className="form-label">קוד אימות</label>
           <div className="flex gap-2">

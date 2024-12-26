@@ -54,15 +54,6 @@ export const useFormState = () => {
         });
         return false;
       }
-
-      if (!formData.emailVerified) {
-        toast({
-          title: "שגיאה",
-          description: "יש לאמת את כתובת האימייל לפני המשך",
-          variant: "destructive",
-        });
-        return false;
-      }
     }
     return true;
   };

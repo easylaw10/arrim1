@@ -11,6 +11,7 @@ export const useAppealSubmission = () => {
         .from('verification_codes')
         .select('*')
         .eq('contact', formData.phone)
+        .eq('verified', true)
         .eq('appeal_submitted', true)
         .single();
 
