@@ -1,41 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FormData, FormStep, initialFormData } from './types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppealSubmission } from './hooks/useAppealSubmission';
-import Cookies from 'js-cookie';
-
-const FORM_DATA_COOKIE = 'appeal_form_data';
-const CURRENT_STEP_COOKIE = 'appeal_form_step';
 
 export const useFormState = () => {
-  const [formData, setFormData] = useState<FormData>(() => {
-    const savedData = Cookies.get(FORM_DATA_COOKIE);
-    if (savedData) {
-      try {
-        return JSON.parse(savedData);
-      } catch (e) {
-        return initialFormData;
-      }
-    }
-    return initialFormData;
-  });
-
-  const [currentStep, setCurrentStep] = useState<FormStep>(() => {
-    const savedStep = Cookies.get(CURRENT_STEP_COOKIE);
-    return savedStep ? Number(savedStep) as FormStep : 1;
-  });
-
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const { toast } = useToast();
   const { saveToDatabase, hasCompletedAppeal, getCompletedAppeal } = useAppealSubmission();
-
-  useEffect(() => {
-    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 });
-  }, [formData]);
-
-  useEffect(() => {
-    Cookies.set(CURRENT_STEP_COOKIE, String(currentStep), { expires: 7 });
-  }, [currentStep]);
 
   const updateFormData = async (updates: Partial<FormData>) => {
     setFormData(prev => {

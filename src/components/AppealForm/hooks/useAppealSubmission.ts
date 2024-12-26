@@ -1,9 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { FormData } from '../types';
-import Cookies from 'js-cookie';
-
-const COMPLETED_APPEAL_COOKIE = 'completed_appeal';
 
 export const useAppealSubmission = () => {
   const { toast } = useToast();
@@ -46,8 +43,6 @@ export const useAppealSubmission = () => {
         .eq('contact', formData.phone)
         .eq('verified', true);
 
-      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 });
-
       toast({
         title: "נשמר בהצלחה",
         description: "פרטי הערר נשמרו במערכת",
@@ -65,12 +60,11 @@ export const useAppealSubmission = () => {
   };
 
   const hasCompletedAppeal = () => {
-    return !!Cookies.get(COMPLETED_APPEAL_COOKIE);
+    return false;
   };
 
   const getCompletedAppeal = () => {
-    const savedAppeal = Cookies.get(COMPLETED_APPEAL_COOKIE);
-    return savedAppeal ? JSON.parse(savedAppeal) : null;
+    return null;
   };
 
   return {
