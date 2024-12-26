@@ -135,7 +135,7 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
               </div>
             </div>
             <div className="text-primary animate-pulse font-medium">
-              מייצר ערר במיוחד בשבילך
+              מייצר ערר במיוחד בשבילך...
             </div>
             <div className="flex space-x-2 rtl:space-x-reverse">
               <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
