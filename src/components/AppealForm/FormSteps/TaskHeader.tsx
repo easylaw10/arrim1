@@ -11,7 +11,7 @@ export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
   if (!formData.taskName) return null;
 
   return (
-    <div className="mb-6 space-y-4 bg-slate-50 p-4 rounded-lg border">
+    <div className="mb-8 space-y-4 bg-slate-50 p-4 rounded-lg border">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-slate-600" />
@@ -31,7 +31,7 @@ export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
           </Button>
         )}
       </div>
-      <div className="text-lg font-medium text-slate-800">
+      <div className="text-xl font-bold text-primary">
         {title}
       </div>
     </div>
