@@ -3,6 +3,8 @@ import { FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
 import { Appeal } from "../useAppealsList";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 
 interface ExportButtonProps {
   appeals: Appeal[];
@@ -10,11 +12,22 @@ interface ExportButtonProps {
 
 export const ExportButton = ({ appeals }: ExportButtonProps) => {
   const { toast } = useToast();
+  const [isExporting, setIsExporting] = useState(false);
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     try {
+      setIsExporting(true);
+      
+      // Fetch all appeals from the database
+      const { data: allAppeals, error } = await supabase
+        .from('exam_appeals')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
       const worksheet = XLSX.utils.json_to_sheet(
-        appeals.map((appeal) => ({
+        (allAppeals || []).map((appeal) => ({
           תאריך: new Date(appeal.created_at).toLocaleDateString("he-IL"),
           "שם מלא": appeal.full_name,
           טלפון: appeal.phone,
@@ -42,6 +55,8 @@ export const ExportButton = ({ appeals }: ExportButtonProps) => {
         description: "אירעה שגיאה בייצוא הנתונים",
         variant: "destructive",
       });
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -50,9 +65,10 @@ export const ExportButton = ({ appeals }: ExportButtonProps) => {
       onClick={exportToExcel}
       variant="outline"
       className="flex items-center gap-2"
+      disabled={isExporting}
     >
       <FileDown className="h-4 w-4" />
-      ייצוא לאקסל
+      {isExporting ? "מייצא..." : "ייצוא לאקסל"}
     </Button>
   );
 };
