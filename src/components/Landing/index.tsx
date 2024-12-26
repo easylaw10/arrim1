@@ -9,6 +9,14 @@ export const Landing = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white relative">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center space-y-8">
+          <div className="flex justify-center mb-8">
+            <img 
+              src="https://cdn.easylaw.io/assets/1732831883809" 
+              alt="EasyLaw Logo" 
+              className="h-16 md:h-20"
+            />
+          </div>
+          
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
             מערכת עררים למטלת כתיבה
           </h1>

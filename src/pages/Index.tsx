@@ -9,7 +9,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col items-center mb-12">
+          <img 
+            src="https://cdn.easylaw.io/assets/1732831883809" 
+            alt="EasyLaw Logo" 
+            className="h-12 mb-6"
+          />
+          <h1 className="text-3xl font-bold text-primary">מחולל עררים - מטלות כתיבה</h1>
+        </div>
+        
+        <div className="flex justify-start mb-8">
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -28,8 +37,8 @@ const Index = () => {
               חזרה לדף הבית
             </Button>
           </div>
-          <h1 className="text-3xl font-bold">טופס ערר - מטלת כתיבה</h1>
         </div>
+        
         <AppealForm />
       </div>
     </div>
