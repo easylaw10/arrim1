@@ -99,18 +99,12 @@
   width: calc(100% / 6);
 }
 
-.progress-bar .step-indicator::before {
-  content: '';
-  @apply absolute top-[15px] right-[50%] w-full h-[2px] bg-gray-200;
-  transform: translateY(-50%);
-}
-
 .progress-bar .step-indicator:first-child::before {
   @apply hidden;
 }
 
 .progress-bar .step-number {
-  @apply w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold relative z-10 text-sm;
+  @apply w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold relative z-10 text-sm shadow-sm;
 }
 
 .progress-bar .step-label {
