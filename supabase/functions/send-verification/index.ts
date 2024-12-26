@@ -20,7 +20,12 @@ const generateVerificationCode = () => {
 
 const sendSMS = async (phone: string, message: string) => {
   console.log("Sending SMS to:", phone, "Message:", message);
+  console.log("Using SMS4FREE credentials - User:", SMS4FREE_USER);
   
+  if (!SMS4FREE_API_KEY || !SMS4FREE_USER || !SMS4FREE_PASSWORD) {
+    throw new Error("Missing SMS4FREE credentials");
+  }
+
   const response = await fetch("https://api.sms4free.co.il/ApiSMS/v2/SendSMS", {
     method: "POST",
     headers: {
