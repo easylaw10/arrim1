@@ -1,7 +1,12 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL');
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,32 +21,37 @@ serve(async (req) => {
 
   try {
     const { formData } = await req.json();
-
     console.log('Generating appeal with data:', formData);
 
-    const prompt = `
-    נא לכתוב ערר מפורט על מטלת הכתיבה בבחינת לשכת עורכי הדין עבור התלמיד/ה ${formData.fullName}.
-    
-    ציונים נוכחיים:
-    - ממד הלשון: ${formData.languageScore}/4
-    - ממד הארגון: ${formData.organizationScore}/4
-    - ממד התוכן: ${formData.contentScore}/12
-    - ציון סופי: ${formData.finalScore}
-    
-    טענות בממד הלשון:
-    ${formData.languageExamples || 'לא צוינו דוגמאות ספציפיות'}
-    
-    טענות בממד הארגון:
-    ${formData.organizationExamples || 'לא צוינו דוגמאות ספציפיות'}
-    
-    טענות בממד התוכן:
-    ${formData.contentExamples || 'לא צוינו דוגמאות ספציפיות'}
-    
-    הערות נוספות:
-    ${formData.additionalNotes || 'אין הערות נוספות'}
-    
-    יש לכתוב את הערר בצורה מקצועית, מנומקת ומשכנעת.
-    `;
+    // Get the instruction template for this task type
+    const { data: template, error: templateError } = await supabase
+      .from('gpt_instructions')
+      .select('content')
+      .eq('task_type', formData.taskType)
+      .eq('is_active', true)
+      .single();
+
+    if (templateError) {
+      throw new Error(`Error fetching template: ${templateError.message}`);
+    }
+
+    if (!template) {
+      throw new Error('No active template found for this task type');
+    }
+
+    // Replace placeholders in the template with actual values
+    const processedTemplate = template.content
+      .replace('{{fullName}}', formData.fullName)
+      .replace('{{languageScore}}', formData.languageScore)
+      .replace('{{organizationScore}}', formData.organizationScore)
+      .replace('{{contentScore}}', formData.contentScore)
+      .replace('{{finalScore}}', formData.finalScore)
+      .replace('{{languageExamples}}', formData.languageExamples || 'לא צוינו דוגמאות ספציפיות')
+      .replace('{{organizationExamples}}', formData.organizationExamples || 'לא צוינו דוגמאות ספציפיות')
+      .replace('{{contentExamples}}', formData.contentExamples || 'לא צוינו דוגמאות ספציפיות')
+      .replace('{{additionalNotes}}', formData.additionalNotes || 'אין הערות נוספות');
+
+    console.log('Using processed template:', processedTemplate);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -56,7 +66,10 @@ serve(async (req) => {
             role: 'system',
             content: 'אתה עורך דין מנוסה המתמחה בכתיבת עררים על מטלות כתיבה בבחינת לשכת עורכי הדין. תפקידך לנסח ערר מקצועי, מנומק ומשכנע.'
           },
-          { role: 'user', content: prompt }
+          { 
+            role: 'user', 
+            content: processedTemplate 
+          }
         ],
       }),
     });
