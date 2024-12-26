@@ -103,9 +103,6 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
                 <li>העתק את תוכן הערר לשדה שנפתח</li>
                 <li>סמן בצ'קבוקס "שאלה פתוחה" ואת מספר השאלה</li>
               </ol>
-              <p className="text-sm text-red-600 font-medium">
-                שים לב: ניתן להגיש את הערר עד ה-24.3.24 בשעה 23:59
-              </p>
             </div>
           </AccordionContent>
         </AccordionItem>
