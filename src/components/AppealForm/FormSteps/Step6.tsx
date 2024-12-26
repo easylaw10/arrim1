@@ -3,7 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, AlertTriangle, Copy, FileText } from "lucide-react";
+import { AlertTriangle, Copy, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -97,12 +97,25 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
         </p>
         
         {isGenerating ? (
-          <div className="flex items-center justify-center p-8">
-            <Loader2 className="h-8 w-8 animate-spin" />
+          <div className="flex flex-col items-center justify-center p-8 space-y-4">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-8 h-8 bg-primary/20 rounded-full animate-ping"></div>
+              </div>
+            </div>
+            <div className="text-primary animate-pulse font-medium">
+              מייצר את הערר...
+            </div>
+            <div className="flex space-x-2 rtl:space-x-reverse">
+              <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+              <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+              <span className="w-2 h-2 bg-primary rounded-full animate-bounce"></span>
+            </div>
           </div>
         ) : (
           <>
-            <div className="relative">
+            <div className="relative animate-fade-in">
               <Textarea
                 value={template}
                 onChange={handleTextChange}
@@ -122,7 +135,7 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
             <div className="text-sm text-gray-500 flex items-center gap-2 mt-2">
               <AlertTriangle className="h-4 w-4 text-yellow-600" />
               <span>
-                שימו לב: בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
+                בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
               </span>
             </div>
           </>
