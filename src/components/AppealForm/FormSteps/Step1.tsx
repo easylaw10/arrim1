@@ -17,29 +17,29 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
 
   return (
     <div className="form-step">
-      <h2 className="form-title flex items-center gap-2 text-2xl font-bold mb-8">
+      <h2 className="form-title">
         <FileText className="h-6 w-6" />
         ציוני הבחינה הקודמת
       </h2>
       
-      <div className="space-y-10">
-        <div className="space-y-6">
-          <Label htmlFor="languageScore" className="text-lg font-semibold">
-            ציון בממד הלשון (0-4)
+      <div className="space-y-8">
+        <div className="space-y-4">
+          <Label htmlFor="languageScore" className="text-base font-medium">
+            ציון בממד הלשון
           </Label>
           <ToggleGroup
             type="single"
             value={formData.languageScore.toString()}
             onValueChange={(value) => updateFormData({ languageScore: Number(value) })}
-            className="flex flex-wrap gap-3 justify-center"
+            className="flex flex-wrap gap-2 justify-start"
           >
             {scoreOptions.map((score) => (
               <ToggleGroupItem
                 key={score}
                 value={score.toString()}
                 className={cn(
-                  "h-14 w-14 text-xl font-medium rounded-xl shadow-sm hover:shadow-md hover:bg-primary/90 hover:text-primary-foreground transition-all duration-300 hover:scale-110 border-2 border-gray-100",
-                  formData.languageScore === score && "bg-primary text-primary-foreground ring-4 ring-primary/20 scale-110 border-none"
+                  "h-9 w-9 text-sm font-medium rounded-md shadow-sm hover:shadow hover:bg-primary/90 hover:text-primary-foreground transition-all duration-200 hover:scale-105 border border-gray-200",
+                  formData.languageScore === score && "bg-primary text-primary-foreground ring-2 ring-primary/20 scale-105 border-none"
                 )}
               >
                 {score}
@@ -48,23 +48,23 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
           </ToggleGroup>
         </div>
 
-        <div className="space-y-6">
-          <Label htmlFor="organizationScore" className="text-lg font-semibold">
-            ציון בממד הארגון (0-4)
+        <div className="space-y-4">
+          <Label htmlFor="organizationScore" className="text-base font-medium">
+            ציון בממד הארגון
           </Label>
           <ToggleGroup
             type="single"
             value={formData.organizationScore.toString()}
             onValueChange={(value) => updateFormData({ organizationScore: Number(value) })}
-            className="flex flex-wrap gap-3 justify-center"
+            className="flex flex-wrap gap-2 justify-start"
           >
             {scoreOptions.map((score) => (
               <ToggleGroupItem
                 key={score}
                 value={score.toString()}
                 className={cn(
-                  "h-14 w-14 text-xl font-medium rounded-xl shadow-sm hover:shadow-md hover:bg-primary/90 hover:text-primary-foreground transition-all duration-300 hover:scale-110 border-2 border-gray-100",
-                  formData.organizationScore === score && "bg-primary text-primary-foreground ring-4 ring-primary/20 scale-110 border-none"
+                  "h-9 w-9 text-sm font-medium rounded-md shadow-sm hover:shadow hover:bg-primary/90 hover:text-primary-foreground transition-all duration-200 hover:scale-105 border border-gray-200",
+                  formData.organizationScore === score && "bg-primary text-primary-foreground ring-2 ring-primary/20 scale-105 border-none"
                 )}
               >
                 {score}
@@ -73,23 +73,23 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
           </ToggleGroup>
         </div>
 
-        <div className="space-y-6">
-          <Label htmlFor="contentScore" className="text-lg font-semibold">
-            ציון בממד התוכן (0-12)
+        <div className="space-y-4">
+          <Label htmlFor="contentScore" className="text-base font-medium">
+            ציון בממד התוכן
           </Label>
           <ToggleGroup
             type="single"
             value={formData.contentScore.toString()}
             onValueChange={(value) => updateFormData({ contentScore: Number(value) })}
-            className="flex flex-wrap gap-3 justify-center"
+            className="flex flex-wrap gap-2 justify-start"
           >
             {contentScoreOptions.map((score) => (
               <ToggleGroupItem
                 key={score}
                 value={score.toString()}
                 className={cn(
-                  "h-14 w-14 text-xl font-medium rounded-xl shadow-sm hover:shadow-md hover:bg-primary/90 hover:text-primary-foreground transition-all duration-300 hover:scale-110 border-2 border-gray-100",
-                  formData.contentScore === score && "bg-primary text-primary-foreground ring-4 ring-primary/20 scale-110 border-none"
+                  "h-9 w-9 text-sm font-medium rounded-md shadow-sm hover:shadow hover:bg-primary/90 hover:text-primary-foreground transition-all duration-200 hover:scale-105 border border-gray-200",
+                  formData.contentScore === score && "bg-primary text-primary-foreground ring-2 ring-primary/20 scale-105 border-none"
                 )}
               >
                 {score}
@@ -98,8 +98,8 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
           </ToggleGroup>
         </div>
 
-        <div className="space-y-6">
-          <Label htmlFor="finalScore" className="text-lg font-semibold">
+        <div className="space-y-4">
+          <Label htmlFor="finalScore" className="text-base font-medium">
             ציון סופי בבחינה
           </Label>
           <Input
@@ -110,8 +110,8 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
             min="0"
             max="100"
             required
-            className="text-3xl h-20 text-center font-bold bg-secondary/50 hover:bg-secondary transition-colors duration-300 focus:ring-4 focus:ring-primary/20 rounded-xl shadow-sm hover:shadow-md"
-            placeholder="הכנס ציון סופי"
+            className="w-24 h-10 text-center font-medium bg-secondary/50 hover:bg-secondary transition-colors duration-200 focus:ring-2 focus:ring-primary/20 rounded-md shadow-sm hover:shadow"
+            placeholder="0-100"
           />
         </div>
       </div>
