@@ -60,26 +60,41 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           {
-            role: 'system',
-            content: 'אתה עורך דין מנוסה המתמחה בכתיבת עררים על מטלות כתיבה בבחינת לשכת עורכי הדין. תפקידך לנסח ערר מקצועי, מנומק ומשכנע.'
+            role: 'developer',
+            content: `אתה עורך דין בכיר המתמחה בכתיבת עררים על מטלות כתיבה בבחינת לשכת עורכי הדין. 
+            תפקידך לנסח ערר מקצועי, מנומק ומשכנע תוך שימוש בשפה משפטית מדויקת.
+            
+            הנחיות חשובות:
+            1. יש להתייחס לכל אחד מהממדים (לשון, ארגון ותוכן) בנפרד ובפירוט
+            2. יש לבסס כל טענה על דוגמאות ספציפיות מהמטלה
+            3. יש להשתמש בשפה משפטית מקצועית ומדויקת
+            4. יש לשמור על מבנה לוגי וברור
+            5. יש להתייחס לציונים שניתנו ולהסביר מדוע הם אינם משקפים את רמת הכתיבה האמיתית
+            6. יש לסכם בצורה משכנעת מדוע יש להעלות את הציון`
           },
           { 
             role: 'user', 
             content: processedTemplate 
           }
         ],
+        temperature: 0.7,
+        max_tokens: 2000,
       }),
     });
 
     const data = await response.json();
-    console.log('Generated appeal:', data);
+    console.log('OpenAI API Response:', data);
 
-    return new Response(JSON.stringify({ 
-      generatedAppeal: data.choices[0].message.content 
-    }), {
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error('Invalid response from OpenAI API');
+    }
+
+    const generatedAppeal = data.choices[0].message.content;
+
+    return new Response(JSON.stringify({ generatedAppeal }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
