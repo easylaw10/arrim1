@@ -37,7 +37,7 @@ const sendSMS = async (phone: string, message: string) => {
     key: SMS4FREE_API_KEY,
     user: SMS4FREE_USER,
     pass: SMS4FREE_PASSWORD,
-    sender: SMS4FREE_USER,
+    sender: "972586799087", // עדכון המספר הקבוע ממנו יישלחו ההודעות
     recipient: phone,
     msg: message,
   };
