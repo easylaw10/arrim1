@@ -19,7 +19,7 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
     <div className="form-step">
       <h2 className="form-title">
         <FileText className="h-6 w-6" />
-        ציוני הבחינה הקודמת
+        ציוני הבחינה
       </h2>
       
       <div className="space-y-8">
