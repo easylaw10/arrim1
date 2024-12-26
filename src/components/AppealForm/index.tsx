@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useFormState } from './useFormState';
 import { ProgressBar } from './ProgressBar';
 import { Step1 } from './FormSteps/Step1';
@@ -24,9 +24,10 @@ export const AppealForm = () => {
     getCompletedAppeal
   } = useFormState();
 
-  const completedAppeal = hasCompletedAppeal() ? getCompletedAppeal() : null;
+  // Move the check after all hooks are called
+  const renderContent = () => {
+    const completedAppeal = hasCompletedAppeal() ? getCompletedAppeal() : null;
 
-  const renderStep = () => {
     if (completedAppeal) {
       return (
         <div className="space-y-6">
@@ -69,16 +70,19 @@ export const AppealForm = () => {
     }
   };
 
+  const showNavigation = !hasCompletedAppeal() && currentStep < 6;
+  const showProgressBar = !hasCompletedAppeal();
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="form-container py-4 sm:py-6 lg:py-8 animate-fade-in flex-grow">
         <div className="w-full">
-          {!completedAppeal && <ProgressBar currentStep={currentStep} />}
+          {showProgressBar && <ProgressBar currentStep={currentStep} />}
           <div className="form-section">
-            {renderStep()}
-            {!completedAppeal && (
+            {renderContent()}
+            {showNavigation && (
               <div className="form-navigation">
-                {currentStep > 1 && currentStep < 6 && (
+                {currentStep > 1 && (
                   <Button
                     type="button"
                     variant="outline"
@@ -89,16 +93,14 @@ export const AppealForm = () => {
                     הקודם
                   </Button>
                 )}
-                {currentStep < 6 && (
-                  <Button
-                    type="button"
-                    onClick={nextStep}
-                    className="gap-2 hover:scale-105 transition-transform"
-                  >
-                    הבא
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                )}
+                <Button
+                  type="button"
+                  onClick={nextStep}
+                  className="gap-2 hover:scale-105 transition-transform"
+                >
+                  הבא
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
               </div>
             )}
           </div>
