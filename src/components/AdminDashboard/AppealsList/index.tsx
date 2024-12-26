@@ -3,12 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppealsList, Appeal } from "../useAppealsList";
 import { SearchInput } from "./SearchInput";
 import { AppealsTable } from "./AppealsTable";
+import { DateRangeFilter } from "./DateRangeFilter";
+import { startOfDay, endOfDay, isWithinInterval } from "date-fns";
 
 export const AppealsList = () => {
   const { appeals, isLoading, deleteAppeal, updateAppeal } = useAppealsList();
   const [editingAppeal, setEditingAppeal] = useState<Appeal | null>(null);
   const [editForm, setEditForm] = useState<Partial<Appeal>>({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleEdit = (appeal: Appeal) => {
     setEditingAppeal(appeal);
@@ -36,17 +40,33 @@ export const AppealsList = () => {
     }
   };
 
+  const handleDateRangeChange = (start: Date | null, end: Date | null) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
+
   const filteredAppeals = appeals.filter((appeal) => {
     const searchLower = searchQuery.toLowerCase();
-    return (
+    const matchesSearch =
       appeal.full_name.toLowerCase().includes(searchLower) ||
       appeal.phone.toLowerCase().includes(searchLower) ||
       appeal.email.toLowerCase().includes(searchLower) ||
       appeal.language_score.toString().includes(searchQuery) ||
       appeal.organization_score.toString().includes(searchQuery) ||
       appeal.content_score.toString().includes(searchQuery) ||
-      appeal.final_score.toString().includes(searchQuery)
-    );
+      appeal.final_score.toString().includes(searchQuery);
+
+    if (!matchesSearch) return false;
+
+    if (startDate && endDate) {
+      const appealDate = new Date(appeal.created_at);
+      return isWithinInterval(appealDate, {
+        start: startOfDay(startDate),
+        end: endOfDay(endDate),
+      });
+    }
+
+    return true;
   });
 
   if (isLoading) {
@@ -66,16 +86,19 @@ export const AppealsList = () => {
         <CardTitle>רשימת עררים</CardTitle>
       </CardHeader>
       <CardContent>
-        <SearchInput value={searchQuery} onChange={setSearchQuery} />
-        <AppealsTable
-          appeals={filteredAppeals}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          editingAppeal={editingAppeal}
-          editForm={editForm}
-          setEditForm={setEditForm}
-          handleUpdate={handleUpdate}
-        />
+        <div className="space-y-4">
+          <SearchInput value={searchQuery} onChange={setSearchQuery} />
+          <DateRangeFilter onDateRangeChange={handleDateRangeChange} />
+          <AppealsTable
+            appeals={filteredAppeals}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            editingAppeal={editingAppeal}
+            editForm={editForm}
+            setEditForm={setEditForm}
+            handleUpdate={handleUpdate}
+          />
+        </div>
       </CardContent>
     </Card>
   );

@@ -1,15 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Appeal } from "../useAppealsList";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Pencil } from "lucide-react";
-import { Appeal } from "../useAppealsList";
 
 interface EditAppealDialogProps {
   appeal: Appeal;
@@ -29,11 +28,7 @@ export const EditAppealDialog = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => onEdit(appeal)}
-        >
+        <Button variant="outline" size="icon" onClick={() => onEdit(appeal)}>
           <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>
@@ -47,10 +42,7 @@ export const EditAppealDialog = ({
             <Input
               value={editForm.full_name || ""}
               onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
-                  full_name: e.target.value,
-                }))
+                setEditForm({ ...editForm, full_name: e.target.value })
               }
             />
           </div>
@@ -59,10 +51,7 @@ export const EditAppealDialog = ({
             <Input
               value={editForm.phone || ""}
               onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
-                  phone: e.target.value,
-                }))
+                setEditForm({ ...editForm, phone: e.target.value })
               }
             />
           </div>
@@ -71,10 +60,7 @@ export const EditAppealDialog = ({
             <Input
               value={editForm.email || ""}
               onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
-                  email: e.target.value,
-                }))
+                setEditForm({ ...editForm, email: e.target.value })
               }
             />
           </div>
@@ -84,10 +70,10 @@ export const EditAppealDialog = ({
               type="number"
               value={editForm.language_score || ""}
               onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
+                setEditForm({
+                  ...editForm,
                   language_score: parseInt(e.target.value),
-                }))
+                })
               }
             />
           </div>
@@ -97,10 +83,10 @@ export const EditAppealDialog = ({
               type="number"
               value={editForm.organization_score || ""}
               onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
+                setEditForm({
+                  ...editForm,
                   organization_score: parseInt(e.target.value),
-                }))
+                })
               }
             />
           </div>
@@ -110,10 +96,10 @@ export const EditAppealDialog = ({
               type="number"
               value={editForm.content_score || ""}
               onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
+                setEditForm({
+                  ...editForm,
                   content_score: parseInt(e.target.value),
-                }))
+                })
               }
             />
           </div>
@@ -123,21 +109,16 @@ export const EditAppealDialog = ({
               type="number"
               value={editForm.final_score || ""}
               onChange={(e) =>
-                setEditForm((prev) => ({
-                  ...prev,
+                setEditForm({
+                  ...editForm,
                   final_score: parseInt(e.target.value),
-                }))
+                })
               }
             />
           </div>
-        </div>
-        <div className="flex justify-end gap-2">
-          <DialogClose asChild>
-            <Button variant="outline">ביטול</Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button onClick={onUpdate}>שמור</Button>
-          </DialogClose>
+          <Button onClick={onUpdate} className="w-full">
+            שמור שינויים
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
