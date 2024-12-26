@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormData } from '../../types';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
 import { Shield, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PhoneInput } from './PhoneInput';
 import { VerificationInput } from './VerificationInput';
+import { useVerificationState } from './useVerificationState';
 
 interface PhoneVerificationProps {
   formData: FormData;
@@ -15,140 +14,33 @@ interface PhoneVerificationProps {
   onComplete: () => void;
 }
 
-const validatePhone = (phone: string): boolean => {
-  const phoneRegex = /^05\d{8}$/;
-  return phoneRegex.test(phone);
-};
-
 export const PhoneVerification: React.FC<PhoneVerificationProps> = ({ 
   formData, 
   updateFormData, 
   onBack,
   onComplete 
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
-  const { toast } = useToast();
+  const {
+    isLoading,
+    showVerification,
+    sendVerificationCode,
+    verifyCode
+  } = useVerificationState();
 
-  const checkPreviousVerification = async (phone: string) => {
-    const { data: existingVerification } = await supabase
-      .from('verification_codes')
-      .select('*')
-      .eq('contact', phone)
-      .eq('verified', true)
-      .maybeSingle();
-
-    return existingVerification;
-  };
-
-  const sendVerificationCode = async () => {
-    if (!formData.phone) {
-      toast({
-        title: "שגיאה",
-        description: "נא להזין מספר טלפון",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!validatePhone(formData.phone)) {
-      toast({
-        title: "שגיאה",
-        description: "מספר הטלפון אינו תקין. יש להזין מספר טלפון ישראלי תקין",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const existingVerification = await checkPreviousVerification(formData.phone);
-      
-      if (existingVerification) {
-        toast({
-          title: "שגיאה",
-          description: "מספר טלפון זה כבר אומת בעבר. לא ניתן לאמת מספר טלפון פעמיים.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('send-verification', {
-        body: { phone: formData.phone },
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "נשלח בהצלחה",
-        description: "קוד אימות נשלח למספר הטלפון שלך",
-      });
-      setShowVerification(true);
-    } catch (error: any) {
-      toast({
-        title: "שגיאה",
-        description: error.message || "אירעה שגיאה בשליחת קוד האימות",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+  const handleSendCode = async () => {
+    const success = await sendVerificationCode(formData.phone);
+    if (success) {
+      updateFormData({ verificationCode: '' });
     }
   };
 
-  const verifyCode = async () => {
-    if (!formData.verificationCode) {
-      toast({
-        title: "שגיאה",
-        description: "נא להזין את קוד האימות",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // First, unverify any existing verified records for this phone number
-      await supabase
-        .from('verification_codes')
-        .update({ verified: false })
-        .eq('contact', formData.phone)
-        .eq('verified', true);
-
-      // Now verify the new code
-      const { data, error } = await supabase
-        .from('verification_codes')
-        .select('*')
-        .eq('contact', formData.phone)
-        .eq('verification_code', formData.verificationCode)
-        .eq('verified', false)
-        .gt('expires_at', new Date().toISOString())
-        .single();
-
-      if (error || !data) {
-        throw new Error("קוד האימות שגוי או שפג תוקפו");
-      }
-
-      const { error: updateError } = await supabase
-        .from('verification_codes')
-        .update({ verified: true })
-        .eq('id', data.id);
-
-      if (updateError) throw updateError;
-
+  const handleVerifyCode = async () => {
+    if (!formData.verificationCode) return;
+    
+    const success = await verifyCode(formData.phone, formData.verificationCode);
+    if (success) {
       updateFormData({ phoneVerified: true });
-      toast({
-        title: "אומת בהצלחה",
-        description: "מספר הטלפון אומת בהצלחה",
-      });
       onComplete();
-    } catch (error: any) {
-      toast({
-        title: "שגיאה",
-        description: error.message || "אירעה שגיאה באימות הקוד",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -164,7 +56,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
           phone={formData.phone}
           isVerified={!!formData.phoneVerified}
           isLoading={isLoading}
-          onSendCode={sendVerificationCode}
+          onSendCode={handleSendCode}
           onChange={(phone) => updateFormData({ phone })}
           showVerification={showVerification}
         />
@@ -180,7 +72,7 @@ export const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             <VerificationInput
               verificationCode={formData.verificationCode}
               isLoading={isLoading}
-              onVerify={verifyCode}
+              onVerify={handleVerifyCode}
               onChange={(code) => updateFormData({ verificationCode: code })}
             />
           </div>
