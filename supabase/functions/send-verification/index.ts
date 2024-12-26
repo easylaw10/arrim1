@@ -31,7 +31,7 @@ const sendSMS = async (phone: string, message: string) => {
     key: SMS4FREE_API_KEY,
     user: SMS4FREE_USER,
     pass: SMS4FREE_PASSWORD,
-    sender: "972586799087",
+    sender: "EasyLaw",  // Changed from phone number to text identifier
     recipient: phone,
     msg: message,
   };
@@ -73,7 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { phone } = await req.json();
     console.log("Processing verification request for phone:", phone);
 
-    // בדיקה האם כבר קיים ערר עם מספר הטלפון הזה
+    // Check if user already submitted an appeal
     const { data: existingAppeal } = await supabase
       .from('exam_appeals')
       .select('*')
@@ -97,14 +97,14 @@ const handler = async (req: Request): Promise<Response> => {
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 15);
 
-    // מחיקת קודי אימות קודמים שלא אומתו
+    // Delete previous unverified codes
     await supabase
       .from('verification_codes')
       .delete()
       .eq('contact', phone)
       .eq('verified', false);
 
-    // יצירת קוד אימות חדש
+    // Create new verification code
     const { error: insertError } = await supabase
       .from('verification_codes')
       .insert({
