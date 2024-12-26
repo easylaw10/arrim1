@@ -24,7 +24,7 @@ export const TemplateManager = () => {
     const { data, error } = await supabase
       .from("gpt_instructions")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("task_type", { ascending: true });
 
     if (error) {
       toast({
@@ -62,7 +62,39 @@ export const TemplateManager = () => {
 
   const handleSave = async () => {
     try {
+      // Check if a template with the same task_type already exists
+      const { data: existingTemplates } = await supabase
+        .from("gpt_instructions")
+        .select("id")
+        .eq("task_type", editForm.task_type);
+
+      if (existingTemplates && existingTemplates.length > 0 && !editingTemplate) {
+        toast({
+          title: "שגיאה",
+          description: "כבר קיימת תבנית עבור סוג מטלה זה",
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (editingTemplate) {
+        // Check if trying to change task_type to one that already exists
+        if (editingTemplate.task_type !== editForm.task_type) {
+          const { data: conflictingTemplates } = await supabase
+            .from("gpt_instructions")
+            .select("id")
+            .eq("task_type", editForm.task_type);
+
+          if (conflictingTemplates && conflictingTemplates.length > 0) {
+            toast({
+              title: "שגיאה",
+              description: "כבר קיימת תבנית עבור סוג מטלה זה",
+              variant: "destructive",
+            });
+            return;
+          }
+        }
+
         const { error } = await supabase
           .from("gpt_instructions")
           .update({
@@ -137,26 +169,29 @@ export const TemplateManager = () => {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>ניהול תבניות</CardTitle>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button onClick={handleCreate} className="gap-2">
-              <Plus className="h-4 w-4" />
-              תבנית חדשה
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {editingTemplate ? "עריכת תבנית" : "תבנית חדשה"}
-              </DialogTitle>
-            </DialogHeader>
-            <TemplateForm
-              editForm={editForm}
-              setEditForm={setEditForm}
-              onSave={handleSave}
-            />
-          </DialogContent>
-        </Dialog>
+        {templates.length < 2 && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button onClick={handleCreate} className="gap-2">
+                <Plus className="h-4 w-4" />
+                תבנית חדשה
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {editingTemplate ? "עריכת תבנית" : "תבנית חדשה"}
+                </DialogTitle>
+              </DialogHeader>
+              <TemplateForm
+                editForm={editForm}
+                setEditForm={setEditForm}
+                onSave={handleSave}
+                disabledTaskTypes={templates.map((t) => t.task_type)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

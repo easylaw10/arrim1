@@ -18,12 +18,14 @@ interface TemplateFormProps {
   };
   setEditForm: (form: any) => void;
   onSave: () => void;
+  disabledTaskTypes?: number[];
 }
 
 export const TemplateForm = ({
   editForm,
   setEditForm,
   onSave,
+  disabledTaskTypes = [],
 }: TemplateFormProps) => {
   return (
     <>
@@ -55,8 +57,15 @@ export const TemplateForm = ({
               <SelectValue placeholder="בחר סוג מטלה" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1">מטלה 1</SelectItem>
-              <SelectItem value="2">מטלה 2</SelectItem>
+              {[1, 2].map((type) => (
+                <SelectItem
+                  key={type}
+                  value={String(type)}
+                  disabled={disabledTaskTypes.includes(type)}
+                >
+                  מטלה {type}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
