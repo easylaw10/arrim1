@@ -29,7 +29,7 @@ export const useFormState = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 }); // שמירה ל-7 ימים
+    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 });
   }, [formData]);
 
   useEffect(() => {
@@ -80,6 +80,15 @@ export const useFormState = () => {
         });
         return false;
       }
+
+      if (!formData.emailVerified) {
+        toast({
+          title: "שגיאה",
+          description: "יש לאמת את כתובת האימייל לפני המשך",
+          variant: "destructive",
+        });
+        return false;
+      }
     }
     return true;
   };
@@ -116,7 +125,24 @@ export const useFormState = () => {
 
   const saveToDatabase = async () => {
     try {
-      const { error } = await supabase.from('exam_appeals').insert({
+      // Check if the email has already submitted an appeal
+      const { data: existingVerification } = await supabase
+        .from('email_verifications')
+        .select('*')
+        .eq('email', formData.email)
+        .eq('appeal_submitted', true)
+        .single();
+
+      if (existingVerification) {
+        toast({
+          title: "שגיאה",
+          description: "כבר הגשת ערר בעבר",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error: appealError } = await supabase.from('exam_appeals').insert({
         full_name: formData.fullName,
         phone: formData.phone,
         email: formData.email,
@@ -126,10 +152,17 @@ export const useFormState = () => {
         final_score: formData.finalScore,
       });
 
-      if (error) throw error;
+      if (appealError) throw appealError;
 
-      // שמירת הערר המושלם בקוקיז
-      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 }); // שמירה ל-30 יום
+      // Mark the email as having submitted an appeal
+      await supabase
+        .from('email_verifications')
+        .update({ appeal_submitted: true })
+        .eq('email', formData.email)
+        .eq('verified', true);
+
+      // Save the completed appeal in cookies
+      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 });
 
       toast({
         title: "נשמר בהצלחה",

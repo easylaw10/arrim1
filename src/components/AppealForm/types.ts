@@ -6,6 +6,8 @@ export interface FormData {
   rubricLink?: string;
   fullName: string;
   email: string;
+  emailVerified?: boolean;
+  verificationCode?: string;
   phone: string;
   languageScore: number;
   organizationScore: number;
@@ -39,6 +41,7 @@ export const initialFormData: FormData = {
   taskType: 1,
   fullName: "",
   email: "",
+  emailVerified: false,
   phone: "",
   languageScore: 0,
   organizationScore: 0,
