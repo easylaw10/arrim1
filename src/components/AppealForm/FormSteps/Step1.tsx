@@ -2,6 +2,7 @@ import React from 'react';
 import { FormData } from '../types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { FileText } from 'lucide-react';
 
 interface Step1Props {
   formData: FormData;
@@ -11,10 +12,13 @@ interface Step1Props {
 export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
   return (
     <div className="form-step">
-      <h2 className="text-2xl font-bold mb-6">ציוני הבחינה הקודמת</h2>
+      <h2 className="form-title">
+        <FileText className="h-6 w-6" />
+        ציוני הבחינה הקודמת
+      </h2>
       
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-group">
             <Label htmlFor="currentLanguageScore">ציון בממד הלשון (0-4)</Label>
             <Input
@@ -25,6 +29,7 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
               min="0"
               max="4"
               required
+              className="text-lg"
             />
           </div>
 
@@ -38,6 +43,7 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
               min="0"
               max="4"
               required
+              className="text-lg"
             />
           </div>
 
@@ -51,6 +57,7 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
               min="0"
               max="12"
               required
+              className="text-lg"
             />
           </div>
 
@@ -64,6 +71,7 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
               min="0"
               max="100"
               required
+              className="text-lg"
             />
           </div>
         </div>

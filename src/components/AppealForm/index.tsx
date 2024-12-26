@@ -16,51 +16,51 @@ export const AppealForm = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <Step1 formData={formData} updateFormData={updateFormData} />; // ציונים נוכחיים
+        return <Step1 formData={formData} updateFormData={updateFormData} />;
       case 2:
-        return <Step3 formData={formData} updateFormData={updateFormData} />; // ממד הלשון
+        return <Step3 formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return <Step4 formData={formData} updateFormData={updateFormData} />; // ממד הארגון
+        return <Step4 formData={formData} updateFormData={updateFormData} />;
       case 4:
-        return <Step5 formData={formData} updateFormData={updateFormData} />; // ממד התוכן
+        return <Step5 formData={formData} updateFormData={updateFormData} />;
       case 5:
-        return <Step2 formData={formData} updateFormData={updateFormData} />; // פרטים אישיים
+        return <Step2 formData={formData} updateFormData={updateFormData} />;
       case 6:
-        return <Step6 formData={formData} updateFormData={updateFormData} />; // יצירת הערר
+        return <Step6 formData={formData} updateFormData={updateFormData} />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="form-container">
+    <div className="form-container animate-fade-in">
       <div>
         <ProgressBar currentStep={currentStep} />
-        <div className="bg-gray-50 p-8 rounded-xl">
+        <div className="form-section">
           {renderStep()}
-        </div>
-        <div className="form-navigation">
-          {currentStep > 1 && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={previousStep}
-              className="gap-2"
-            >
-              <ChevronRight className="h-4 w-4" />
-              הקודם
-            </Button>
-          )}
-          {currentStep < 6 && (
-            <Button
-              type="button"
-              onClick={nextStep}
-              className="gap-2"
-            >
-              הבא
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          )}
+          <div className="form-navigation">
+            {currentStep > 1 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={previousStep}
+                className="gap-2 hover:scale-105 transition-transform"
+              >
+                <ChevronRight className="h-4 w-4" />
+                הקודם
+              </Button>
+            )}
+            {currentStep < 6 && (
+              <Button
+                type="button"
+                onClick={nextStep}
+                className="gap-2 hover:scale-105 transition-transform"
+              >
+                הבא
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
