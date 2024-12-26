@@ -7,62 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { Copy } from "lucide-react";
-import { useState } from "react";
+
 import { useAppealsList } from "./useAppealsList";
-import { supabase } from "@/integrations/supabase/client";
 
 export const AdminDashboard = () => {
   const { appeals, isLoading } = useAppealsList();
-  const [selectedAppeal, setSelectedAppeal] = useState(null);
-  const [generatedText, setGeneratedText] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const { toast } = useToast();
-
-  const generateAppeal = async (appeal) => {
-    setIsGenerating(true);
-    setSelectedAppeal(appeal);
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-appeal', {
-        body: { appeal }
-      });
-
-      if (error) throw error;
-      
-      setGeneratedText(data.generatedAppeal);
-      toast({
-        title: "הערר נוצר בהצלחה",
-        description: "תוכל להעתיק אותו ללוח",
-      });
-    } catch (error) {
-      console.error('Error generating appeal:', error);
-      toast({
-        title: "שגיאה",
-        description: "אירעה שגיאה ביצירת הערר",
-        variant: "destructive",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(generatedText);
-      toast({
-        title: "הועתק בהצלחה",
-        description: "הערר הועתק ללוח",
-      });
-    } catch (error) {
-      toast({
-        title: "שגיאה",
-        description: "אירעה שגיאה בהעתקת הערר",
-        variant: "destructive",
-      });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -93,7 +42,6 @@ export const AdminDashboard = () => {
                 <TableHead className="text-right">ציון ארגון</TableHead>
                 <TableHead className="text-right">ציון תוכן</TableHead>
                 <TableHead className="text-right">ציון סופי</TableHead>
-                <TableHead className="text-right">פעולות</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -117,45 +65,12 @@ export const AdminDashboard = () => {
                   <TableCell className="text-right">
                     {appeal.final_score}
                   </TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => generateAppeal(appeal)}
-                      disabled={isGenerating && selectedAppeal?.id === appeal.id}
-                    >
-                      {isGenerating && selectedAppeal?.id === appeal.id
-                        ? "מייצר ערר..."
-                        : "צור ערר"}
-                    </Button>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
-
-      {generatedText && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>ערר שנוצר עבור {selectedAppeal?.full_name}</span>
-              <Button
-                variant="outline"
-                onClick={copyToClipboard}
-                className="gap-2"
-              >
-                <Copy className="h-4 w-4" />
-                העתק ערר
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap text-right">
-              {generatedText}
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };
