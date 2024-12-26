@@ -32,9 +32,9 @@ export const AppealForm = () => {
         <div className="space-y-6">
           <Alert>
             <FileText className="h-4 w-4" />
-            <AlertTitle>הערר שלך הוגש בהצלחה</AlertTitle>
+            <AlertTitle>הערר שלך כבר הוגש בהצלחה</AlertTitle>
             <AlertDescription>
-              להלן פרטי הערר שהגשת. שים לב שלא ניתן לערוך את הערר לאחר הגשתו.
+              לא ניתן להגיש ערר נוסף. להלן פרטי הערר שהגשת.
             </AlertDescription>
           </Alert>
           <Step6 formData={completedAppeal} updateFormData={() => {}} />

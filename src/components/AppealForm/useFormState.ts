@@ -29,7 +29,7 @@ export const useFormState = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 }); // שמירה ל-7 ימים
+    Cookies.set(FORM_DATA_COOKIE, JSON.stringify(formData), { expires: 7 });
   }, [formData]);
 
   useEffect(() => {
@@ -128,8 +128,8 @@ export const useFormState = () => {
 
       if (error) throw error;
 
-      // שמירת הערר המושלם בקוקיז
-      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 }); // שמירה ל-30 יום
+      // Save the completed appeal in cookies
+      Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 });
 
       toast({
         title: "נשמר בהצלחה",
