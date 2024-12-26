@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormData } from '../types';
+import { TaskHeader } from './TaskHeader';
 
 interface Step4Props {
   formData: FormData;
@@ -18,7 +19,7 @@ export const Step4: React.FC<Step4Props> = ({ formData, updateFormData }) => {
 
   return (
     <div className="form-step">
-      <h2 className="text-2xl font-bold mb-6">ממד הארגון</h2>
+      <TaskHeader title="ממד הארגון" formData={formData} />
       
       <div className="form-group">
         <label className="form-label">אלמנטים שהיו במטלה</label>
@@ -26,27 +27,27 @@ export const Step4: React.FC<Step4Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.organizationElements.introduction}
+              checked={formData.organizationElements?.introduction}
               onChange={(e) => updateOrganizationElements('introduction', e.target.checked)}
               className="ml-2"
             />
-            מבוא מסודר
+            מבוא
           </label>
           
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.organizationElements.factPresentation}
+              checked={formData.organizationElements?.factPresentation}
               onChange={(e) => updateOrganizationElements('factPresentation', e.target.checked)}
               className="ml-2"
             />
-            הצגת עובדות
+            הצגת העובדות
           </label>
           
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.organizationElements.legalAnalysis}
+              checked={formData.organizationElements?.legalAnalysis}
               onChange={(e) => updateOrganizationElements('legalAnalysis', e.target.checked)}
               className="ml-2"
             />
@@ -56,7 +57,7 @@ export const Step4: React.FC<Step4Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.organizationElements.conclusion}
+              checked={formData.organizationElements?.conclusion}
               onChange={(e) => updateOrganizationElements('conclusion', e.target.checked)}
               className="ml-2"
             />
@@ -66,13 +67,13 @@ export const Step4: React.FC<Step4Props> = ({ formData, updateFormData }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="organizationExamples" className="form-label">דוגמאות לארגון טוב</label>
+        <label htmlFor="organizationExamples" className="form-label">דוגמאות ספציפיות</label>
         <textarea
           id="organizationExamples"
           className="form-input min-h-[100px]"
           value={formData.organizationExamples}
           onChange={(e) => updateFormData({ organizationExamples: e.target.value })}
-          placeholder="יש לציין דוגמאות ספציפיות מהמטלה המראות סדר וארגון טוב, למשל: כיצד הצגת את המבוא, איך סידרת את העובדות בצורה ברורה, איך בנית את הטיעון המשפטי בצורה הגיונית, או איך סיכמת את הטענות בצורה ברורה"
+          placeholder="יש לציין דוגמאות ספציפיות מהמטלה המראות ארגון נכון, למשל: כיצד הצגת את המבוא, איך ארגנת את העובדות, כיצד ערכת את הניתוח המשפטי, או איך סיכמת את הטיעונים"
         />
       </div>
     </div>

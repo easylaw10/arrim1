@@ -1,7 +1,6 @@
 import React from 'react';
 import { FormData } from '../types';
-import { ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { TaskHeader } from './TaskHeader';
 
 interface Step3Props {
   formData: FormData;
@@ -20,22 +19,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
 
   return (
     <div className="form-step">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">ממד הלשון</h2>
-        {formData.rubricLink && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            asChild
-          >
-            <a href={formData.rubricLink} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4" />
-              מחוון הוועדה הבוחנת
-            </a>
-          </Button>
-        )}
-      </div>
+      <TaskHeader title="ממד הלשון" formData={formData} />
       
       <div className="form-group">
         <label className="form-label">אלמנטים שהיו במטלה</label>
@@ -43,7 +27,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.languageElements.legalTerms}
+              checked={formData.languageElements?.legalTerms}
               onChange={(e) => updateLanguageElements('legalTerms', e.target.checked)}
               className="ml-2"
             />
@@ -53,7 +37,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.languageElements.termConsistency}
+              checked={formData.languageElements?.termConsistency}
               onChange={(e) => updateLanguageElements('termConsistency', e.target.checked)}
               className="ml-2"
             />
@@ -63,7 +47,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.languageElements.grammarSyntax}
+              checked={formData.languageElements?.grammarSyntax}
               onChange={(e) => updateLanguageElements('grammarSyntax', e.target.checked)}
               className="ml-2"
             />

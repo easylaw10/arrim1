@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormData } from '../types';
+import { TaskHeader } from './TaskHeader';
 
 interface Step5Props {
   formData: FormData;
@@ -18,7 +19,7 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
 
   return (
     <div className="form-step">
-      <h2 className="text-2xl font-bold mb-6">ממד התוכן</h2>
+      <TaskHeader title="ממד התוכן" formData={formData} />
       
       <div className="form-group">
         <label className="form-label">אלמנטים שהיו במטלה</label>
@@ -26,7 +27,7 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.contentElements.allParties}
+              checked={formData.contentElements?.allParties}
               onChange={(e) => updateContentElements('allParties', e.target.checked)}
               className="ml-2"
             />
@@ -36,7 +37,7 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.contentElements.legislation}
+              checked={formData.contentElements?.legislation}
               onChange={(e) => updateContentElements('legislation', e.target.checked)}
               className="ml-2"
             />
@@ -46,7 +47,7 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.contentElements.caselaw}
+              checked={formData.contentElements?.caselaw}
               onChange={(e) => updateContentElements('caselaw', e.target.checked)}
               className="ml-2"
             />
@@ -56,7 +57,7 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
           <label className="form-checkbox-label">
             <input
               type="checkbox"
-              checked={formData.contentElements.relevantFacts}
+              checked={formData.contentElements?.relevantFacts}
               onChange={(e) => updateContentElements('relevantFacts', e.target.checked)}
               className="ml-2"
             />
