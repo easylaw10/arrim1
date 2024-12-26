@@ -43,6 +43,20 @@ export const useFormState = () => {
     }
   };
 
+  const validatePersonalDetails = () => {
+    if (currentStep === 5) {
+      if (!formData.fullName || !formData.phone || !formData.email) {
+        toast({
+          title: "שגיאה",
+          description: "יש למלא את כל שדות החובה",
+          variant: "destructive",
+        });
+        return false;
+      }
+    }
+    return true;
+  };
+
   const saveToDatabase = async () => {
     try {
       const { error } = await supabase.from('exam_appeals').insert({
@@ -72,6 +86,10 @@ export const useFormState = () => {
   };
 
   const nextStep = () => {
+    if (!validatePersonalDetails()) {
+      return;
+    }
+
     if (currentStep < 6) {
       setCurrentStep((prev) => (prev + 1) as FormStep);
       

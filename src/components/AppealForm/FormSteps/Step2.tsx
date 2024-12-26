@@ -15,7 +15,7 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
       
       <div className="space-y-6">
         <div className="form-group">
-          <Label htmlFor="fullName">שם מלא</Label>
+          <Label htmlFor="fullName" className="after:content-['*'] after:text-red-500 after:mr-1">שם מלא</Label>
           <Input
             type="text"
             id="fullName"
@@ -26,7 +26,7 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
         </div>
 
         <div className="form-group">
-          <Label htmlFor="phone">טלפון</Label>
+          <Label htmlFor="phone" className="after:content-['*'] after:text-red-500 after:mr-1">טלפון</Label>
           <Input
             type="tel"
             id="phone"
@@ -38,7 +38,7 @@ export const Step2: React.FC<Step2Props> = ({ formData, updateFormData }) => {
         </div>
 
         <div className="form-group">
-          <Label htmlFor="email">דוא"ל</Label>
+          <Label htmlFor="email" className="after:content-['*'] after:text-red-500 after:mr-1">דוא"ל</Label>
           <Input
             type="email"
             id="email"
