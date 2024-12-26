@@ -1,32 +1,35 @@
 import { Json } from './json';
 
-interface EmailVerifications {
+interface VerificationCodes {
   Row: {
     id: string
     created_at: string
-    email: string
+    contact: string
     verification_code: string
     expires_at: string
     verified: boolean
     appeal_submitted: boolean
+    verification_type: string
   }
   Insert: {
     id?: string
     created_at?: string
-    email: string
+    contact: string
     verification_code: string
     expires_at: string
     verified?: boolean
     appeal_submitted?: boolean
+    verification_type?: string
   }
   Update: {
     id?: string
     created_at?: string
-    email?: string
+    contact?: string
     verification_code?: string
     expires_at?: string
     verified?: boolean
     appeal_submitted?: boolean
+    verification_type?: string
   }
   Relationships: []
 }
@@ -108,7 +111,7 @@ interface GptInstructions {
 export interface Database {
   public: {
     Tables: {
-      email_verifications: EmailVerifications
+      verification_codes: VerificationCodes
       exam_appeals: ExamAppeals
       gpt_instructions: GptInstructions
     }

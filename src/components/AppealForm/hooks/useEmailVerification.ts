@@ -6,12 +6,12 @@ export const useEmailVerification = () => {
   const { toast } = useToast();
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const sendVerificationCode = async (email: string) => {
+  const sendVerificationCode = async (phone: string) => {
     try {
       const { data: existingAppeal } = await supabase
-        .from('email_verifications')
+        .from('verification_codes')
         .select('*')
-        .eq('email', email)
+        .eq('contact', phone)
         .eq('verified', true)
         .eq('appeal_submitted', true)
         .single();
@@ -26,14 +26,14 @@ export const useEmailVerification = () => {
       }
 
       const response = await supabase.functions.invoke('send-verification', {
-        body: { email },
+        body: { phone },
       });
 
       if (response.error) throw response.error;
 
       toast({
         title: "נשלח בהצלחה",
-        description: "קוד אימות נשלח לכתובת האימייל שלך",
+        description: "קוד אימות נשלח למספר הטלפון שלך",
       });
       return true;
     } catch (error: any) {
@@ -47,13 +47,13 @@ export const useEmailVerification = () => {
     }
   };
 
-  const verifyCode = async (email: string, code: string) => {
+  const verifyCode = async (phone: string, code: string) => {
     setIsVerifying(true);
     try {
       const { data, error } = await supabase
-        .from('email_verifications')
+        .from('verification_codes')
         .select('*')
-        .eq('email', email)
+        .eq('contact', phone)
         .eq('verification_code', code)
         .eq('verified', false)
         .gt('expires_at', new Date().toISOString())
@@ -69,13 +69,13 @@ export const useEmailVerification = () => {
       }
 
       await supabase
-        .from('email_verifications')
+        .from('verification_codes')
         .update({ verified: true })
         .eq('id', data.id);
 
       toast({
         title: "אומת בהצלחה",
-        description: "כתובת האימייל אומתה בהצלחה",
+        description: "מספר הטלפון אומת בהצלחה",
       });
       return true;
     } catch (error) {

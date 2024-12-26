@@ -9,36 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      email_verifications: {
-        Row: {
-          appeal_submitted: boolean
-          created_at: string
-          email: string
-          expires_at: string
-          id: string
-          verification_code: string
-          verified: boolean
-        }
-        Insert: {
-          appeal_submitted?: boolean
-          created_at?: string
-          email: string
-          expires_at: string
-          id?: string
-          verification_code: string
-          verified?: boolean
-        }
-        Update: {
-          appeal_submitted?: boolean
-          created_at?: string
-          email?: string
-          expires_at?: string
-          id?: string
-          verification_code?: string
-          verified?: boolean
-        }
-        Relationships: []
-      }
       exam_appeals: {
         Row: {
           content_score: number
@@ -108,6 +78,39 @@ export type Database = {
           task_name?: string | null
           task_type?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      verification_codes: {
+        Row: {
+          appeal_submitted: boolean
+          contact: string
+          created_at: string
+          expires_at: string
+          id: string
+          verification_code: string
+          verification_type: string
+          verified: boolean
+        }
+        Insert: {
+          appeal_submitted?: boolean
+          contact: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          verification_code: string
+          verification_type?: string
+          verified?: boolean
+        }
+        Update: {
+          appeal_submitted?: boolean
+          contact?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          verification_code?: string
+          verification_type?: string
+          verified?: boolean
         }
         Relationships: []
       }

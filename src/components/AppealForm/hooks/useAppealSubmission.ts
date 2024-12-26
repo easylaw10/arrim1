@@ -11,9 +11,9 @@ export const useAppealSubmission = () => {
   const saveToDatabase = async (formData: FormData) => {
     try {
       const { data: existingVerification } = await supabase
-        .from('email_verifications')
+        .from('verification_codes')
         .select('*')
-        .eq('email', formData.email)
+        .eq('contact', formData.phone)
         .eq('appeal_submitted', true)
         .single();
 
@@ -41,9 +41,9 @@ export const useAppealSubmission = () => {
       if (appealError) throw appealError;
 
       await supabase
-        .from('email_verifications')
+        .from('verification_codes')
         .update({ appeal_submitted: true })
-        .eq('email', formData.email)
+        .eq('contact', formData.phone)
         .eq('verified', true);
 
       Cookies.set(COMPLETED_APPEAL_COOKIE, JSON.stringify(formData), { expires: 30 });
