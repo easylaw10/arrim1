@@ -35,6 +35,33 @@ export const TemplateForm = ({
           <Input value={`מטלה ${editForm.task_type}`} disabled />
         </div>
         <div className="space-y-2">
+          <label>שם המטלה</label>
+          <Input
+            value={editForm.task_name || ''}
+            onChange={(e) =>
+              setEditForm((prev) => ({
+                ...prev,
+                task_name: e.target.value,
+              }))
+            }
+            placeholder="למשל: כתב הגנה אזרחי"
+          />
+        </div>
+        <div className="space-y-2">
+          <label>קישור למחוון</label>
+          <Input
+            value={editForm.rubric_link || ''}
+            onChange={(e) =>
+              setEditForm((prev) => ({
+                ...prev,
+                rubric_link: e.target.value,
+              }))
+            }
+            placeholder="הכנס קישור למחוון"
+            dir="ltr"
+          />
+        </div>
+        <div className="space-y-2">
           <label>תוכן התבנית</label>
           <Textarea
             value={editForm.content}

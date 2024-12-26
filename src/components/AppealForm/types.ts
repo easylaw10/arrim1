@@ -2,6 +2,8 @@ export type FormStep = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface FormData {
   taskType: number;
+  taskName?: string;
+  rubricLink?: string;
   fullName: string;
   email: string;
   phone: string;

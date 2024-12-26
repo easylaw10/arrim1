@@ -8,6 +8,8 @@ export type Template = {
   content: string;
   task_type: number;
   updated_at: string;
+  task_name?: string;
+  rubric_link?: string;
 };
 
 export const useTemplates = () => {
@@ -19,6 +21,8 @@ export const useTemplates = () => {
     content: "",
     task_type: 1,
     updated_at: new Date().toISOString(),
+    task_name: "",
+    rubric_link: "",
   });
   const { toast } = useToast();
 
@@ -54,6 +58,8 @@ export const useTemplates = () => {
         .update({
           name: editForm.name,
           content: editForm.content,
+          task_name: editForm.task_name,
+          rubric_link: editForm.rubric_link,
           updated_at: new Date().toISOString(),
         })
         .eq("id", editingTemplate.id);

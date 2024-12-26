@@ -8,8 +8,39 @@ export const useFormState = () => {
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const { toast } = useToast();
 
-  const updateFormData = (updates: Partial<FormData>) => {
-    setFormData(prev => ({ ...prev, ...updates }));
+  const updateFormData = async (updates: Partial<FormData>) => {
+    setFormData(prev => {
+      const newData = { ...prev, ...updates };
+      
+      // If taskType is being updated, fetch the template details
+      if (updates.taskType !== undefined && updates.taskType !== prev.taskType) {
+        fetchTemplateDetails(updates.taskType);
+      }
+      
+      return newData;
+    });
+  };
+
+  const fetchTemplateDetails = async (taskType: number) => {
+    try {
+      const { data, error } = await supabase
+        .from('gpt_instructions')
+        .select('task_name, rubric_link')
+        .eq('task_type', taskType)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setFormData(prev => ({
+          ...prev,
+          taskName: data.task_name || undefined,
+          rubricLink: data.rubric_link || undefined,
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching template details:', error);
+    }
   };
 
   const saveToDatabase = async () => {

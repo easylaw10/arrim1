@@ -52,6 +52,8 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          rubric_link: string | null
+          task_name: string | null
           task_type: number
           updated_at: string
         }
@@ -61,6 +63,8 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          rubric_link?: string | null
+          task_name?: string | null
           task_type: number
           updated_at?: string
         }
@@ -70,6 +74,8 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          rubric_link?: string | null
+          task_name?: string | null
           task_type?: number
           updated_at?: string
         }
