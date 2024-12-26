@@ -3,7 +3,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormData } from "../types";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Info, AlertTriangle } from "lucide-react";
+import { Loader2, AlertTriangle, Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -63,6 +64,22 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
     updateFormData({ appealText: newText });
   };
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(template);
+      toast({
+        title: "הועתק בהצלחה",
+        description: "הטקסט הועתק ללוח. ניתן להדביק אותו באתר לשכת עורכי הדין",
+      });
+    } catch (err) {
+      toast({
+        title: "שגיאה בהעתקה",
+        description: "לא הצלחנו להעתיק את הטקסט",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -77,12 +94,23 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
           </div>
         ) : (
           <>
-            <Textarea
-              value={template}
-              onChange={handleTextChange}
-              className="min-h-[400px] font-mono text-sm"
-              dir="rtl"
-            />
+            <div className="relative">
+              <Textarea
+                value={template}
+                onChange={handleTextChange}
+                className="min-h-[400px] font-mono text-sm"
+                dir="rtl"
+              />
+              <Button
+                onClick={copyToClipboard}
+                variant="outline"
+                size="sm"
+                className="absolute top-2 left-2 gap-2"
+              >
+                <Copy className="h-4 w-4" />
+                העתק טקסט
+              </Button>
+            </div>
             <div className="text-sm text-gray-500 flex items-center gap-2 mt-2">
               <AlertTriangle className="h-4 w-4 text-yellow-600" />
               <span>
