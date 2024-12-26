@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useFormState } from './useFormState';
 import { ProgressBar } from './ProgressBar';
 import { Step1 } from './FormSteps/Step1';
@@ -64,13 +64,13 @@ export const AppealForm = () => {
       case 1:
         return <Step1 formData={formData} updateFormData={updateFormData} />;
       case 2:
-        return <Step3 formData={formData} updateFormData={updateFormData} />;
-      case 3:
-        return <Step4 formData={formData} updateFormData={updateFormData} />;
-      case 4:
-        return <Step5 formData={formData} updateFormData={updateFormData} />;
-      case 5:
         return <Step2 formData={formData} updateFormData={updateFormData} />;
+      case 3:
+        return <Step3 formData={formData} updateFormData={updateFormData} />;
+      case 4:
+        return <Step4 formData={formData} updateFormData={updateFormData} />;
+      case 5:
+        return <Step5 formData={formData} updateFormData={updateFormData} />;
       case 6:
         return <Step6 formData={formData} updateFormData={updateFormData} />;
       default:
