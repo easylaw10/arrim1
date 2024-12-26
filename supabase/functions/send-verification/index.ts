@@ -31,7 +31,7 @@ const sendSMS = async (phone: string, message: string) => {
     key: SMS4FREE_API_KEY,
     user: SMS4FREE_USER,
     pass: SMS4FREE_PASSWORD,
-    sender: "0527153268",  // Using the verified sender number
+    sender: "0527153268",
     recipient: phone,
     msg: message,
   };
@@ -118,7 +118,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (insertError) {
       console.error("Error inserting verification code:", insertError);
-      throw new Error("Failed to store verification code");
+      return new Response(
+        JSON.stringify({ error: "Failed to store verification code" }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
     }
 
     await sendSMS(phone, `קוד האימות שלך הוא: ${verificationCode}`);

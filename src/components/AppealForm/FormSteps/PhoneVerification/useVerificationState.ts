@@ -8,15 +8,20 @@ export const useVerificationState = () => {
   const { toast } = useToast();
 
   const checkPreviousVerification = async (phone: string) => {
-    const { data: existingVerification } = await supabase
-      .from('verification_codes')
-      .select('*')
-      .eq('contact', phone)
-      .eq('verified', true)
-      .eq('appeal_submitted', true)
-      .maybeSingle();
+    try {
+      const { data: existingVerification } = await supabase
+        .from('verification_codes')
+        .select('*')
+        .eq('contact', phone)
+        .eq('verified', true)
+        .eq('appeal_submitted', true)
+        .maybeSingle();
 
-    return existingVerification;
+      return existingVerification;
+    } catch (error) {
+      console.error('Error checking previous verification:', error);
+      return null;
+    }
   };
 
   const sendVerificationCode = async (phone: string) => {
@@ -41,22 +46,30 @@ export const useVerificationState = () => {
 
     setIsLoading(true);
     try {
-      const existingVerification = await checkPreviousVerification(phone);
-      
-      if (existingVerification) {
+      const { data, error } = await supabase.functions.invoke('send-verification', {
+        body: { phone },
+      });
+
+      if (error) {
+        // Parse the error message from the response
+        let errorMessage = "אירעה שגיאה בשליחת קוד האימות";
+        try {
+          const parsedError = JSON.parse(error.message);
+          if (parsedError.error) {
+            errorMessage = parsedError.error;
+          }
+        } catch {
+          // If parsing fails, use the original error message
+          errorMessage = error.message;
+        }
+
         toast({
           title: "שגיאה",
-          description: "מספר טלפון זה כבר הגיש ערר בעבר. לא ניתן להגיש ערר פעמיים עם אותו מספר טלפון.",
+          description: errorMessage,
           variant: "destructive",
         });
         return false;
       }
-
-      const { error } = await supabase.functions.invoke('send-verification', {
-        body: { phone },
-      });
-
-      if (error) throw error;
 
       toast({
         title: "נשלח בהצלחה",
@@ -65,6 +78,7 @@ export const useVerificationState = () => {
       setShowVerification(true);
       return true;
     } catch (error: any) {
+      console.error('Error sending verification code:', error);
       toast({
         title: "שגיאה",
         description: error.message || "אירעה שגיאה בשליחת קוד האימות",
@@ -109,12 +123,10 @@ export const useVerificationState = () => {
         throw new Error("קוד האימות שגוי או שפג תוקפו");
       }
 
-      const { error: updateError } = await supabase
+      await supabase
         .from('verification_codes')
         .update({ verified: true })
         .eq('id', data.id);
-
-      if (updateError) throw updateError;
 
       toast({
         title: "אומת בהצלחה",
