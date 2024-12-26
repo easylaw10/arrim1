@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormData } from '../types';
 import { TaskHeader } from './TaskHeader';
+import { BookText } from 'lucide-react';
 
 interface Step5Props {
   formData: FormData;

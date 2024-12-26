@@ -1,27 +1,28 @@
-import { FileText, Link } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { FormData } from "../types";
+import React from 'react';
+import { FormData } from '../types';
+import { Link } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface TaskHeaderProps {
   title: string;
   formData: FormData;
 }
 
-export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
+export const TaskHeader: React.FC<TaskHeaderProps> = ({ title, formData }) => {
   if (!formData.taskName) return null;
 
   return (
-    <div className="mb-6 space-y-4 bg-slate-50 p-4 rounded-lg border">
-      <div className="flex items-center justify-between">
+    <div className="mb-8 space-y-4">
+      <h2 className="text-2xl font-bold text-primary">{title}</h2>
+      <div className="bg-slate-50 p-4 rounded-lg border space-y-3">
         <div className="flex items-center gap-2">
-          <FileText className="h-5 w-5 text-slate-600" />
-          <h2 className="text-lg font-semibold">{formData.taskName}</h2>
+          <h3 className="text-lg font-medium text-slate-700">{formData.taskName}</h3>
         </div>
         {formData.rubricLink && (
           <Button
             variant="outline"
             size="sm"
-            className="gap-2"
+            className="gap-2 text-sm"
             asChild
           >
             <a href={formData.rubricLink} target="_blank" rel="noopener noreferrer">
@@ -30,9 +31,6 @@ export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
             </a>
           </Button>
         )}
-      </div>
-      <div className="text-lg font-medium text-slate-800">
-        {title}
       </div>
     </div>
   );

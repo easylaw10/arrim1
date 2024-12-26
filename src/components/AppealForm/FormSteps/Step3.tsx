@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormData } from '../types';
 import { TaskHeader } from './TaskHeader';
+import { Pen } from 'lucide-react';
 
 interface Step3Props {
   formData: FormData;

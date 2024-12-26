@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormData } from '../types';
 import { TaskHeader } from './TaskHeader';
+import { Layout } from 'lucide-react';
 
 interface Step4Props {
   formData: FormData;
