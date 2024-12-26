@@ -88,7 +88,7 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
         <Alert variant="default" className="bg-yellow-50 border-yellow-200">
           <AlertTriangle className="h-5 w-5 text-yellow-600" />
           <AlertDescription className="font-semibold text-yellow-800">
-            שימו לב! ניתן ליצור ערר פעם אחת בלבד. מומלץ להעתיק את הטקסט ולשמור אותו - לא תהיה אפשרות לחזור למסך זה.
+            בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
           </AlertDescription>
         </Alert>
 
@@ -122,7 +122,7 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
             <div className="text-sm text-gray-500 flex items-center gap-2 mt-2">
               <AlertTriangle className="h-4 w-4 text-yellow-600" />
               <span>
-                שימו לב: בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
+                בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
               </span>
             </div>
           </>
