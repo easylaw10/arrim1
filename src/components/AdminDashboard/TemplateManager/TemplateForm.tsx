@@ -12,9 +12,9 @@ import {
 
 interface TemplateFormProps {
   editForm: {
-    name: string;
-    content: string;
-    task_type: number;
+    name?: string;
+    content?: string;
+    task_type?: number;
   };
   setEditForm: (form: any) => void;
   onSave: () => void;
@@ -45,7 +45,7 @@ export const TemplateForm = ({
         <div className="space-y-2">
           <label>סוג מטלה</label>
           <Select
-            value={String(editForm.task_type)}
+            value={editForm.task_type ? String(editForm.task_type) : undefined}
             onValueChange={(value) =>
               setEditForm((prev: any) => ({
                 ...prev,
