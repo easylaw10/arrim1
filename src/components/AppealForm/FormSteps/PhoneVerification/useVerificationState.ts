@@ -7,23 +7,6 @@ export const useVerificationState = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { toast } = useToast();
 
-  const checkPreviousVerification = async (phone: string) => {
-    try {
-      const { data: existingVerification } = await supabase
-        .from('verification_codes')
-        .select('*')
-        .eq('contact', phone)
-        .eq('verified', true)
-        .eq('appeal_submitted', true)
-        .maybeSingle();
-
-      return existingVerification;
-    } catch (error) {
-      console.error('Error checking previous verification:', error);
-      return null;
-    }
-  };
-
   const sendVerificationCode = async (phone: string) => {
     if (!phone) {
       toast({
@@ -51,16 +34,16 @@ export const useVerificationState = () => {
       });
 
       if (error) {
-        // Parse the error message from the response
         let errorMessage = "אירעה שגיאה בשליחת קוד האימות";
+        
+        // Try to parse the error message from the response
         try {
-          const parsedError = JSON.parse(error.message);
-          if (parsedError.error) {
-            errorMessage = parsedError.error;
+          const errorBody = JSON.parse(error.message);
+          if (errorBody.error) {
+            errorMessage = errorBody.error;
           }
         } catch {
-          // If parsing fails, use the original error message
-          errorMessage = error.message;
+          console.error('Failed to parse error message:', error.message);
         }
 
         toast({
@@ -151,6 +134,5 @@ export const useVerificationState = () => {
     setShowVerification,
     sendVerificationCode,
     verifyCode,
-    checkPreviousVerification
   };
 };
