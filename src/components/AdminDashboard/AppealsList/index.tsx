@@ -4,6 +4,7 @@ import { useAppealsList, Appeal } from "../useAppealsList";
 import { SearchInput } from "./SearchInput";
 import { AppealsTable } from "./AppealsTable";
 import { DateRangeFilter } from "./DateRangeFilter";
+import { ExportButton } from "./ExportButton";
 import { startOfDay, endOfDay, isWithinInterval } from "date-fns";
 import {
   Select,
@@ -111,7 +112,10 @@ export const AppealsList = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>רשימת עררים</CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle>רשימת עררים</CardTitle>
+          <ExportButton appeals={filteredAppeals} />
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
