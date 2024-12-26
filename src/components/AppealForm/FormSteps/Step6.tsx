@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { FormData } from '../types';
 import { Button } from '@/components/ui/button';
-import { generateAppeal } from '@/utils/openai';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { Copy } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Step6Props {
   formData: FormData;
@@ -19,23 +19,24 @@ export const Step6: React.FC<Step6Props> = ({ formData }) => {
   const handleGenerateAppeal = async () => {
     setIsLoading(true);
     try {
-      const appeal = await generateAppeal(formData);
-      setGeneratedAppeal(appeal);
+      const { data, error } = await supabase.functions.invoke('generate-appeal', {
+        body: { appeal: formData }
+      });
+
+      if (error) throw error;
+      
+      setGeneratedAppeal(data.generatedAppeal);
+      toast({
+        title: "הערר נוצר בהצלחה",
+        description: "תוכל להעתיק אותו ללוח",
+      });
     } catch (error) {
       console.error('Error:', error);
-      if (error.message?.includes('invalid_api_key')) {
-        toast({
-          title: "שגיאה",
-          description: "מפתח ה-API של OpenAI אינו תקין. אנא בדוק את המפתח בהגדרות.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "שגיאה",
-          description: "אירעה שגיאה בעת יצירת הערר. אנא נסה שנית.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "שגיאה",
+        description: "אירעה שגיאה בעת יצירת הערר. אנא נסה שנית.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
