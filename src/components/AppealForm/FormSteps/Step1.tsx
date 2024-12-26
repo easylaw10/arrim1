@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { FileText } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Step1Props {
   formData: FormData;
@@ -14,6 +15,27 @@ interface Step1Props {
 export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
   const scoreOptions = [0, 1, 2, 3, 4];
   const contentScoreOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const { toast } = useToast();
+
+  const handleFinalScoreChange = (value: string) => {
+    const score = Number(value);
+    if (value === '') {
+      updateFormData({ finalScore: undefined });
+      return;
+    }
+    
+    if (score < 25 || score > 80) {
+      toast({
+        title: "שגיאה",
+        description: "ציון סופי לא תקין",
+        variant: "destructive",
+      });
+      updateFormData({ finalScore: undefined });
+      return;
+    }
+    
+    updateFormData({ finalScore: score });
+  };
 
   return (
     <div className="form-step">
@@ -99,19 +121,17 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
         </div>
 
         <div className="space-y-4">
-          <Label htmlFor="finalScore" className="text-base font-medium">
+          <Label htmlFor="finalScore" className="text-base font-medium after:content-['*'] after:text-red-500 after:mr-1">
             ציון סופי בבחינה
           </Label>
           <Input
             type="number"
             id="finalScore"
-            value={formData.finalScore}
-            onChange={(e) => updateFormData({ finalScore: Math.min(100, Math.max(0, Number(e.target.value))) })}
-            min="0"
-            max="100"
+            value={formData.finalScore || ''}
+            onChange={(e) => handleFinalScoreChange(e.target.value)}
             required
             className="w-24 h-10 text-center font-medium bg-secondary/50 hover:bg-secondary transition-colors duration-200 focus:ring-2 focus:ring-primary/20 rounded-md shadow-sm hover:shadow"
-            placeholder="0-100"
+            placeholder="הזן ציון"
           />
         </div>
       </div>

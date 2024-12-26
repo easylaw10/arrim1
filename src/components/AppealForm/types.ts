@@ -10,7 +10,7 @@ export interface FormData {
   languageScore: number;
   organizationScore: number;
   contentScore: number;
-  finalScore: number;
+  finalScore?: number;
   languageElements?: {
     legalTerms?: boolean;
     termConsistency?: boolean;
@@ -43,7 +43,6 @@ export const initialFormData: FormData = {
   languageScore: 0,
   organizationScore: 0,
   contentScore: 0,
-  finalScore: 0,
   languageElements: {
     legalTerms: false,
     termConsistency: false,
