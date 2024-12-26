@@ -5,9 +5,27 @@ import { SearchInput } from "./SearchInput";
 import { AppealsTable } from "./AppealsTable";
 import { DateRangeFilter } from "./DateRangeFilter";
 import { startOfDay, endOfDay, isWithinInterval } from "date-fns";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export const AppealsList = () => {
-  const { appeals, isLoading, deleteAppeal, updateAppeal } = useAppealsList();
+  const { 
+    appeals, 
+    isLoading, 
+    deleteAppeal, 
+    updateAppeal,
+    totalCount,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage 
+  } = useAppealsList();
+  
   const [editingAppeal, setEditingAppeal] = useState<Appeal | null>(null);
   const [editForm, setEditForm] = useState<Partial<Appeal>>({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,6 +87,8 @@ export const AppealsList = () => {
     return true;
   });
 
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
   if (isLoading) {
     return (
       <div className="p-8">
@@ -98,6 +118,51 @@ export const AppealsList = () => {
             setEditForm={setEditForm}
             handleUpdate={handleUpdate}
           />
+          
+          {totalCount > itemsPerPage && (
+            <div className="mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                    />
+                  </PaginationItem>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(page => 
+                      page === 1 || 
+                      page === totalPages || 
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    )
+                    .map((page, index, array) => (
+                      <PaginationItem key={page}>
+                        {index > 0 && array[index - 1] !== page - 1 && (
+                          <PaginationItem>...</PaginationItem>
+                        )}
+                        <PaginationLink
+                          isActive={page === currentPage}
+                          onClick={() => setCurrentPage(page)}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                  
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+              <div className="text-sm text-gray-500 text-center mt-2">
+                מציג {(currentPage - 1) * itemsPerPage + 1} עד {Math.min(currentPage * itemsPerPage, totalCount)} מתוך {totalCount} עררים
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

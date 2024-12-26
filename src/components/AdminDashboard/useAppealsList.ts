@@ -17,14 +17,29 @@ export type Appeal = {
 export const useAppealsList = () => {
   const [appeals, setAppeals] = useState<Appeal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const { toast } = useToast();
 
   const loadAppeals = async () => {
     try {
+      setIsLoading(true);
+      
+      // First, get the total count
+      const { count, error: countError } = await supabase
+        .from('exam_appeals')
+        .select('*', { count: 'exact', head: true });
+
+      if (countError) throw countError;
+      setTotalCount(count || 0);
+
+      // Then fetch the paginated data
       const { data, error } = await supabase
         .from('exam_appeals')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
 
       if (error) throw error;
       setAppeals(data || []);
@@ -50,6 +65,7 @@ export const useAppealsList = () => {
       if (error) throw error;
 
       setAppeals(prev => prev.filter(appeal => appeal.id !== id));
+      setTotalCount(prev => prev - 1);
       toast({
         title: "נמחק בהצלחה",
         description: "הערר נמחק מהמערכת",
@@ -93,7 +109,16 @@ export const useAppealsList = () => {
 
   useEffect(() => {
     loadAppeals();
-  }, []);
+  }, [currentPage]); // Reload when page changes
 
-  return { appeals, isLoading, deleteAppeal, updateAppeal };
+  return { 
+    appeals, 
+    isLoading, 
+    deleteAppeal, 
+    updateAppeal,
+    totalCount,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage
+  };
 };
