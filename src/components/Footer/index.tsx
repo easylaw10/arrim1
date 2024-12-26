@@ -15,6 +15,14 @@ export const Footer = () => {
             >
               תנאי שימוש
             </Link>
+            <span>·</span>
+            <Link 
+              to="https://hi.easylaw.io/bar" 
+              target="_blank" 
+              className="hover:text-primary transition-colors"
+            >
+              קורס הכנה לבחינות הלשכה
+            </Link>
           </div>
           <div className="flex items-center gap-2">
             <span>מופעל על ידי</span>
