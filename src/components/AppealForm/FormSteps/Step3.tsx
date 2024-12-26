@@ -31,6 +31,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
               checked={formData.languageElements?.legalTerms}
               onChange={(e) => updateLanguageElements('legalTerms', e.target.checked)}
               className="ml-2"
+              required
             />
             שימוש במונחים משפטיים
           </label>
@@ -41,6 +42,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
               checked={formData.languageElements?.termConsistency}
               onChange={(e) => updateLanguageElements('termConsistency', e.target.checked)}
               className="ml-2"
+              required
             />
             עקביות במונחים
           </label>
@@ -51,6 +53,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
               checked={formData.languageElements?.grammarSyntax}
               onChange={(e) => updateLanguageElements('grammarSyntax', e.target.checked)}
               className="ml-2"
+              required
             />
             שמירה על כללי דקדוק ותחביר
           </label>
@@ -58,7 +61,7 @@ export const Step3: React.FC<Step3Props> = ({ formData, updateFormData }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="languageExamples" className="form-label">דוגמאות ספציפיות</label>
+        <label htmlFor="languageExamples" className="form-label">דוגמאות ספציפיות (אופציונלי)</label>
         <textarea
           id="languageExamples"
           className="form-input min-h-[100px]"
