@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Step6Props {
   formData: FormData;
@@ -69,6 +70,13 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
         <p className="text-gray-600">
           להלן נוסח הערר שנוצר באמצעות בינה מלאכותית. ניתן לערוך את הטקסט לפי הצורך.
         </p>
+        
+        <Alert variant="destructive" className="bg-yellow-50 border-yellow-200">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription className="text-yellow-800">
+            שימו לב: בינה מלאכותית עלולה לעשות טעויות. יש לקרוא את הערר בעיון ולתקן במידת הצורך.
+          </AlertDescription>
+        </Alert>
         
         {isGenerating ? (
           <div className="flex items-center justify-center p-8">
