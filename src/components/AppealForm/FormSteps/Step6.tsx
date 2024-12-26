@@ -84,6 +84,14 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
     <div className="space-y-6">
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">נוסח הערר</h2>
+        
+        <Alert variant="destructive" className="bg-red-50">
+          <AlertTriangle className="h-5 w-5" />
+          <AlertDescription className="font-semibold">
+            שים לב! ניתן ליצור ערר פעם אחת בלבד. מומלץ להעתיק את הטקסט ולשמור אותו - לא תהיה אפשרות לחזור למסך זה.
+          </AlertDescription>
+        </Alert>
+
         <p className="text-gray-600">
           להלן נוסח הערר שנוצר באמצעות בינה מלאכותית. ניתן לערוך את הטקסט לפי הצורך.
         </p>
