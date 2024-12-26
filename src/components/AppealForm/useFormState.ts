@@ -30,7 +30,7 @@ const initialFormData: FormData = {
     caselaw: false,
     relevantFacts: false,
   },
-  missingElements: '',
+  contentExamples: '',
   requestedLanguageScore: 0,
   requestedOrganizationScore: 0,
   requestedContentScore: 0,

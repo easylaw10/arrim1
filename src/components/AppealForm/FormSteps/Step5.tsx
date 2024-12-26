@@ -66,13 +66,13 @@ export const Step5: React.FC<Step5Props> = ({ formData, updateFormData }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="missingElements" className="form-label">אלמנטים חסרים</label>
+        <label htmlFor="contentExamples" className="form-label">דוגמאות ספציפיות</label>
         <textarea
-          id="missingElements"
+          id="contentExamples"
           className="form-input min-h-[100px]"
-          value={formData.missingElements}
-          onChange={(e) => updateFormData({ missingElements: e.target.value })}
-          placeholder="נא לציין אלמנטים חסרים במטלה"
+          value={formData.contentExamples}
+          onChange={(e) => updateFormData({ contentExamples: e.target.value })}
+          placeholder="נא לציין דוגמאות ספציפיות מהמטלה"
         />
       </div>
     </div>

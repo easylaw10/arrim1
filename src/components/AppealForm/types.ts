@@ -34,7 +34,7 @@ export interface FormData {
     caselaw: boolean;
     relevantFacts: boolean;
   };
-  missingElements: string;
+  contentExamples: string;
 
   // Step 6 - Requested Scores
   requestedLanguageScore: number;
