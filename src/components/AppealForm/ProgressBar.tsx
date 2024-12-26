@@ -18,12 +18,9 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
 
   return (
     <div className="progress-bar">
-      <div className="flex justify-between items-center relative">
-        {steps.map((step, index) => {
+      <div className="flex justify-between items-center">
+        {steps.map((step) => {
           const Icon = step.icon;
-          const isFirst = index === 0;
-          const isLast = index === steps.length - 1;
-          
           return (
             <div
               key={step.number}
@@ -35,15 +32,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
                   : ''
               }`}
             >
-              {!isFirst && (
-                <div
-                  className={`absolute top-4 right-[-50%] w-full h-0.5 ${
-                    currentStep > step.number ? 'bg-primary' : 'bg-gray-200'
-                  }`}
-                  style={{ right: '50%', width: '100%' }}
-                />
-              )}
-              <div className="step-number relative z-10">
+              <div className="step-number">
                 {currentStep > step.number ? (
                   <Check className="h-4 w-4" strokeWidth={3} />
                 ) : (
@@ -52,7 +41,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
               </div>
               <div className="step-label">{step.label}</div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
