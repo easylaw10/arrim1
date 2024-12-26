@@ -1,5 +1,5 @@
+import { FileText, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
 import { FormData } from "../types";
 
 interface TaskHeaderProps {
@@ -8,10 +8,15 @@ interface TaskHeaderProps {
 }
 
 export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
+  if (!formData.taskName) return null;
+
   return (
-    <div className="space-y-4 mb-6">
+    <div className="mb-6 space-y-4 bg-slate-50 p-4 rounded-lg border">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{title}</h2>
+        <div className="flex items-center gap-2">
+          <FileText className="h-5 w-5 text-slate-600" />
+          <h2 className="text-lg font-semibold">{formData.taskName}</h2>
+        </div>
         {formData.rubricLink && (
           <Button
             variant="outline"
@@ -20,17 +25,15 @@ export const TaskHeader = ({ title, formData }: TaskHeaderProps) => {
             asChild
           >
             <a href={formData.rubricLink} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4" />
+              <Link className="h-4 w-4" />
               מחוון הוועדה הבוחנת
             </a>
           </Button>
         )}
       </div>
-      {formData.taskName && (
-        <p className="text-gray-600">
-          {formData.taskName}
-        </p>
-      )}
+      <div className="text-lg font-medium text-slate-800">
+        {title}
+      </div>
     </div>
   );
 };
