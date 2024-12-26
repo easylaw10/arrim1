@@ -46,10 +46,21 @@ export const useFormState = () => {
 
   const validatePersonalDetails = () => {
     if (currentStep === 5) {
-      if (!formData.fullName || !formData.phone || !formData.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!formData.fullName?.trim()) {
         toast({
           title: "שגיאה",
-          description: "יש למלא את כל שדות החובה",
+          description: "יש להזין שם מלא",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      if (!formData.email?.trim() || !emailRegex.test(formData.email)) {
+        toast({
+          title: "שגיאה",
+          description: "יש להזין כתובת אימייל תקינה",
           variant: "destructive",
         });
         return false;
