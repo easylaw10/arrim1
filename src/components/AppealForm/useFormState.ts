@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
 const initialFormData: FormData = {
+  task: 1,
   currentLanguageScore: 0,
   currentOrganizationScore: 0,
   currentContentScore: 0,
