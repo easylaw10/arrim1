@@ -19,24 +19,15 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
   const generateAppeal = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-appeal`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ formData }),
-        }
-      );
+      const response = await supabase.functions.invoke('generate-appeal', {
+        body: { formData },
+      });
 
-      const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error);
+      if (response.error) {
+        throw new Error(response.error.message);
       }
 
+      const data = response.data;
       setTemplate(data.generatedAppeal);
       updateFormData({ appealText: data.generatedAppeal });
       
@@ -93,7 +84,7 @@ export const Step6 = ({ formData, updateFormData }: Step6Props) => {
           value={template}
           onChange={handleTextChange}
           className="min-h-[400px] font-mono text-sm"
-          dir="ltr"
+          dir="rtl"
         />
       )}
     </div>
