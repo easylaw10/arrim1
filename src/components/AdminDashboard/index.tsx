@@ -23,7 +23,7 @@ export const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [scoreFilter, setScoreFilter] = useState("");
 
-  const filteredAppeals = appeals.filter((appeal) => {
+  const filteredAppeals = appeals.filter((appeal: any) => {
     const matchesSearch =
       appeal.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       appeal.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -46,7 +46,7 @@ export const AdminDashboard = () => {
     );
   }
 
-  const uniqueScores = [...new Set(appeals.map((appeal) => appeal.final_score))].sort((a, b) => a - b);
+  const uniqueScores = [...new Set(appeals.map((appeal: any) => appeal.final_score))].sort((a, b) => a - b);
 
   return (
     <div className="container mx-auto py-8 space-y-8">
@@ -94,7 +94,7 @@ export const AdminDashboard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredAppeals.map((appeal) => (
+              {filteredAppeals.map((appeal: any) => (
                 <TableRow key={appeal.id}>
                   <TableCell className="text-right">
                     {new Date(appeal.created_at).toLocaleDateString('he-IL')}
