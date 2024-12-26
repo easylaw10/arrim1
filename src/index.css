@@ -99,18 +99,8 @@
 }
 
 .progress-bar .step-indicator {
-  @apply flex flex-col items-center relative min-w-[120px];
+  @apply flex flex-col items-center relative;
   width: calc(100% / 6);
-}
-
-.progress-bar .step-indicator::before {
-  content: '';
-  @apply absolute top-4 right-[-50%] w-full h-0.5 bg-gray-200;
-  z-index: 0;
-}
-
-.progress-bar .step-indicator:last-child::before {
-  @apply hidden;
 }
 
 .progress-bar .step-number {
@@ -123,10 +113,6 @@
 
 .progress-bar .step-indicator.completed .step-number {
   @apply bg-primary border-primary text-white;
-}
-
-.progress-bar .step-indicator.completed::before {
-  @apply bg-primary;
 }
 
 .progress-bar .step-indicator.current .step-number {
