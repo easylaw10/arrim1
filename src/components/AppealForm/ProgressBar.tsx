@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormStep } from './types';
+import { Check } from 'lucide-react';
 
 interface ProgressBarProps {
   currentStep: FormStep;
@@ -16,7 +17,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   ];
 
   return (
-    <div className="progress-bar mb-8">
+    <div className="progress-bar">
       <div className="flex justify-between">
         {steps.map((step, index) => (
           <div
@@ -29,7 +30,13 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
                 : ''
             }`}
           >
-            <div className="step-number">{index + 1}</div>
+            <div className="step-number">
+              {currentStep > index + 1 ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                index + 1
+              )}
+            </div>
             <div className="step-label">{step}</div>
           </div>
         ))}

@@ -10,6 +10,7 @@ import { Step6 } from './FormSteps/Step6';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { saveNewAppeal } from '../AdminDashboard/useAppealsList';
+import { ChevronRight, ChevronLeft, Send } from 'lucide-react';
 
 export const AppealForm = () => {
   const { formData, updateFormData, currentStep, nextStep, previousStep } = useFormState();
@@ -18,7 +19,6 @@ export const AppealForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // שמירת הנתונים
     saveNewAppeal(formData);
     
     toast({
@@ -49,17 +49,21 @@ export const AppealForm = () => {
   };
 
   return (
-    <div className="form-container bg-white shadow-lg rounded-lg">
+    <div className="form-container">
       <form onSubmit={handleSubmit}>
         <ProgressBar currentStep={currentStep} />
-        {renderStep()}
+        <div className="bg-gray-50 p-6 rounded-lg">
+          {renderStep()}
+        </div>
         <div className="form-navigation">
           {currentStep > 1 && (
             <Button
               type="button"
               variant="outline"
               onClick={previousStep}
+              className="gap-2"
             >
+              <ChevronRight className="h-4 w-4" />
               הקודם
             </Button>
           )}
@@ -67,12 +71,15 @@ export const AppealForm = () => {
             <Button
               type="button"
               onClick={nextStep}
+              className="gap-2"
             >
               הבא
+              <ChevronLeft className="h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit">
+            <Button type="submit" className="gap-2">
               שלח ערר
+              <Send className="h-4 w-4" />
             </Button>
           )}
         </div>
