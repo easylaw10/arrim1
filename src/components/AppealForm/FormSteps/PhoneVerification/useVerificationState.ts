@@ -90,14 +90,7 @@ export const useVerificationState = () => {
 
     setIsLoading(true);
     try {
-      // First, unverify any existing verified records for this phone number
-      await supabase
-        .from('verification_codes')
-        .update({ verified: false })
-        .eq('contact', phone)
-        .eq('verified', true);
-
-      // Now verify the new code
+      // First, check if there's a valid verification code
       const { data, error } = await supabase
         .from('verification_codes')
         .select('*')
@@ -105,9 +98,13 @@ export const useVerificationState = () => {
         .eq('verification_code', code)
         .eq('verified', false)
         .gt('expires_at', new Date().toISOString())
-        .single();
+        .maybeSingle();
 
-      if (error || !data) {
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
         toast({
           title: "שגיאה",
           description: "קוד האימות שגוי או שפג תוקפו",
@@ -116,6 +113,7 @@ export const useVerificationState = () => {
         return false;
       }
 
+      // If we found a valid code, mark it as verified
       await supabase
         .from('verification_codes')
         .update({ verified: true })
@@ -130,7 +128,7 @@ export const useVerificationState = () => {
       console.error('Error verifying code:', error);
       toast({
         title: "שגיאה",
-        description: error.message || "אירעה שגיאה באימות הקוד",
+        description: "אירעה שגיאה באימות הקוד",
         variant: "destructive",
       });
       return false;
