@@ -1,8 +1,8 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Lock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const Landing = () => {
@@ -10,12 +10,12 @@ export const Landing = () => {
   const isMobile = useIsMobile();
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const handleStartAppeal = () => {
+  const handleStartAppeal = (taskNumber: number) => {
     if (!termsAccepted) {
       alert("יש לאשר את תנאי השימוש כדי להמשיך");
       return;
     }
-    navigate("/form");
+    navigate(`/form?task=${taskNumber}`);
   };
 
   return (
@@ -60,13 +60,22 @@ export const Landing = () => {
               </label>
             </div>
 
-            <Button
-              size="lg"
-              onClick={handleStartAppeal}
-              className="text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              הגש ערר חדש
-            </Button>
+            <div className="flex justify-center gap-4">
+              <Button
+                size="lg"
+                onClick={() => handleStartAppeal(1)}
+                className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                מטלה 1
+              </Button>
+              <Button
+                size="lg"
+                onClick={() => handleStartAppeal(2)}
+                className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                מטלה 2
+              </Button>
+            </div>
           </div>
 
           <div className="mt-24 bg-gradient-to-br from-white to-blue-50 rounded-2xl p-8 shadow-lg border border-blue-100">
