@@ -30,7 +30,23 @@ const Admin = () => {
   };
 
   if (isAuthenticated) {
-    return <AdminDashboard />;
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto py-8">
+          <div className="flex justify-between items-center mb-8">
+            <Button
+              variant="outline"
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2"
+            >
+              חזרה לטופס
+            </Button>
+            <h1 className="text-3xl font-bold">ממשק ניהול</h1>
+          </div>
+          <AdminDashboard />
+        </div>
+      </div>
+    );
   }
 
   return (
