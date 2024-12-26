@@ -9,6 +9,7 @@ import { Step5 } from './FormSteps/Step5';
 import { Step6 } from './FormSteps/Step6';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { saveNewAppeal } from '../AdminDashboard/useAppealsList';
 
 export const AppealForm = () => {
   const { formData, updateFormData, currentStep, nextStep, previousStep } = useFormState();
@@ -16,11 +17,15 @@ export const AppealForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // שמירת הנתונים
+    saveNewAppeal(formData);
+    
     toast({
       title: "הטופס נשלח בהצלחה",
       description: "פרטי הערר נשמרו במערכת",
     });
-    // Here you would typically send the data to a server
+    
     console.log('Form submitted:', formData);
   };
 
