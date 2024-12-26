@@ -7,6 +7,7 @@ import { Step3 } from './FormSteps/Step3';
 import { Step4 } from './FormSteps/Step4';
 import { Step5 } from './FormSteps/Step5';
 import { Step6 } from './FormSteps/Step6';
+import { PhoneVerification } from './FormSteps/PhoneVerification';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft, ExternalLink } from 'lucide-react';
 import { Footer } from '@/components/Footer';
@@ -24,7 +25,6 @@ export const AppealForm = () => {
     getCompletedAppeal
   } = useFormState();
 
-  // Move the check after all hooks are called
   const renderContent = () => {
     const completedAppeal = hasCompletedAppeal() ? getCompletedAppeal() : null;
 
@@ -56,21 +56,30 @@ export const AppealForm = () => {
       case 1:
         return <Step1 formData={formData} updateFormData={updateFormData} />;
       case 2:
-        return <Step3 formData={formData} updateFormData={updateFormData} />;
-      case 3:
-        return <Step4 formData={formData} updateFormData={updateFormData} />;
-      case 4:
-        return <Step5 formData={formData} updateFormData={updateFormData} />;
-      case 5:
         return <Step2 formData={formData} updateFormData={updateFormData} />;
+      case 3:
+        return (
+          <PhoneVerification 
+            formData={formData} 
+            updateFormData={updateFormData}
+            onBack={previousStep}
+            onComplete={nextStep}
+          />
+        );
+      case 4:
+        return <Step3 formData={formData} updateFormData={updateFormData} />;
+      case 5:
+        return <Step4 formData={formData} updateFormData={updateFormData} />;
       case 6:
+        return <Step5 formData={formData} updateFormData={updateFormData} />;
+      case 7:
         return <Step6 formData={formData} updateFormData={updateFormData} />;
       default:
         return null;
     }
   };
 
-  const showNavigation = !hasCompletedAppeal() && currentStep < 6;
+  const showNavigation = !hasCompletedAppeal() && currentStep < 7 && currentStep !== 3;
   const showProgressBar = !hasCompletedAppeal();
 
   return (

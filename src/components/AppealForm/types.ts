@@ -1,4 +1,4 @@
-export type FormStep = 1 | 2 | 3 | 4 | 5 | 6;
+export type FormStep = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export interface FormData {
   taskType: number;

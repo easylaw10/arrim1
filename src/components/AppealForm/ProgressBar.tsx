@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormStep } from './types';
-import { Check, Pen, FileText, Layout, BookText, User, FileCheck } from 'lucide-react';
+import { Check, Pen, FileText, Layout, BookText, User, FileCheck, Phone } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ProgressBarProps {
@@ -12,11 +12,12 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   
   const steps = [
     { number: 1, label: 'ציונים נוכחיים', icon: FileText },
-    { number: 2, label: 'ממד הלשון', icon: Pen },
-    { number: 3, label: 'ממד הארגון', icon: Layout },
-    { number: 4, label: 'ממד התוכן', icon: BookText },
-    { number: 5, label: 'פרטים אישיים', icon: User },
-    { number: 6, label: 'יצירת הערר', icon: FileCheck }
+    { number: 2, label: 'פרטים אישיים', icon: User },
+    { number: 3, label: 'אימות טלפון', icon: Phone },
+    { number: 4, label: 'ממד הלשון', icon: Pen },
+    { number: 5, label: 'ממד הארגון', icon: Layout },
+    { number: 6, label: 'ממד התוכן', icon: BookText },
+    { number: 7, label: 'יצירת הערר', icon: FileCheck }
   ];
 
   return (
