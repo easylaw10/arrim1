@@ -20,12 +20,12 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-group">
-            <Label htmlFor="currentLanguageScore">ציון בממד הלשון (0-4)</Label>
+            <Label htmlFor="languageScore">ציון בממד הלשון (0-4)</Label>
             <Input
               type="number"
-              id="currentLanguageScore"
-              value={formData.currentLanguageScore}
-              onChange={(e) => updateFormData({ currentLanguageScore: Math.min(4, Math.max(0, Number(e.target.value))) })}
+              id="languageScore"
+              value={formData.languageScore}
+              onChange={(e) => updateFormData({ languageScore: Math.min(4, Math.max(0, Number(e.target.value))) })}
               min="0"
               max="4"
               required
@@ -34,12 +34,12 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
           </div>
 
           <div className="form-group">
-            <Label htmlFor="currentOrganizationScore">ציון בממד הארגון (0-4)</Label>
+            <Label htmlFor="organizationScore">ציון בממד הארגון (0-4)</Label>
             <Input
               type="number"
-              id="currentOrganizationScore"
-              value={formData.currentOrganizationScore}
-              onChange={(e) => updateFormData({ currentOrganizationScore: Math.min(4, Math.max(0, Number(e.target.value))) })}
+              id="organizationScore"
+              value={formData.organizationScore}
+              onChange={(e) => updateFormData({ organizationScore: Math.min(4, Math.max(0, Number(e.target.value))) })}
               min="0"
               max="4"
               required
@@ -48,12 +48,12 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
           </div>
 
           <div className="form-group">
-            <Label htmlFor="currentContentScore">ציון בממד התוכן (0-12)</Label>
+            <Label htmlFor="contentScore">ציון בממד התוכן (0-12)</Label>
             <Input
               type="number"
-              id="currentContentScore"
-              value={formData.currentContentScore}
-              onChange={(e) => updateFormData({ currentContentScore: Math.min(12, Math.max(0, Number(e.target.value))) })}
+              id="contentScore"
+              value={formData.contentScore}
+              onChange={(e) => updateFormData({ contentScore: Math.min(12, Math.max(0, Number(e.target.value))) })}
               min="0"
               max="12"
               required
@@ -62,12 +62,12 @@ export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
           </div>
 
           <div className="form-group">
-            <Label htmlFor="finalExamScore">ציון סופי בבחינה</Label>
+            <Label htmlFor="finalScore">ציון סופי בבחינה</Label>
             <Input
               type="number"
-              id="finalExamScore"
-              value={formData.finalExamScore}
-              onChange={(e) => updateFormData({ finalExamScore: Math.min(100, Math.max(0, Number(e.target.value))) })}
+              id="finalScore"
+              value={formData.finalScore}
+              onChange={(e) => updateFormData({ finalScore: Math.min(100, Math.max(0, Number(e.target.value))) })}
               min="0"
               max="100"
               required

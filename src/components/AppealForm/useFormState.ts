@@ -1,39 +1,7 @@
 import { useState } from 'react';
-import { FormData, FormStep } from './types';
+import { FormData, FormStep, initialFormData } from './types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
-
-const initialFormData: FormData = {
-  task: 1,
-  currentLanguageScore: 0,
-  currentOrganizationScore: 0,
-  currentContentScore: 0,
-  finalExamScore: 0,
-  languageElements: {
-    legalTerms: false,
-    termConsistency: false,
-    grammarSyntax: false,
-  },
-  languageExamples: '',
-  organizationElements: {
-    introduction: false,
-    factPresentation: false,
-    legalAnalysis: false,
-    conclusion: false,
-  },
-  organizationExamples: '',
-  contentElements: {
-    allParties: false,
-    legislation: false,
-    caselaw: false,
-    relevantFacts: false,
-  },
-  contentExamples: '',
-  fullName: '',
-  phone: '',
-  email: '',
-  additionalNotes: '',
-};
 
 export const useFormState = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
@@ -50,10 +18,10 @@ export const useFormState = () => {
         full_name: formData.fullName,
         phone: formData.phone,
         email: formData.email,
-        language_score: formData.currentLanguageScore,
-        organization_score: formData.currentOrganizationScore,
-        content_score: formData.currentContentScore,
-        final_score: formData.finalExamScore,
+        language_score: formData.languageScore,
+        organization_score: formData.organizationScore,
+        content_score: formData.contentScore,
+        final_score: formData.finalScore,
       });
 
       if (error) throw error;

@@ -5,9 +5,9 @@ export const generateAppealText = async (formData: FormData) => {
     נא לכתוב ערר על בחינת לשכת עורכי הדין עבור התלמיד/ה ${formData.fullName}.
     
     ציונים נוכחיים:
-    - ממד הלשון: ${formData.currentLanguageScore}
-    - ממד הארגון: ${formData.currentOrganizationScore}
-    - ממד התוכן: ${formData.currentContentScore}
+    - ממד הלשון: ${formData.languageScore}
+    - ממד הארגון: ${formData.organizationScore}
+    - ממד התוכן: ${formData.contentScore}
     
     טענות בממד הלשון:
     ${formData.languageExamples}
@@ -30,7 +30,7 @@ export const generateAppealText = async (formData: FormData) => {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',

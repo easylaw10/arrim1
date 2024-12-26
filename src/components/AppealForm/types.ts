@@ -1,3 +1,5 @@
+export type FormStep = 1 | 2 | 3 | 4 | 5 | 6;
+
 export interface FormData {
   taskType: number;
   fullName: string;
@@ -32,7 +34,7 @@ export interface FormData {
 }
 
 export const initialFormData: FormData = {
-  taskType: 0,
+  taskType: 1,
   fullName: "",
   email: "",
   phone: "",
