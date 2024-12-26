@@ -34,7 +34,7 @@ const Admin = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <div className="container mx-auto py-8 flex-1">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <div className="flex justify-between items-center mb-8">
             <Button
               variant="outline"
               onClick={() => navigate("/")}
@@ -42,14 +42,7 @@ const Admin = () => {
             >
               חזרה לטופס
             </Button>
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl font-bold text-right">ממשק ניהול</h1>
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
-                className="h-12 w-auto"
-              />
-            </div>
+            <h1 className="text-3xl font-bold">ממשק ניהול</h1>
           </div>
           <AdminDashboard />
         </div>
@@ -63,11 +56,7 @@ const Admin = () => {
       <div className="flex-1 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
           <div className="flex justify-center mb-6">
-            <img 
-              src="/logo.png" 
-              alt="Logo" 
-              className="h-16 w-auto mb-4"
-            />
+            <Lock className="h-12 w-12 text-primary" />
           </div>
           <h1 className="text-2xl font-bold text-center mb-6">התחברות למנהל</h1>
           <form onSubmit={handleLogin} className="space-y-4">
