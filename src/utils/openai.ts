@@ -1,6 +1,6 @@
 import { FormData } from "@/components/AppealForm/types";
 
-export const generateAppeal = async (formData: FormData, apiKey: string) => {
+export const generateAppeal = async (formData: FormData) => {
   const prompt = `תפקידך הוא לנסח ערר על מטלת כתיבה בבחינת לשכת עורכי הדין.
 
 מידע על הנבחן:
@@ -84,7 +84,7 @@ ${formData.contentElements.relevantFacts ? '- ציון כל העובדות הר�
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: 'gpt-4',
@@ -102,11 +102,12 @@ ${formData.contentElements.relevantFacts ? '- ציון כל העובדות הר�
       }),
     });
 
-    const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error?.message || 'Error generating appeal');
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'Error generating appeal');
     }
 
+    const data = await response.json();
     return data.choices[0].message.content;
   } catch (error) {
     console.error('Error generating appeal:', error);

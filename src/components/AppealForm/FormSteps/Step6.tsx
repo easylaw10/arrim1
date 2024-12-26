@@ -19,16 +19,23 @@ export const Step6: React.FC<Step6Props> = ({ formData }) => {
   const handleGenerateAppeal = async () => {
     setIsLoading(true);
     try {
-      const apiKey = 'YOUR_OPENAI_API_KEY'; // We'll need to get this from environment variables
-      const appeal = await generateAppeal(formData, apiKey);
+      const appeal = await generateAppeal(formData);
       setGeneratedAppeal(appeal);
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        title: "שגיאה",
-        description: "אירעה שגיאה בעת יצירת הערר. אנא נסה שנית.",
-        variant: "destructive",
-      });
+      if (error.message?.includes('invalid_api_key')) {
+        toast({
+          title: "שגיאה",
+          description: "מפתח ה-API של OpenAI אינו תקין. אנא בדוק את המפתח בהגדרות.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "שגיאה",
+          description: "אירעה שגיאה בעת יצירת הערר. אנא נסה שנית.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
