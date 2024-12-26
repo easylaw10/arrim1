@@ -1,6 +1,6 @@
 import { AppealForm } from "@/components/AppealForm";
 import { Button } from "@/components/ui/button";
-import { Lock, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -19,24 +19,14 @@ const Index = () => {
         </div>
         
         <div className="flex justify-start mb-8">
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => navigate("/admin")}
-              title="כניסה למנהל"
-            >
-              <Lock className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate("/")}
-              className="gap-2"
-            >
-              <ArrowRight className="h-4 w-4" />
-              חזרה לדף הבית
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/")}
+            className="gap-2"
+          >
+            <ArrowRight className="h-4 w-4" />
+            חזרה לדף הבית
+          </Button>
         </div>
         
         <AppealForm />

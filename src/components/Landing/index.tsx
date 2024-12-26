@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Lock } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Landing = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white relative">
@@ -76,14 +78,16 @@ export const Landing = () => {
         </div>
       </div>
       
-      {/* Admin Login Button - Fixed at bottom */}
-      <button
-        onClick={() => navigate("/admin")}
-        className="fixed bottom-6 right-6 p-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-white group"
-        title="כניסת מנהל"
-      >
-        <Lock className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors duration-300" />
-      </button>
+      {/* Admin Login Button - Only show on desktop */}
+      {!isMobile && (
+        <button
+          onClick={() => navigate("/admin")}
+          className="fixed bottom-4 right-4 p-2 bg-white/60 backdrop-blur-sm rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:bg-white group opacity-50 hover:opacity-100"
+          title="כניסת מנהל"
+        >
+          <Lock className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-300" />
+        </button>
+      )}
     </div>
   );
 };
