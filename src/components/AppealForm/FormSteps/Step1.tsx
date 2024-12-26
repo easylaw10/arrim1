@@ -11,32 +11,9 @@ interface Step1Props {
 export const Step1: React.FC<Step1Props> = ({ formData, updateFormData }) => {
   return (
     <div className="form-step">
-      <h2 className="text-2xl font-bold mb-6">פרטים אישיים וציונים נוכחיים</h2>
+      <h2 className="text-2xl font-bold mb-6">ציוני הבחינה הקודמת</h2>
       
       <div className="space-y-6">
-        <div className="form-group">
-          <Label htmlFor="fullName">שם מלא</Label>
-          <Input
-            type="text"
-            id="fullName"
-            value={formData.fullName}
-            onChange={(e) => updateFormData({ fullName: e.target.value })}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <Label htmlFor="idNumber">מספר ת.ז.</Label>
-          <Input
-            type="text"
-            id="idNumber"
-            value={formData.idNumber}
-            onChange={(e) => updateFormData({ idNumber: e.target.value })}
-            required
-            maxLength={9}
-          />
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="form-group">
             <Label htmlFor="currentLanguageScore">ציון בממד הלשון (0-4)</Label>
