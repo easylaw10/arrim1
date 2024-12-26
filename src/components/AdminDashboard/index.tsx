@@ -13,16 +13,15 @@ import { Copy } from "lucide-react";
 import { useState } from "react";
 import { useAppealsList } from "./useAppealsList";
 import { supabase } from "@/integrations/supabase/client";
-import { FormData } from "../AppealForm/types";
 
 export const AdminDashboard = () => {
   const { appeals, isLoading } = useAppealsList();
-  const [selectedAppeal, setSelectedAppeal] = useState<FormData | null>(null);
+  const [selectedAppeal, setSelectedAppeal] = useState(null);
   const [generatedText, setGeneratedText] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
-  const generateAppeal = async (appeal: FormData) => {
+  const generateAppeal = async (appeal) => {
     setIsGenerating(true);
     setSelectedAppeal(appeal);
     try {
@@ -86,36 +85,44 @@ export const AdminDashboard = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="text-right">תאריך</TableHead>
                 <TableHead className="text-right">שם מלא</TableHead>
-                <TableHead className="text-right">ציון שפה נוכחי</TableHead>
-                <TableHead className="text-right">ציון ארגון נוכחי</TableHead>
-                <TableHead className="text-right">ציון תוכן נוכחי</TableHead>
-                <TableHead className="text-right">ציון מבחן סופי</TableHead>
+                <TableHead className="text-right">טלפון</TableHead>
+                <TableHead className="text-right">אימייל</TableHead>
+                <TableHead className="text-right">ציון לשון</TableHead>
+                <TableHead className="text-right">ציון ארגון</TableHead>
+                <TableHead className="text-right">ציון תוכן</TableHead>
+                <TableHead className="text-right">ציון סופי</TableHead>
                 <TableHead className="text-right">פעולות</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {appeals.map((appeal, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-right">{appeal.fullName}</TableCell>
+              {appeals.map((appeal) => (
+                <TableRow key={appeal.id}>
                   <TableCell className="text-right">
-                    {appeal.currentLanguageScore}
+                    {new Date(appeal.created_at).toLocaleDateString('he-IL')}
+                  </TableCell>
+                  <TableCell className="text-right">{appeal.full_name}</TableCell>
+                  <TableCell className="text-right">{appeal.phone}</TableCell>
+                  <TableCell className="text-right">{appeal.email}</TableCell>
+                  <TableCell className="text-right">
+                    {appeal.language_score}
                   </TableCell>
                   <TableCell className="text-right">
-                    {appeal.currentOrganizationScore}
+                    {appeal.organization_score}
                   </TableCell>
                   <TableCell className="text-right">
-                    {appeal.currentContentScore}
+                    {appeal.content_score}
                   </TableCell>
                   <TableCell className="text-right">
-                    {appeal.finalExamScore}
+                    {appeal.final_score}
                   </TableCell>
                   <TableCell>
                     <Button
                       onClick={() => generateAppeal(appeal)}
-                      disabled={isGenerating && selectedAppeal === appeal}
+                      disabled={isGenerating && selectedAppeal?.id === appeal.id}
                     >
-                      {isGenerating && selectedAppeal === appeal
+                      {isGenerating && selectedAppeal?.id === appeal.id
                         ? "מייצר ערר..."
                         : "צור ערר"}
                     </Button>
@@ -131,7 +138,7 @@ export const AdminDashboard = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex justify-between items-center">
-              <span>ערר שנוצר עבור {selectedAppeal?.fullName}</span>
+              <span>ערר שנוצר עבור {selectedAppeal?.full_name}</span>
               <Button
                 variant="outline"
                 onClick={copyToClipboard}
