@@ -31,7 +31,7 @@ const sendSMS = async (phone: string, message: string) => {
     key: SMS4FREE_API_KEY,
     user: SMS4FREE_USER,
     pass: SMS4FREE_PASSWORD,
-    sender: "EasyLaw",  // Changed from phone number to text identifier
+    sender: "0527153268",  // Using the verified sender number
     recipient: phone,
     msg: message,
   };
