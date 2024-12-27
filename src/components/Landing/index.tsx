@@ -6,11 +6,18 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 
+interface FAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
+
 export const Landing = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [taskNames, setTaskNames] = useState<{[key: number]: string}>({});
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
 
   useEffect(() => {
     const fetchTaskNames = async () => {
@@ -28,7 +35,20 @@ export const Landing = () => {
       }
     };
 
+    const fetchFAQs = async () => {
+      const { data, error } = await supabase
+        .from("faqs")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order");
+
+      if (!error && data) {
+        setFaqs(data);
+      }
+    };
+
     fetchTaskNames();
+    fetchFAQs();
   }, []);
 
   const handleStartAppeal = (taskNumber: number) => {
@@ -98,25 +118,12 @@ export const Landing = () => {
           <div className="mt-24 bg-gradient-to-br from-white to-blue-50 rounded-2xl p-8 shadow-lg border border-blue-100">
             <h2 className="text-2xl md:text-3xl font-bold text-primary mb-12">שאלות נפוצות</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-                <h3 className="text-lg font-bold text-primary mb-3">כמה זמן לוקח להכין ערר?</h3>
-                <p className="text-gray-600">תהליך הכנת הערר אורך כ-10-15 דקות בממוצע, כולל מילוי הפרטים וקבלת הערר המוכן.</p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-                <h3 className="text-lg font-bold text-primary mb-3">האם השירות בתשלום?</h3>
-                <p className="text-gray-600">לא, השירות ניתן בחינם לכל הסטודנטים.</p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-                <h3 className="text-lg font-bold text-primary mb-3">מה נדרש להכנת הערר?</h3>
-                <p className="text-gray-600">נדרשים פרטים אישיים בסיסיים וציוני המטלה שקיבלת בכל קטגוריה.</p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-                <h3 className="text-lg font-bold text-primary mb-3">איך מגישים את הערר?</h3>
-                <p className="text-gray-600">לאחר קבלת הערר המוכן, יש להגיש אותו דרך מערכת שה"ם בהתאם להנחיות.</p>
-              </div>
+              {faqs.map((faq) => (
+                <div key={faq.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                  <h3 className="text-lg font-bold text-primary mb-3">{faq.question}</h3>
+                  <p className="text-gray-600">{faq.answer}</p>
+                </div>
+              ))}
             </div>
           </div>
 
