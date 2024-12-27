@@ -10,7 +10,7 @@ export const useAppealSubmission = () => {
       // Check for existing appeal first using phone number
       const { data: existingAppeal, error: verificationError } = await supabase
         .from('exam_appeals')
-        .select('*')
+        .select()
         .eq('phone', formData.phone)
         .maybeSingle();
 
