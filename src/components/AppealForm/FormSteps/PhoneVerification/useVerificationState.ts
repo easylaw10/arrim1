@@ -7,6 +7,35 @@ export const useVerificationState = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { toast } = useToast();
 
+  const checkExistingAppeal = async (phone: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('exam_appeals')
+        .select('id')
+        .eq('phone', phone)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error checking for existing appeal:', error);
+        return false;
+      }
+
+      if (data) {
+        toast({
+          title: "שגיאה",
+          description: "כבר הגשת ערר בעבר עבור מספר טלפון זה",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error in checkExistingAppeal:', error);
+      return false;
+    }
+  };
+
   const sendVerificationCode = async (phone: string) => {
     if (!phone) {
       toast({
@@ -24,6 +53,12 @@ export const useVerificationState = () => {
         description: "מספר הטלפון אינו תקין. יש להזין מספר טלפון ישראלי תקין",
         variant: "destructive",
       });
+      return false;
+    }
+
+    // Check for existing appeal before sending verification code
+    const canProceed = await checkExistingAppeal(phone);
+    if (!canProceed) {
       return false;
     }
 
@@ -88,9 +123,14 @@ export const useVerificationState = () => {
       return false;
     }
 
+    // Double check for existing appeal before verifying code
+    const canProceed = await checkExistingAppeal(phone);
+    if (!canProceed) {
+      return false;
+    }
+
     setIsLoading(true);
     try {
-      // First, check if there's a valid verification code
       const { data, error } = await supabase
         .from('verification_codes')
         .select('*')
@@ -101,7 +141,12 @@ export const useVerificationState = () => {
         .maybeSingle();
 
       if (error) {
-        throw error;
+        toast({
+          title: "שגיאה",
+          description: "אירעה שגיאה באימות הקוד",
+          variant: "destructive",
+        });
+        return false;
       }
 
       if (!data) {
@@ -113,7 +158,6 @@ export const useVerificationState = () => {
         return false;
       }
 
-      // If we found a valid code, mark it as verified
       await supabase
         .from('verification_codes')
         .update({ verified: true })
@@ -124,7 +168,7 @@ export const useVerificationState = () => {
         description: "מספר הטלפון אומת בהצלחה",
       });
       return true;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error verifying code:', error);
       toast({
         title: "שגיאה",
