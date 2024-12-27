@@ -56,6 +56,12 @@ export const useVerificationState = () => {
       return false;
     }
 
+    // Check for existing appeal before sending code
+    const canProceed = await checkExistingAppeal(phone);
+    if (!canProceed) {
+      return false;
+    }
+
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-verification', {
@@ -114,12 +120,6 @@ export const useVerificationState = () => {
         description: "נא להזין את קוד האימות",
         variant: "destructive",
       });
-      return false;
-    }
-
-    // בדיקת מספר טלפון קיים רק בשלב האחרון של אימות הקוד
-    const canProceed = await checkExistingAppeal(phone);
-    if (!canProceed) {
       return false;
     }
 
