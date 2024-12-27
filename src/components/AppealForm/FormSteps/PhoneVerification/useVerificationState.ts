@@ -7,6 +7,26 @@ export const useVerificationState = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { toast } = useToast();
 
+  const cleanupOldCodes = async (phone: string) => {
+    try {
+      // Delete all unverified codes for this phone number
+      await supabase
+        .from('verification_codes')
+        .delete()
+        .eq('contact', phone)
+        .eq('verified', false);
+
+      // Delete expired verified codes
+      await supabase
+        .from('verification_codes')
+        .delete()
+        .eq('contact', phone)
+        .lt('expires_at', new Date().toISOString());
+    } catch (error) {
+      console.error('Error cleaning up old codes:', error);
+    }
+  };
+
   const checkExistingAppeal = async (phone: string) => {
     try {
       const { data, error } = await supabase
@@ -56,20 +76,14 @@ export const useVerificationState = () => {
       return false;
     }
 
-    // Check for existing appeal before sending code
+    // Check for existing appeal before proceeding
     const canProceed = await checkExistingAppeal(phone);
-    if (!canProceed) {
-      return false;
-    }
+    if (!canProceed) return false;
 
     setIsLoading(true);
     try {
-      // First, delete any existing unverified codes for this phone number
-      await supabase
-        .from('verification_codes')
-        .delete()
-        .eq('contact', phone)
-        .eq('verified', false);
+      // Clean up old codes first
+      await cleanupOldCodes(phone);
 
       // Then invoke the edge function to send a new code
       const { data, error } = await supabase.functions.invoke('send-verification', {
@@ -133,7 +147,7 @@ export const useVerificationState = () => {
 
     setIsLoading(true);
     try {
-      // First, check if there's already a verified code for this phone number
+      // Check for existing verified code
       const { data: existingVerified } = await supabase
         .from('verification_codes')
         .select('*')
@@ -150,7 +164,7 @@ export const useVerificationState = () => {
         return false;
       }
 
-      // Then verify the code
+      // Verify the code
       const { data, error } = await supabase
         .from('verification_codes')
         .select('*')
