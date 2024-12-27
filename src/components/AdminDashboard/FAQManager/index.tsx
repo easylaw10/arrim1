@@ -1,25 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Pencil, Trash2, Plus, X, Check } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-
-interface FAQ {
-  id: string;
-  question: string;
-  answer: string;
-  display_order: number;
-  is_active: boolean;
-}
+import { FAQ, FAQFormData } from "./types";
+import { FAQForm } from "./FAQForm";
+import { FAQItem } from "./FAQItem";
 
 export const FAQManager = () => {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<Partial<FAQ>>({});
+  const [editForm, setEditForm] = useState<FAQFormData>({});
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchFAQs();
+  }, []);
 
   const fetchFAQs = async () => {
     const { data, error } = await supabase
@@ -38,10 +35,6 @@ export const FAQManager = () => {
 
     setFaqs(data);
   };
-
-  useState(() => {
-    fetchFAQs();
-  }, []);
 
   const handleEdit = (faq: FAQ) => {
     setEditingId(faq.id);
@@ -148,103 +141,36 @@ export const FAQManager = () => {
               className="p-4 border rounded-lg bg-white shadow-sm space-y-2"
             >
               {editingId === faq.id ? (
-                <div className="space-y-2">
-                  <Input
-                    value={editForm.question}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, question: e.target.value })
-                    }
-                    placeholder="שאלה"
-                  />
-                  <Textarea
-                    value={editForm.answer}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, answer: e.target.value })
-                    }
-                    placeholder="תשובה"
-                  />
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="default"
-                      onClick={handleSave}
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        setEditingId(null);
-                        setEditForm({});
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                <FAQForm
+                  formData={editForm}
+                  onFormChange={setEditForm}
+                  onSave={handleSave}
+                  onCancel={() => {
+                    setEditingId(null);
+                    setEditForm({});
+                  }}
+                />
               ) : (
-                <div>
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-semibold">{faq.question}</h3>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleEdit(faq)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDelete(faq.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mt-1">{faq.answer}</p>
-                </div>
+                <FAQItem
+                  faq={faq}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
               )}
             </div>
           ))}
 
           {editingId === "new" ? (
             <div className="p-4 border rounded-lg bg-white shadow-sm space-y-2">
-              <Input
-                value={editForm.question || ""}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, question: e.target.value })
-                }
-                placeholder="שאלה"
+              <FAQForm
+                formData={editForm}
+                onFormChange={setEditForm}
+                onSave={handleAdd}
+                onCancel={() => {
+                  setEditingId(null);
+                  setEditForm({});
+                }}
               />
-              <Textarea
-                value={editForm.answer || ""}
-                onChange={(e) =>
-                  setEditForm({ ...editForm, answer: e.target.value })
-                }
-                placeholder="תשובה"
-              />
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="default"
-                  onClick={handleAdd}
-                >
-                  <Check className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setEditingId(null);
-                    setEditForm({});
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
             </div>
           ) : (
             <Button
