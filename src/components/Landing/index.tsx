@@ -96,7 +96,7 @@ export const Landing = () => {
           </div>
 
           <div className="mt-24 bg-gradient-to-br from-white to-blue-50 rounded-2xl p-8 shadow-lg border border-blue-100">
-            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-12">איך זה עובד?</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-12">שאלות נפוצות</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               <div className="flex flex-col items-center text-center space-y-4 relative">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl ring-4 ring-primary/5">1</div>
