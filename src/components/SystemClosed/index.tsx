@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ExternalLink } from "lucide-react";
 
-export const SystemClosed = ({ message }: { message: string }) => {
+export const SystemClosed = () => {
   const navigate = useNavigate();
 
   return (
@@ -22,17 +22,19 @@ export const SystemClosed = ({ message }: { message: string }) => {
           </h2>
           
           <p className="text-gray-600 text-lg">
-            {message}
+            המערכת סגורה זמנית. אנא חזור מאוחר יותר או צור קשר עם התמיכה.
           </p>
 
-          <Button
-            onClick={() => navigate("/")}
-            variant="outline"
-            className="mt-8 gap-2"
-          >
-            <ChevronRight className="h-4 w-4" />
-            חזרה לדף הבית
-          </Button>
+          <div className="flex justify-center space-x-4 space-x-reverse">
+            <Button
+              onClick={() => window.open('https://easylaw.io', '_blank')}
+              variant="outline"
+              className="mt-8 gap-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              עבור לאתר EasyLaw
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ export interface SystemAccess {
 }
 
 export const useSystemAccess = () => {
-  return useQuery({
+  return useQuery<SystemAccess>({
     queryKey: ["system_access"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -16,25 +16,29 @@ export const useSystemAccess = () => {
         .eq("key", "system_access")
         .single();
 
-      if (error) throw error;
+      if (error) {
+        // Return default values if there's an error
+        return {
+          is_open: true,
+          closed_message: "המערכת סגורה זמנית. אנא חזור מאוחר יותר או צור קשר עם התמיכה."
+        };
+      }
       
-      // Type assertion after validating the shape
-      const value = data?.value as unknown;
+      // Safely parse the value
+      const value = data?.value;
       if (
+        value && 
         typeof value === "object" && 
-        value !== null && 
         "is_open" in value && 
-        "closed_message" in value && 
-        typeof value.is_open === "boolean" && 
-        typeof value.closed_message === "string"
+        "closed_message" in value
       ) {
         return value as SystemAccess;
       }
       
-      // Return default values if data is not in expected format
+      // Fallback to default values
       return {
         is_open: true,
-        closed_message: "המערכת אינה זמינה כרגע"
+        closed_message: "המערכת סגורה זמנית. אנא חזור מאוחר יותר או צור קשר עם התמיכה."
       };
     },
   });

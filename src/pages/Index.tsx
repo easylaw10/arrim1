@@ -10,7 +10,7 @@ const Index = () => {
   }
 
   if (systemAccess && !systemAccess.is_open) {
-    return <SystemClosed message={systemAccess.closed_message} />;
+    return <SystemClosed />;
   }
 
   return (
