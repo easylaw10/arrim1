@@ -112,6 +112,11 @@
 
 .progress-bar .step-label {
   @apply mt-2 text-[10px] md:text-xs text-gray-600 text-center font-medium max-w-[90%] mx-auto transition-all duration-300;
+  display: block !important; /* Force display on mobile */
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .progress-bar .step-indicator.completed .step-number {
