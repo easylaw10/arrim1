@@ -97,29 +97,25 @@ export const Landing = () => {
 
           <div className="mt-24 bg-gradient-to-br from-white to-blue-50 rounded-2xl p-8 shadow-lg border border-blue-100">
             <h2 className="text-2xl md:text-3xl font-bold text-primary mb-12">שאלות נפוצות</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              <div className="flex flex-col items-center text-center space-y-4 relative">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl ring-4 ring-primary/5">1</div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-2">מלא את פרטי הערר</h3>
-                  <p className="text-gray-600">הזן את פרטיך האישיים וציוני המטלה בטופס מובנה</p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                <h3 className="text-lg font-bold text-primary mb-3">כמה זמן לוקח להכין ערר?</h3>
+                <p className="text-gray-600">תהליך הכנת הערר אורך כ-10-15 דקות בממוצע, כולל מילוי הפרטים וקבלת הערר המוכן.</p>
               </div>
               
-              <div className="flex flex-col items-center text-center space-y-4 relative">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl ring-4 ring-primary/5">2</div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-2">המערכת מנתחת</h3>
-                  <p className="text-gray-600">הבינה המלאכותית מנתחת את המידע ומייצרת טיעונים מדויקים</p>
-                </div>
+              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                <h3 className="text-lg font-bold text-primary mb-3">האם השירות בתשלום?</h3>
+                <p className="text-gray-600">לא, השירות ניתן בחינם לכל הסטודנטים.</p>
               </div>
               
-              <div className="flex flex-col items-center text-center space-y-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl ring-4 ring-primary/5">3</div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold mb-2">קבל את הערר</h3>
-                  <p className="text-gray-600">קבל ערר מקצועי, מנומק ומפורט המוכן להגשה</p>
-                </div>
+              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                <h3 className="text-lg font-bold text-primary mb-3">מה נדרש להכנת הערר?</h3>
+                <p className="text-gray-600">נדרשים פרטים אישיים בסיסיים וציוני המטלה שקיבלת בכל קטגוריה.</p>
+              </div>
+              
+              <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                <h3 className="text-lg font-bold text-primary mb-3">איך מגישים את הערר?</h3>
+                <p className="text-gray-600">לאחר קבלת הערר המוכן, יש להגיש אותו דרך מערכת שה"ם בהתאם להנחיות.</p>
               </div>
             </div>
           </div>
