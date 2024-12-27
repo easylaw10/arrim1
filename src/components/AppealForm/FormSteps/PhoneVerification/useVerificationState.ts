@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { verificationCache } from './verificationCache';
 
 export const useVerificationState = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,14 +10,12 @@ export const useVerificationState = () => {
 
   const cleanupOldCodes = async (phone: string) => {
     try {
-      // Delete all unverified codes for this phone number
       await supabase
         .from('verification_codes')
         .delete()
         .eq('contact', phone)
         .eq('verified', false);
 
-      // Delete expired verified codes
       await supabase
         .from('verification_codes')
         .delete()
@@ -29,6 +28,17 @@ export const useVerificationState = () => {
 
   const checkExistingAppeal = async (phone: string) => {
     try {
+      // First check the in-memory cache
+      if (verificationCache.isPhoneVerified(phone)) {
+        toast({
+          title: "שגיאה",
+          description: "מספר טלפון זה כבר אומת בעבר",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      // Then check the database
       const { data, error } = await supabase
         .from('exam_appeals')
         .select('id')
@@ -76,16 +86,13 @@ export const useVerificationState = () => {
       return false;
     }
 
-    // Check for existing appeal before proceeding
     const canProceed = await checkExistingAppeal(phone);
     if (!canProceed) return false;
 
     setIsLoading(true);
     try {
-      // Clean up old codes first
       await cleanupOldCodes(phone);
 
-      // Then invoke the edge function to send a new code
       const { data, error } = await supabase.functions.invoke('send-verification', {
         body: { phone },
       });
@@ -147,24 +154,6 @@ export const useVerificationState = () => {
 
     setIsLoading(true);
     try {
-      // Check for existing verified code
-      const { data: existingVerified } = await supabase
-        .from('verification_codes')
-        .select('*')
-        .eq('contact', phone)
-        .eq('verified', true)
-        .maybeSingle();
-
-      if (existingVerified) {
-        toast({
-          title: "שגיאה",
-          description: "מספר טלפון זה כבר אומת",
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      // Verify the code
       const { data, error } = await supabase
         .from('verification_codes')
         .select('*')
@@ -183,7 +172,6 @@ export const useVerificationState = () => {
         return false;
       }
 
-      // Update the code to verified status
       const { error: updateError } = await supabase
         .from('verification_codes')
         .update({ verified: true })
@@ -198,6 +186,9 @@ export const useVerificationState = () => {
         });
         return false;
       }
+
+      // Add the phone number to the verification cache
+      verificationCache.addVerifiedPhone(phone);
 
       toast({
         title: "אומת בהצלחה",
