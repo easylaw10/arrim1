@@ -90,8 +90,15 @@ export const SystemAccessManager = () => {
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="font-medium">הודעת סגירת מערכת</label>
+        <div className={`space-y-2 ${formData.is_open ? 'opacity-50' : ''}`}>
+          <label className="font-medium flex items-center gap-2">
+            הודעת סגירת מערכת
+            {formData.is_open && (
+              <span className="text-sm text-muted-foreground">
+                (ההודעה תוצג רק כאשר המערכת סגורה)
+              </span>
+            )}
+          </label>
           <Textarea
             value={formData.closed_message}
             onChange={(e) => {
@@ -100,6 +107,7 @@ export const SystemAccessManager = () => {
             }}
             placeholder="הזן את ההודעה שתוצג כאשר המערכת סגורה"
             className="min-h-[100px]"
+            disabled={formData.is_open}
           />
         </div>
 

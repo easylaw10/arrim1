@@ -24,15 +24,22 @@ export const useSystemAccess = () => {
         };
       }
       
-      // Safely parse the value
       const value = data?.value;
-      if (
-        value && 
-        typeof value === "object" && 
-        "is_open" in value && 
-        "closed_message" in value
-      ) {
-        return value as SystemAccess;
+      
+      // Type guard function to check if the value matches SystemAccess interface
+      const isSystemAccess = (val: unknown): val is SystemAccess => {
+        return (
+          typeof val === "object" &&
+          val !== null &&
+          "is_open" in val &&
+          "closed_message" in val &&
+          typeof (val as SystemAccess).is_open === "boolean" &&
+          typeof (val as SystemAccess).closed_message === "string"
+        );
+      };
+
+      if (value && isSystemAccess(value)) {
+        return value;
       }
       
       // Fallback to default values
