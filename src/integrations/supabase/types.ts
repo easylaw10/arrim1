@@ -111,6 +111,27 @@ export type Database = {
         }
         Relationships: []
       }
+      phone_verifications: {
+        Row: {
+          appeal_submitted: boolean
+          created_at: string
+          id: string
+          phone: string
+        }
+        Insert: {
+          appeal_submitted?: boolean
+          created_at?: string
+          id?: string
+          phone: string
+        }
+        Update: {
+          appeal_submitted?: boolean
+          created_at?: string
+          id?: string
+          phone?: string
+        }
+        Relationships: []
+      }
       verification_codes: {
         Row: {
           appeal_submitted: boolean

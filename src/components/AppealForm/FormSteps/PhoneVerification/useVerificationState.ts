@@ -30,28 +30,6 @@ export const useVerificationState = () => {
       return false;
     }
 
-    // Check in-memory cache first
-    if (verificationCache.isPhoneVerified(phone)) {
-      toast({
-        title: "שגיאה",
-        description: "מספר טלפון זה כבר אומת בעבר",
-        variant: "destructive",
-      });
-      return false;
-    }
-
-    // Then check database
-    const isVerified = await checkExistingVerification(phone);
-    if (isVerified) {
-      verificationCache.addVerifiedPhone(phone);
-      toast({
-        title: "שגיאה",
-        description: "מספר טלפון זה כבר אומת בעבר",
-        variant: "destructive",
-      });
-      return false;
-    }
-
     setIsLoading(true);
     try {
       await cleanupOldCodes(phone);
@@ -61,6 +39,13 @@ export const useVerificationState = () => {
       });
 
       if (error) throw error;
+
+      // Add record to phone_verifications table
+      const { error: insertError } = await supabase
+        .from('phone_verifications')
+        .upsert({ phone, appeal_submitted: false });
+
+      if (insertError) throw insertError;
 
       toast({
         title: "נשלח בהצלחה",
@@ -104,6 +89,14 @@ export const useVerificationState = () => {
         });
         return false;
       }
+
+      // Update phone_verifications to mark as submitted
+      const { error: updateError } = await supabase
+        .from('phone_verifications')
+        .update({ appeal_submitted: true })
+        .eq('phone', phone);
+
+      if (updateError) throw updateError;
 
       verificationCache.addVerifiedPhone(phone);
       toast({

@@ -2,6 +2,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, Send, CheckCircle2 } from 'lucide-react';
+import { usePhoneValidation } from './usePhoneValidation';
 
 interface PhoneInputProps {
   phone: string;
@@ -20,6 +21,15 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   onChange,
   showVerification,
 }) => {
+  const { validatePhone } = usePhoneValidation();
+
+  const handleSendCode = async () => {
+    const isValid = await validatePhone(phone);
+    if (isValid) {
+      onSendCode();
+    }
+  };
+
   return (
     <div className="form-group">
       <label htmlFor="phone" className="form-label">טלפון נייד</label>
@@ -40,7 +50,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       </div>
       {!isVerified && (
         <Button 
-          onClick={onSendCode}
+          onClick={handleSendCode}
           disabled={isLoading}
           className="mt-4 w-full gap-2"
           variant={showVerification ? "outline" : "default"}
