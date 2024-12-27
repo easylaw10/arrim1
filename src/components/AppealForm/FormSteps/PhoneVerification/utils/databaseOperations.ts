@@ -18,22 +18,6 @@ export const cleanupOldCodes = async (phone: string) => {
   }
 };
 
-export const checkExistingVerification = async (phone: string) => {
-  try {
-    const { data } = await supabase
-      .from('verification_codes')
-      .select('*')
-      .eq('contact', phone)
-      .eq('verified', true)
-      .maybeSingle();
-
-    return !!data;
-  } catch (error) {
-    console.error('Error checking existing verification:', error);
-    return false;
-  }
-};
-
 export const verifyCode = async (phone: string, code: string) => {
   const { data, error } = await supabase
     .from('verification_codes')

@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { verificationCache } from './verificationCache';
 import { handleDatabaseError } from './utils/errorHandling';
-import { cleanupOldCodes, checkExistingVerification, verifyCode } from './utils/databaseOperations';
+import { cleanupOldCodes, verifyCode } from './utils/databaseOperations';
 
 export const useVerificationState = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,13 +39,6 @@ export const useVerificationState = () => {
       });
 
       if (error) throw error;
-
-      // Add record to phone_verifications table
-      const { error: insertError } = await supabase
-        .from('phone_verifications')
-        .upsert({ phone, appeal_submitted: false });
-
-      if (insertError) throw insertError;
 
       toast({
         title: "נשלח בהצלחה",
@@ -90,13 +83,15 @@ export const useVerificationState = () => {
         return false;
       }
 
-      // Update phone_verifications to mark as submitted
-      const { error: updateError } = await supabase
+      // Add verified phone to phone_verifications table
+      const { error: insertError } = await supabase
         .from('phone_verifications')
-        .update({ appeal_submitted: true })
-        .eq('phone', phone);
+        .upsert({ 
+          phone,
+          appeal_submitted: false
+        });
 
-      if (updateError) throw updateError;
+      if (insertError) throw insertError;
 
       verificationCache.addVerifiedPhone(phone);
       toast({

@@ -1,11 +1,11 @@
 import React from 'react';
 import { FormData } from '../../types';
-import { Button } from '@/components/ui/button';
 import { Shield, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PhoneInput } from './PhoneInput';
 import { VerificationInput } from './VerificationInput';
 import { useVerificationState } from './useVerificationState';
+import { Button } from '@/components/ui/button';
 
 interface PhoneVerificationProps {
   formData: FormData;
