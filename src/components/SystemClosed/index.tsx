@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ExternalLink } from "lucide-react";
 
 export const SystemClosed = ({ message }: { message: string }) => {
   const navigate = useNavigate();
@@ -25,14 +25,24 @@ export const SystemClosed = ({ message }: { message: string }) => {
             {message}
           </p>
 
-          <Button
-            onClick={() => navigate("/")}
-            variant="outline"
-            className="mt-8 gap-2"
-          >
-            <ChevronRight className="h-4 w-4" />
-            חזרה לדף הבית
-          </Button>
+          <div className="flex flex-col space-y-4 mt-8">
+            <Button
+              onClick={() => navigate("/")}
+              variant="outline"
+              className="gap-2"
+            >
+              <ChevronRight className="h-4 w-4" />
+              חזרה לדף הבית
+            </Button>
+            
+            <Button
+              onClick={() => window.open('https://easylaw.io', '_blank')}
+              className="gap-2 hover:scale-105 transition-transform"
+            >
+              <ExternalLink className="h-4 w-4" />
+              עבור לאתר EasyLaw
+            </Button>
+          </div>
         </div>
       </div>
     </div>
