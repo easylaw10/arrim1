@@ -7,7 +7,17 @@ export const useAppealSubmission = () => {
 
   const saveToDatabase = async (formData: FormData) => {
     try {
-      // First check if there's an existing appeal with this phone number
+      // First validate that we have a phone number
+      if (!formData.phone) {
+        toast({
+          title: "שגיאה",
+          description: "נא להזין מספר טלפון",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      // Then check if there's an existing appeal with this phone number
       const { data: existingAppeal, error: checkError } = await supabase
         .from('exam_appeals')
         .select('id')
