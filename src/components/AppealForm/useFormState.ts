@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FormData, FormStep, initialFormData } from './types';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useAppealSubmission } from './hooks/useAppealSubmission';
 
 export const useFormState = () => {
@@ -28,7 +28,7 @@ export const useFormState = () => {
         .from('gpt_instructions')
         .select('task_name, rubric_link')
         .eq('task_type', taskType)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -41,6 +41,23 @@ export const useFormState = () => {
       }
     } catch (error) {
       console.error('Error fetching template details:', error);
+    }
+  };
+
+  const checkExistingAppeal = async (phone: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('exam_appeals')
+        .select('id')
+        .eq('phone', phone)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      return !!data;
+    } catch (error) {
+      console.error('Error checking existing appeal:', error);
+      return false;
     }
   };
 
@@ -110,6 +127,19 @@ export const useFormState = () => {
 
     if (!validateTotalScore()) {
       return;
+    }
+
+    // Check for existing appeal after phone verification
+    if (currentStep === 6 && formData.phoneVerified) {
+      const hasExistingAppeal = await checkExistingAppeal(formData.phone);
+      if (hasExistingAppeal) {
+        toast({
+          title: "שגיאה",
+          description: "כבר הגשת ערר בעבר עם מספר טלפון זה",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     if (currentStep < 7) {
