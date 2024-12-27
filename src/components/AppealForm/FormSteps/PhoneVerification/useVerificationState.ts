@@ -64,6 +64,14 @@ export const useVerificationState = () => {
 
     setIsLoading(true);
     try {
+      // First, delete any existing unverified codes for this phone number
+      await supabase
+        .from('verification_codes')
+        .delete()
+        .eq('contact', phone)
+        .eq('verified', false);
+
+      // Then invoke the edge function to send a new code
       const { data, error } = await supabase.functions.invoke('send-verification', {
         body: { phone },
       });
@@ -125,6 +133,24 @@ export const useVerificationState = () => {
 
     setIsLoading(true);
     try {
+      // First, check if there's already a verified code for this phone number
+      const { data: existingVerified } = await supabase
+        .from('verification_codes')
+        .select('*')
+        .eq('contact', phone)
+        .eq('verified', true)
+        .maybeSingle();
+
+      if (existingVerified) {
+        toast({
+          title: "שגיאה",
+          description: "מספר טלפון זה כבר אומת",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      // Then verify the code
       const { data, error } = await supabase
         .from('verification_codes')
         .select('*')
@@ -134,16 +160,7 @@ export const useVerificationState = () => {
         .gt('expires_at', new Date().toISOString())
         .maybeSingle();
 
-      if (error) {
-        toast({
-          title: "שגיאה",
-          description: "אירעה שגיאה באימות הקוד",
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      if (!data) {
+      if (error || !data) {
         toast({
           title: "שגיאה",
           description: "קוד האימות שגוי או שפג תוקפו",
@@ -152,10 +169,21 @@ export const useVerificationState = () => {
         return false;
       }
 
-      await supabase
+      // Update the code to verified status
+      const { error: updateError } = await supabase
         .from('verification_codes')
         .update({ verified: true })
         .eq('id', data.id);
+
+      if (updateError) {
+        console.error('Error updating verification status:', updateError);
+        toast({
+          title: "שגיאה",
+          description: "אירעה שגיאה באימות הקוד",
+          variant: "destructive",
+        });
+        return false;
+      }
 
       toast({
         title: "אומת בהצלחה",
