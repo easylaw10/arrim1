@@ -1,9 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import { useSystemAccess } from "@/hooks/use-system-access";
 
 export const SystemClosed = () => {
   const navigate = useNavigate();
+  const { data: systemAccess, isLoading } = useSystemAccess();
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -22,7 +28,7 @@ export const SystemClosed = () => {
           </h2>
           
           <p className="text-gray-600 text-lg">
-            המערכת סגורה זמנית. אנא חזור מאוחר יותר או צור קשר עם התמיכה.
+            {systemAccess?.closed_message || "המערכת סגורה זמנית. אנא חזור מאוחר יותר או צור קשר עם התמיכה."}
           </p>
 
           <div className="flex justify-center space-x-4 space-x-reverse">
