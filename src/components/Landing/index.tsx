@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Lock, ChevronDown, ChevronUp } from "lucide-react";
+import { Lock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,7 +18,6 @@ export const Landing = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [taskNames, setTaskNames] = useState<{[key: number]: string}>({});
   const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTaskNames = async () => {
@@ -60,13 +59,8 @@ export const Landing = () => {
     navigate(`/form?task=${taskNumber}`);
   };
 
-  const toggleFaq = (id: string) => {
-    setExpandedFaq(expandedFaq === id ? null : id);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white relative">
-      {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center space-y-8">
           <div className="flex justify-center mb-8">
@@ -120,61 +114,30 @@ export const Landing = () => {
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Visual Separator */}
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent my-12" />
-
-      {/* FAQ Section */}
-      <div className="bg-white/80 backdrop-blur-sm py-16 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-primary mb-12 text-center">
-            שאלות נפוצות
-          </h2>
-          <div className="max-w-3xl mx-auto grid gap-4">
-            {faqs.map((faq) => (
-              <div
-                key={faq.id}
-                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100"
-              >
-                <button
-                  onClick={() => toggleFaq(faq.id)}
-                  className="w-full p-4 flex justify-between items-center text-right"
-                >
-                  <span className="font-semibold text-lg text-primary">
-                    {faq.question}
-                  </span>
-                  {expandedFaq === faq.id ? (
-                    <ChevronUp className="h-5 w-5 text-primary flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5 text-primary flex-shrink-0" />
-                  )}
-                </button>
-                <div
-                  className={`px-4 transition-all duration-300 overflow-hidden ${
-                    expandedFaq === faq.id
-                      ? "max-h-48 pb-4 opacity-100"
-                      : "max-h-0 opacity-0"
-                  }`}
-                >
+          <div className="mt-24 bg-gradient-to-br from-white to-blue-50 rounded-2xl p-8 shadow-lg border border-blue-100">
+            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-12">שאלות נפוצות</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {faqs.map((faq) => (
+                <div key={faq.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                  <h3 className="text-lg font-bold text-primary mb-3">{faq.question}</h3>
                   <p className="text-gray-600">{faq.answer}</p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+
+          {!isMobile && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="fixed bottom-4 right-4 p-2 bg-white/60 backdrop-blur-sm rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:bg-white group opacity-50 hover:opacity-100"
+              title="כניסת מנהל"
+            >
+              <Lock className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-300" />
+            </button>
+          )}
         </div>
       </div>
-
-      {!isMobile && (
-        <button
-          onClick={() => navigate("/admin")}
-          className="fixed bottom-4 right-4 p-2 bg-white/60 backdrop-blur-sm rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:bg-white group opacity-50 hover:opacity-100"
-          title="כניסת מנהל"
-        >
-          <Lock className="h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-300" />
-        </button>
-      )}
     </div>
   );
 };
