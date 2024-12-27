@@ -1,6 +1,10 @@
 export const handleDatabaseError = (error: any) => {
   if (error?.message?.includes('unique_verified_contact')) {
-    return "מספר טלפון זה כבר אומת בעבר";
+    return "מספר טלפון זה כבר אומת";
+  }
+  
+  if (error?.message?.includes('23505')) {
+    return "מספר טלפון זה כבר קיים במערכת";
   }
   
   if (error?.message?.includes('PGRST116')) {

@@ -10,6 +10,30 @@ export const useVerificationState = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { toast } = useToast();
 
+  const checkExistingVerification = async (phone: string) => {
+    try {
+      const { data } = await supabase
+        .from('phone_verifications')
+        .select('appeal_submitted')
+        .eq('phone', phone)
+        .maybeSingle();
+
+      if (data?.appeal_submitted) {
+        toast({
+          title: "שגיאה",
+          description: "מספר טלפון זה כבר הגיש ערר",
+          variant: "destructive",
+        });
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error checking existing verification:', error);
+      return false;
+    }
+  };
+
   const sendVerificationCode = async (phone: string) => {
     if (!phone) {
       toast({
@@ -27,6 +51,11 @@ export const useVerificationState = () => {
         description: "מספר הטלפון אינו תקין. יש להזין מספר טלפון ישראלי תקין",
         variant: "destructive",
       });
+      return false;
+    }
+
+    const hasExistingVerification = await checkExistingVerification(phone);
+    if (hasExistingVerification) {
       return false;
     }
 
@@ -83,15 +112,24 @@ export const useVerificationState = () => {
         return false;
       }
 
-      // Add verified phone to phone_verifications table
-      const { error: insertError } = await supabase
+      // Check if phone is already in phone_verifications
+      const { data: existingVerification } = await supabase
         .from('phone_verifications')
-        .upsert({ 
-          phone,
-          appeal_submitted: false
-        });
+        .select('*')
+        .eq('phone', phone)
+        .maybeSingle();
 
-      if (insertError) throw insertError;
+      if (!existingVerification) {
+        // Only insert if no existing record
+        const { error: insertError } = await supabase
+          .from('phone_verifications')
+          .insert({ 
+            phone,
+            appeal_submitted: false
+          });
+
+        if (insertError) throw insertError;
+      }
 
       verificationCache.addVerifiedPhone(phone);
       toast({
