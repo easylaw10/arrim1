@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { FormData } from '../types';
 
 export const useAppealSubmission = () => {
@@ -7,17 +7,16 @@ export const useAppealSubmission = () => {
 
   const saveToDatabase = async (formData: FormData) => {
     try {
-      const { data: existingVerification, error: verificationError } = await supabase
-        .from('verification_codes')
+      // Check for existing appeal first
+      const { data: existingAppeal, error: verificationError } = await supabase
+        .from('exam_appeals')
         .select('*')
-        .eq('contact', formData.phone)
-        .eq('verified', true)
-        .eq('appeal_submitted', true)
+        .eq('phone', formData.phone)
         .maybeSingle();
 
       if (verificationError) throw verificationError;
 
-      if (existingVerification) {
+      if (existingAppeal) {
         toast({
           title: "שגיאה",
           description: "כבר הגשת ערר בעבר",

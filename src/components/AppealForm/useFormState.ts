@@ -44,23 +44,6 @@ export const useFormState = () => {
     }
   };
 
-  const checkExistingAppeal = async (phone: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('exam_appeals')
-        .select('id')
-        .eq('phone', phone)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      return !!data;
-    } catch (error) {
-      console.error('Error checking existing appeal:', error);
-      return false;
-    }
-  };
-
   const validatePersonalDetails = () => {
     if (currentStep === 5) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -127,19 +110,6 @@ export const useFormState = () => {
 
     if (!validateTotalScore()) {
       return;
-    }
-
-    // Check for existing appeal after phone verification
-    if (currentStep === 6 && formData.phoneVerified) {
-      const hasExistingAppeal = await checkExistingAppeal(formData.phone);
-      if (hasExistingAppeal) {
-        toast({
-          title: "שגיאה",
-          description: "כבר הגשת ערר בעבר עם מספר טלפון זה",
-          variant: "destructive",
-        });
-        return;
-      }
     }
 
     if (currentStep < 7) {
