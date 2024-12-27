@@ -1,6 +1,18 @@
 import { AppealForm } from "@/components/AppealForm";
+import { SystemClosed } from "@/components/SystemClosed";
+import { useSystemAccess } from "@/hooks/use-system-access";
 
 const Index = () => {
+  const { data: systemAccess, isLoading } = useSystemAccess();
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (systemAccess && !systemAccess.is_open) {
+    return <SystemClosed message={systemAccess.closed_message} />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto py-8">
